@@ -7,6 +7,7 @@ import { AddToCart, GetToCart } from "../store/cartSlice";
 import { useEffect, useState } from "react";
 import { GetWishlist } from "../store/GetwishlistSlice";
 import { useNavigate } from "react-router";
+import { useToast } from "../hooks/use-toast";
 
 interface IItem {
   id?: number;
@@ -25,6 +26,7 @@ interface IItem {
 }
 
 const Product = ({ item }: { item: IItem }) => {
+  const { toast } = useToast();
   const nav = useNavigate();
   console.log(item, "''''''''''''''''''''''''''''''''''''''''");
   const dispatch = useAppDispatch();
@@ -35,26 +37,85 @@ const Product = ({ item }: { item: IItem }) => {
   const inWishlist = item.id
     ? getwishlist.some((w) => w.product_id === item.id)
     : false;
+      useEffect(() => {
+          dispatch(GetWishlist());
+      }, [dispatch]);
+// const toggleWishlist = async () => {
+//   if (!item.id) return;
+
+//   try {
+//     if (inWishlist) {
+//       await dispatch(WishlistRemove(item.id)).unwrap();
+//       toast({
+//         title: "Removed ❤️",
+//         description: `${item.name} has been removed from your wishlist.`,
+//       });
+//     } else {
+//       await dispatch(WishlistItems(item.id)).unwrap();
+//       toast({
+//         title: "Added ❤️",
+//         description: `${item.name} has been added to your wishlist.`,
+//       });
+//     }
+//     dispatch(GetWishlist());
+//   } catch {
+//     toast({
+//       title: "Error ❌",
+//       description: "Something went wrong with your wishlist.",
+//       variant: "destructive",
+//     });
+//   }
+// };
 
   const toggleWishlist = () => {
     if (!item.id) return;
 
     if (inWishlist) {
       dispatch(WishlistRemove(item.id));
+        toast({
+          title: "Removed ❤️",
+          description: `${item.name} has been removed from your wishlist.`,
+        });
     } else {
       dispatch(WishlistItems(item.id));
+       toast({
+         title: "Added ❤️",
+         description: `${item.name} has been added to your wishlist.`,
+       });
     }
     dispatch(GetWishlist());
   };
 
-  const handleAddToCart = async () => {
-    if (!item.id) return;
-    await dispatch(AddToCart({ product_id: item.id, quantity: 1 }));
+  // const handleAddToCart = async () => {
+  //   if (!item.id) return;
+  //   await dispatch(AddToCart({ product_id: item.id, quantity: 1 }));
+    
+  //   dispatch(GetToCart());
+  //       toast({
+  //         title: "Added to cart 🛒",
+  //         description: `${item.name} has been added to your cart.`,
+  //       });
+  // };
+const handleAddToCart = async () => {
+  if (!item.id) return;
+  try {
+    await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
     dispatch(GetToCart());
-  };
 
+    toast({
+      title: "Added to cart 🛒",
+      description: `${item.name} has been added to your cart.`,
+    });
+  } catch {
+    toast({
+      title: "Error ❌",
+      description: "Failed to add item to cart.",
+      // variant: "destructive",
+    });
+  }
+};
   return (
-    <div className="relative overflow-visible group/item w-[440px] h-[500px] py-12 bg-white p-[30px] -mt-3 flex flex-col justify-between rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]">
+    <div className="cursor-pointer relative overflow-visible group/item w-[440px] h-[500px] py-12 bg-white p-[30px] -mt-3 flex flex-col justify-between rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]">
               <div className="relative group flex">
           {inWishlist ? (
             <GoHeartFill

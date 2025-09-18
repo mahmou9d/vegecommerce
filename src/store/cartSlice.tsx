@@ -29,12 +29,12 @@ const initialState: CartState = {
 export const AddToCart = createAsyncThunk(
   "cart/AddToCart",
   async (
-    payload: { product_id: number; quantity: 1 },
+    payload: { product_id: number; quantity: number },
     { rejectWithValue, getState, dispatch }
   ) => {
     try {
       const state = getState() as RootState;
-      let token = state.auth.access;
+      let token = state?.auth.access;
       console.log(token,"tsthrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
 if (!token) return rejectWithValue("User not logged in");
       let res = await fetch(

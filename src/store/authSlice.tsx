@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data,"data")
+      alert(data);
       return data;
     } catch (error: any) {
       console.log(error, "errorlogin");
@@ -78,7 +78,43 @@ export const refreshAccessToken = createAsyncThunk(
     }
   }
 );
+export const Logout = createAsyncThunk(
+  "auth/Logout", // ✅ خليها اسم Action عادي مش URL
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState;
+      const refreshToken = state.auth.refresh; // ✅ استخدم refresh
+      const accessToken = state.auth.access; // ✅ معاك access
 
+      if (!refreshToken) {
+        throw new Error("No tokens available");
+      }
+
+      const res = await fetch(
+        "https://e-commerce-web-production-ead4.up.railway.app/api/auth/token/logout/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${accessToken}`, // ⬅️ مهم
+          },
+          body: JSON.stringify({
+            refresh: refreshToken,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -103,16 +139,28 @@ const authSlice = createSlice({
       state.loading = "failed";
       state.error = (action.payload as string) || "Unexpected error";
     });
-        builder
-          .addCase(
-            refreshAccessToken.fulfilled,
-            (state, action: PayloadAction<any>) => {
-              state.access = action.payload.access;
-            }
-          )
-          .addCase(refreshAccessToken.rejected, (state, action) => {
-            state.error = action.payload as string;
-          });
+    builder
+      .addCase(
+        refreshAccessToken.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.access = action.payload.access;
+        }
+      )
+      .addCase(refreshAccessToken.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(Logout.fulfilled, (state) => {
+        state.access = "";
+        state.refresh = "";
+        state.error = null;
+        state.loading = "idle";
+      })
+
+      .addCase(Logout.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
   },
 });
 

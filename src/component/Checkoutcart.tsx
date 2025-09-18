@@ -25,6 +25,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useNavigate } from "react-router";
+import { useToast } from "../hooks/use-toast";
 
 const frameworks = [
   {
@@ -61,6 +62,8 @@ const schema = yup.object().shape({
 });
 
 const Checkoutcart = () => {
+  const { toast } = useToast();
+
   const nav = useNavigate();
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
@@ -70,7 +73,7 @@ const Checkoutcart = () => {
   );
   const [countryValue, setCountryValue] = React.useState("");
 
-  const { items } = useAppSelector((state) => state.cart);
+  const { items } = useAppSelector((state) => state?.cart);
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
@@ -112,19 +115,50 @@ const Checkoutcart = () => {
       .unwrap()
       .then((res) => {
         console.log("Order placed ✅:", res);
+              toast({
+                title: "Order placed successfully 🎉",
+                description: "Your order has been submitted, redirecting...",
+              });
+
               Promise.all(
                 items.map((item) =>
                   dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
                 )
               )
-                .then(() => dispatch(GetToCart()))
-                .catch((err) => console.error("Failed to clear cart:", err));
+                .then(() => {
+                  // رجّع الكارت فاضي من الـ API
+                  dispatch(GetToCart());
+
+                  // 🟢 Toast مسح الكارت
+                  toast({
+                    title: "Cart cleared 🛒",
+                    description: "Your cart has been emptied successfully.",
+                  });
+                })
+                .catch((err) => {
+                  console.error("Failed to clear cart:", err);
+
+                  // 🔴 Toast لو حصل خطأ
+                  toast({
+                    title: "Error ❌",
+                    description: "Failed to clear your cart, please try again.",
+                    // variant: "destructive",
+                  });
+                });
 
         nav("/ordercomplete", { replace: true });
       })
       .catch((err) => {
         console.error("Checkout error:", err);
         // alert("Failed to place order ❌");
+
+
+      // 🔴 Toast Error
+      toast({
+        title: "Failed to place order ❌",
+        description: "Please try again later.",
+        // variant: "destructive",
+      });
       });
   };
   return (

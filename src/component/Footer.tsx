@@ -47,7 +47,7 @@ const Footer = () => {
             className="w-full h-full  bg-transparent px-[25px] outline-none"
             placeholder="What are you looking for?"
           />
-          <div className="absolute -top-1 right-0 h-[90%] flex items-center gap-2 px-4 font-bold text-[#122d40] bg-[#01e281] rounded-full w-44 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+          <div className="absolute cursor-pointer -top-1 right-0 h-[90%] flex items-center gap-2 px-4 font-bold text-[#122d40] bg-[#01e281] rounded-full w-44 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
             <HiOutlineMailOpen className="text-[20px]" /> Subscribe
           </div>
           {/* <HiOutlineMailOpen className="" /> */}
@@ -63,9 +63,9 @@ const Footer = () => {
                 don't matter, and those who matter don't mind.”
               </h1>
               <div className="flex gap-2">
-                <FaFacebook className="w-[50px] h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-[#3b5998] transition-all duration-200" />
-                <FaTwitter className="w-[50px] h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-[#1DA1F2] transition-all duration-200" />
-                <FaInstagram className="w-[50px] h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-insta-gradient transition-all duration-200" />
+                <FaFacebook className="w-[50px] cursor-pointer h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-[#3b5998] transition-all duration-200" />
+                <FaTwitter className="w-[50px] cursor-pointer h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-[#1DA1F2] transition-all duration-200" />
+                <FaInstagram className="w-[50px] cursor-pointer h-[50px] p-[14px] bg-[#204560] rounded-full hover:bg-insta-gradient transition-all duration-200" />
               </div>
             </div>
             <div className="w-[430px] rounded-[50px] h-[450px] border border-[#9fb6cb33] px-12 py-12 text-white">
@@ -74,7 +74,7 @@ const Footer = () => {
               <div>
                 {links.map((item, i) => {
                   return (
-                    <div className="flex gap-3 pt-3 items-center group hover:ml-2 transition-all duration-200">
+                    <div className="flex cursor-pointer gap-3 pt-3 items-center group hover:ml-2 transition-all duration-200">
                       <h1 className="text-[#01e281] text-[18px] bg-[#01e28133] transition-all duration-200 group-hover:bg-[#01e281] group-hover:text-[#122d40] w-[30px] h-[30px] rounded-full flex justify-center items-center">
                         {item.Icon}
                       </h1>

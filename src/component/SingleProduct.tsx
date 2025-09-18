@@ -30,6 +30,8 @@ import { WishlistItems, WishlistRemove } from "../store/wishlistSlice";
 import { GetWishlist } from "../store/GetwishlistSlice";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { AddToCart, EditCart, GetToCart } from "../store/cartSlice";
+import { useToast } from "../hooks/use-toast";
+
 
 const listfirst = ["brand", "sku", "status", "tags", "categories"];
 const listsecond = [
@@ -54,6 +56,9 @@ const description = [
   },
 ];
 const SingleProduct = () => {
+  const { toast } = useToast();
+  const [edit, setEdit] = useState(1);
+
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState("Description");
@@ -114,11 +119,26 @@ console.log(firstReview, "wqgqtetjtyejtyte");
     const toggleWishlist = () => {
       if (!id) return;
   
-      if (inWishlist) {
-        dispatch(WishlistRemove(Number(id)));
-      } else {
-        dispatch(WishlistItems(Number(id)));
-      }
+  if (inWishlist) {
+    dispatch(WishlistRemove(Number(id)))
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Removed ❤️",
+          description: `${firstItem?.name} has been removed from your wishlist.`,
+          className: "bg-white text-black border shadow-lg", // ستايل بسيط
+        });
+      });
+  } else {
+    dispatch(WishlistItems(Number(id)))
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Added 💚",
+          description: `${firstItem?.name} has been added to your wishlist.`,
+        });
+      });
+  }
       dispatch(GetWishlist());
     };
     const handleAddToCart = async () => {
@@ -131,16 +151,17 @@ console.log(firstReview, "wqgqtetjtyejtyte");
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
-      const updateQuantity = (
-        product_id: number,
-        type: "inc" | "dec",
-        currentQty: number
-      ) => {
-        const newQty =
-          type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
-        dispatch(EditCart({ product_id, quantity: newQty }))
+      const updateQuantity = () => {
+        dispatch(AddToCart({ product_id: Number(firstItem.id), quantity: edit }))
           .unwrap()
-          .then(() => dispatch(GetToCart()));
+          .then(() => {
+            dispatch(GetToCart());
+            setEdit(1);   
+               toast({
+              title: "🛒 Added to Cart",
+              description: `${firstItem?.name} (x${edit}) has been added to your cart.`,
+            });
+          });
       };
   return (
     <div>
@@ -184,22 +205,18 @@ console.log(firstReview, "wqgqtetjtyejtyte");
             <Button
               variant="outline"
               size="icon"
-              onClick={() =>
-                updateQuantity(items3[0].product_id, "dec", items3[0].quantity)
-              }
+              onClick={() => setEdit(edit > 1 ? edit - 1 : 1)}
               className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281]  rounded-full text-[18px] w-12 h-12"
             >
               −
             </Button>
             <span className="px-3 w-20 border border-[#a7a7a74d] h-10 rounded-full flex items-center justify-center text-[16px]">
-              {items3[0]?.quantity ?? 1}
+              {edit ?? 1}
             </span>
             <Button
               variant="outline"
               size="icon"
-              onClick={() =>
-                updateQuantity(items3[0].product_id, "inc", items3[0].quantity)
-              }
+              onClick={() => setEdit(edit + 1)}
               className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281] rounded-full text-[18px] w-12 h-12"
             >
               +
@@ -207,7 +224,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
           </div>
           <div className="flex items-end gap-4">
             <button
-              onClick={handleAddToCart}
+              onClick={updateQuantity}
               className="bg-[#01e281] mt-4 text-[#122d40] hover:bg-[#122d40] hover:text-[#01e281] text-[18px] flex items-center justify-center gap-3 font-bold px-4 py-2  rounded-full  shadow-md"
             >
               <RiShoppingCartLine className="text-[18px]" /> Add to cart
@@ -226,8 +243,8 @@ console.log(firstReview, "wqgqtetjtyejtyte");
               )}
               <div
                 className={`absolute   ${
-                  inWishlist ? "ml-[9.5rem] left-[46.5%]" : "ml-[13rem]"
-                } z-10 top-[78%] left-[44%] opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                  inWishlist ? "ml-[9.5rem] left-[47%] top-[87%]" : "ml-[13rem]"
+                } z-10 top-[78%] left-[44.5%] opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
               >
                 <button
                   onClick={toggleWishlist}
@@ -413,14 +430,13 @@ console.log(firstReview, "wqgqtetjtyejtyte");
           )}
           {activeTab === "Reviews" && (
             <div>
-              <h1 className="text-[22px] font-bold pb-5 border-b border-[#a7a7a733]">
-                {filterReview?.length} reviews for {firstReview?.product}
+              <h1 className={`text-[22px] font-bold pb-5 ${filterReview?.length===0?"":" border-b border-[#a7a7a733]"}`}>
+                {filterReview?.length===0?"No reviews":`${filterReview?.length} reviews for ${firstReview?.product}`}
               </h1>
-              <div className="bg-white text-black py-7 px-7 rounded-2xl">
+             {filterReview?.length!==0 && <div className="bg-white text-black py-7 px-7 rounded-2xl">
                 <div className="flex justify-between pb-4">
                   <p className="font-medium">{firstReview?.customer}</p>
                   <p>
-                    {" "}
                     <Rating defaultValue={firstReview?.rating}>
                       {Array.from({ length: 5 }).map((_, index) => (
                         <RatingButton className="text-[#ffc000]" key={index} />
@@ -429,7 +445,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
                   </p>
                 </div>
                 <h1>{firstReview?.comment}</h1>
-              </div>
+              </div>}
               <p className="py-4">Add a review</p>
               <p className="pb-4">
                 Your email address will not be published. Required fields are

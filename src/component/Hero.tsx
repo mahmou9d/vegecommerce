@@ -88,10 +88,10 @@ const Hero = () => {
               food, beverages and household products, organized into sections.
             </p>
             <div className="flex gap-9 pt-6">
-              <Button className="w-48 h-14 text-white bg-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
+              <Button className="w-48 h-14 text-white bg-[#122d40] hover:bg-[#01e281] hover:text-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
                 25% Off Feastival
               </Button>
-              <Button className="w-48 h-14 text-[#122d40] bg-transparent border border-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
+              <Button className="w-48 h-14 text-[#122d40] bg-transparent border hover:bg-[#01e281] hover:border-0 border-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
                 Discover Shop
               </Button>
             </div>
@@ -241,7 +241,7 @@ const Hero = () => {
           {category.map((item, i) => {
             return (
               <div
-                className="p-6 group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281]  hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
+                className="p-6 cursor-pointer group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281]  hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
                 key={i}
               >
                 <img

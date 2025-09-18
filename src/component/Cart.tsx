@@ -21,8 +21,10 @@ import { RootState } from "../store";
 import { productUser } from "../store/productSlice";
 import Product from "./Product";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "../hooks/use-toast";
 
 const Cart = () => {
+  const { toast } = useToast();
   const nav =useNavigate()
   const dispatch = useAppDispatch();
   const { products, loading, error } = useAppSelector(
@@ -48,12 +50,27 @@ const Cart = () => {
       type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
     dispatch(EditCart({ product_id, quantity: newQty }))
       .unwrap()
-      .then(() => dispatch(GetToCart()));
+      .then(() => {
+        dispatch(GetToCart());
+        toast({
+          title: "Cart updated",
+          description: `Quantity ${
+            type === "inc" ? "increased" : "decreased"
+          } successfully.`,
+        });
+      });
   };
   const removeItem = (product_id: number) => {
     dispatch(RemoveCart({ product_id }))
       .unwrap()
-      .then(() => dispatch(GetToCart()));
+      .then(() => {
+        dispatch(GetToCart());
+        toast({
+          title: "Removed from cart",
+          description: "The item was successfully removed.",
+          // variant: "destructive",
+        });
+      });
   };
 
   const limit = 1000;
@@ -148,15 +165,25 @@ const Cart = () => {
                         />
                       </Button>
                     </TableCell>
-                    <TableCell className=" gap-3">
+                    <TableCell className="cursor-pointer gap-3">
                       <img
                         src={item.img_url}
                         alt={item.product_name}
                         className="rounded-md w-24 h-16"
+                        onClick={() => {
+                          nav(`/singleProduct/${item.product_id}`);
+                          window.scrollTo(0, 0);
+                        }}
                       />
                     </TableCell>
-                    <TableCell className="flex flex-col p-7 gap-3">
-                      <p className="font-bold text-[18px]">
+                    <TableCell
+                      className="flex flex-col p-7 gap-3 cursor-pointer"
+                      onClick={() => {
+                        nav(`/singleProduct/${item.product_id}`);
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      <p className="font-bold text-[18px] hover:text-[#01e281] transition-all duration-150">
                         {item.product_name}
                       </p>
                       <p className="text-sm text-gray-500">SKU: SKU_1192</p>
@@ -198,7 +225,7 @@ const Cart = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-[16px]">
-                      ${Number(item.price) * item.quantity}
+                      ${(Number(item.price) * item.quantity).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -207,9 +234,13 @@ const Cart = () => {
                 <TableRow>
                   <TableCell colSpan={6} className="text-left">
                     <div className="flex justify-end">
-                      <Button onClick={()=>{
-                        nav("/shop")
-                         window.scrollTo(0, 0);}} className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+                      <Button
+                        onClick={() => {
+                          nav("/shop");
+                          window.scrollTo(0, 0);
+                        }}
+                        className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                      >
                         Continue shopping
                       </Button>
                     </div>
@@ -272,10 +303,13 @@ const Cart = () => {
                 <Progress value={progress} className="h-4 text-[#01e281]" />
               </div>
               <div className="flex justify-end pt-5">
-                <Button onClick={()=>{
-                  nav("/checkout")
-                  window.scrollTo(0,0)
-                }} className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+                <Button
+                  onClick={() => {
+                    nav("/checkout");
+                    window.scrollTo(0, 0);
+                  }}
+                  className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                >
                   Process to Checkout
                 </Button>
               </div>
@@ -303,8 +337,14 @@ const Cart = () => {
                 })}
               </div>
             </div>
-            <Button className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center  hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
-              <Link to={"/shop"}>Return to shop</Link>
+            <Button
+              onClick={() => {
+                nav("/checkout");
+                window.scrollTo(0, 0);
+              }}
+              className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center  hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+            >
+              Return to shop
             </Button>
           </div>
         </div>

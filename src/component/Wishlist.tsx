@@ -11,13 +11,15 @@ import { AddToCart, GetToCart } from "../store/cartSlice";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { GetWishlist } from "../store/GetwishlistSlice";
+import { useToast } from "../hooks/use-toast";
+
 
 const Wishlist = () => {
   const dispatch = useAppDispatch();
   const { items, loading, error } = useAppSelector(
     (state: RootState) => state.Getwishlists
   );
-
+const { toast } = useToast();
   useEffect(() => {
     if (items.length === 0) {
       dispatch(GetWishlist());
@@ -26,17 +28,36 @@ const Wishlist = () => {
   console.log(items, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
   const removeItem = (product_id: number) => {
-    dispatch(WishlistRemove( product_id))
+    dispatch(WishlistRemove(product_id))
       .unwrap()
-      .then(() => dispatch(GetWishlist()));
+      .then(() => {
+        dispatch(GetWishlist());
+        toast({
+          title: "Removed ❤️",
+          description: `${name} has been removed from your wishlist.`,
+        });
+      });
   };
 
   const handleAddToCart = (product: any) => {
     console.log("Adding to cart:", product);
     dispatch(AddToCart({ product_id: product, quantity: 1 }))
       .unwrap()
-      .then((res) => console.log("Added to cart:", res))
-      .catch((err) => console.error("Failed to add:", err));
+      .then(() => {
+        dispatch(GetToCart());
+        toast({
+          title: "Added 🛒",
+          description: `${product.name} has been added to your cart.`,
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to add:", err);
+        toast({
+          title: "Error ❌",
+          description: "Could not add item to cart.",
+          // variant: "destructive",
+        });
+      });
   };
 
   return (
@@ -58,7 +79,7 @@ const Wishlist = () => {
             return (
               <div
                 key={i}
-                className="relative container mx-auto mt-10 overflow-visible group/item w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
+                className="relative cursor-pointer container mx-auto mt-10 overflow-visible group/item w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
               >
                 <div className="relative group flex">
                   <IoClose
@@ -66,13 +87,13 @@ const Wishlist = () => {
                     className="absolute right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
                   />
                 </div>
-                <img src={product.img_url} alt={product.name} />
+              <div className="h-full flex flex-col justify-between items-start">
+                <img className="max-w-[350px]" src={product.img_url} alt={product.name} />
                 <div>
                   <h1 className="text-[22px] font-extrabold  group-hover/item:text-[#01e281] duration-200">
                     {product.name}
                   </h1>
                 </div>
-
                 <div className="flex justify-between mt-2  gap-2 items-center">
                   <p className="">
                     <Rating value={product.average_rating} readOnly>
@@ -85,6 +106,7 @@ const Wishlist = () => {
                     ${product.final_price}
                   </h1>
                 </div>
+              </div>
                 <div
                   onClick={() => {
                     handleAddToCart(product.product_id);

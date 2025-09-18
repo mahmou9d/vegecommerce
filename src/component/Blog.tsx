@@ -71,7 +71,7 @@ const Blog = () => {
           </p>
           <div className="flex gap-8 pb-10">
             <motion.img
-              className="w-[170px] h-[54px] rounded-[15px] "
+              className="w-[170px] h-[54px] rounded-[15px] cursor-pointer"
               src="/images/btn2.png"
               alt="btn2"
               initial={{ opacity: 0, x: -20 }}
@@ -80,7 +80,7 @@ const Blog = () => {
               viewport={{ once: true }}
             />
             <motion.img
-              className="w-[170px] h-[54px] rounded-[15px]"
+              className="w-[170px] h-[54px] rounded-[15px] cursor-pointer"
               src="/images/btn-1.png"
               alt="btn1"
               initial={{ opacity: 0, x: -20 }}
@@ -113,7 +113,7 @@ const Blog = () => {
           <CarouselContent className="-ml-4 flex justify-between w-full pt-10">
             {blogs.map((item, i) => {
               return (
-                <CarouselItem className="basis-1/4 relative group ">
+                <CarouselItem className="basis-1/4 relative group cursor-pointer">
                   <p className="absolute text-[12px] z-10 -top-6 border-[7px] rounded-full px-5 py-2 text-white border-white left-1/2 -translate-x-1/2 bg-[#122d40]">
                     {item.title}
                   </p>

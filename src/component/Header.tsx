@@ -27,6 +27,8 @@ import { Progress } from "../components/ui/progress";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { GetToCart, RemoveCart } from "../store/cartSlice";
 import { LiaCartPlusSolid } from "react-icons/lia";
+import { useToast } from "../hooks/use-toast";
+import { Logout } from "../store/authSlice";
 const category = [
   {
     Icon: "/images/s1.png",
@@ -85,7 +87,10 @@ interface Product {
   price: number;
 }
 const Header = () => {
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
+    const { access } = useAppSelector((state) => state?.auth);
+    console.log(access,"ebtetrr")
   const { items, total } = useAppSelector((state) => state?.cart);
   useEffect(() => {
     dispatch(GetToCart());
@@ -95,7 +100,10 @@ const Header = () => {
   const [cart, setCart] = useState<Product[]>([]);
   const limit = 1000;
   const nav = useNavigate();
-
+  const subquantity = Array.isArray(items)
+    ? items.reduce((sum, item) => sum + Number(item.quantity), 0)
+    : 0;
+    console.log(subquantity, "subquantity");
   const subtotal = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
     : 0;
@@ -110,8 +118,41 @@ const Header = () => {
   const removeItem = (product_id: number) => {
     dispatch(RemoveCart({ product_id }))
       .unwrap()
-      .then(() => dispatch(GetToCart()));
+      .then(() => {
+        dispatch(GetToCart());
+
+        // 🟢 Toast بعد ما المنتج يتمسح
+        toast({
+          title: "Removed from cart 🛒",
+          description: "The item has been removed successfully.",
+        });
+      })
+      .catch(() => {
+        // 🔴 Toast لو حصل خطأ
+        toast({
+          title: "Error ❌",
+          description: "Failed to remove item from cart.",
+          // variant: "destructive",
+        });
+      });
   };
+    const handleLogout = () => {
+      dispatch(Logout())
+        .unwrap()
+        .then(() => {
+          toast({
+            title: "Logged out ✅",
+            description: "You have been logged out successfully.",
+          });
+          nav("/login")
+        })
+        .catch((err) => {
+          toast({
+            title: "Error ❌",
+            description: err || "Logout failed",
+          });
+        });
+    };
   return (
     <div>
       <div className=" bg-[#122d40]">
@@ -137,7 +178,7 @@ const Header = () => {
           <div className="relative flex gap-[12px] lg:hidden">
             <FaBasketShopping className=" w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
             <span className="absolute right-[45%] top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center">
-              {items.length}
+              {subquantity}
             </span>
             <Sheet>
               <SheetTrigger asChild>
@@ -352,105 +393,123 @@ const Header = () => {
               </div>
             </div>
             <div className="relative group/item">
-
+              <Link to={"/cart"}>
                 <FaBasketShopping className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
                 <span className="absolute right-[-25%] top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center">
-                  {items.length}
+                  {subquantity}
                 </span>
-                <div
-                  className="
+              </Link>
+              <div
+                className="
       absolute right-[-45%] z-[100] w-[400px] bg-white shadow-xl rounded-xl 
       opacity-0 scale-95 translate-y-3 pointer-events-none
       transition-all duration-300 ease-in-out
       group-hover/item:opacity-100 group-hover/item:scale-100 group-hover/item:translate-y-0 group-hover/item:pointer-events-auto 
     "
-                >
-                  <TiArrowSortedUp className="absolute top-[-13px] text-white text-[22px] right-[32px]" />
-                  {Array.isArray(items) && items?.length !== 0 ? (
-                    <div>
-                      <div className="p-7">
-                        {items.map((item, i) => {
-                          return (
+              >
+                <TiArrowSortedUp className="absolute top-[-13px] text-white text-[22px] right-[32px]" />
+                {Array.isArray(items) && items?.length !== 0 ? (
+                  <div>
+                    <div className="p-7">
+                      {items.map((item, i) => {
+                        return (
+                          <div
+                            key={i}
+                            className="p-2 border flex justify-between items-center mt-3 border-slate-200 cursor-pointer"
+                          >
                             <div
-                              key={i}
-                              className="p-2 border flex justify-between items-center mt-3 border-slate-200 cursor-pointer"
                               onClick={() => {
                                 nav(`/singleProduct/${item.product_id}`);
                                 window.scrollTo(0, 0);
                               }}
+                              className="flex gap-4"
                             >
-                              <div className="flex gap-4">
-                                <img
-                                  className="w-28 pr-2"
-                                  src={item.img_url}
-                                  alt={item.product_name}
-                                />
-                                <div>
-                                  <p className="font-extrabold">
-                                    {item.product_name}
-                                  </p>
-                                  <p className="text-[14px]">
-                                    {item.quantity} x {item.price}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <IoClose
-                                onClick={() => removeItem(item.product_id)}
-                                className="text-[20px]"
+                              <img
+                                className="w-28 pr-2"
+                                src={item.img_url}
+                                alt={item.product_name}
                               />
+                              <div>
+                                <p className="font-extrabold">
+                                  {item.product_name}
+                                </p>
+                                <p className="text-[14px]">
+                                  {item.quantity} x {item.price}
+                                </p>
+                              </div>
                             </div>
-                          );
-                        })}
-                        <div className="flex items-center justify-between bg-[#f3f3f3] py-3 px-5 rounded-b-2xl">
-                          <div className="flex items-center gap-3">
-                            <RiFileListLine />
-                            <p>Cart subtotal</p>
+
+                            <IoClose
+                              onClick={() => removeItem(item.product_id)}
+                              className="text-[20px]"
+                            />
                           </div>
-                          <p className="font-bold">${subtotal.toFixed(2)}</p>
+                        );
+                      })}
+                      <div className="flex items-center justify-between bg-[#f3f3f3] py-3 px-5 rounded-b-2xl">
+                        <div className="flex items-center gap-3">
+                          <RiFileListLine />
+                          <p>Cart subtotal</p>
                         </div>
-                        <div className=" pb-5 border-b border-dashed">
-                          <div className="flex items-center justify-center px-1 text-[14px] mt-4">
-                            <FaCartArrowDown />
-                            <p className="flex items-center pl-2">
-                              Add <p className="font-bold px-2">${subtotal.toFixed(2)}</p>{" "}
-                              more to get free shipping!
-                            </p>
-                          </div>
-                          <Progress
-                            value={progress}
-                            className="h-4 text-[#01e281]"
-                          />
-                        </div>
-                        <div onClick={()=>{
-                          nav("/cart");
-                          window.scrollTo(0,0)
-                        }} className="flex h-12  font-bold items-center gap-2 px-4 bg-[#01e281] rounded-full  justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
-                          Process to Checkout
-                        </div>
-                      </div>{" "}
-                      <p className="bg-[#f3f3f3] h-[50px] flex items-center justify-center rounded-b-2xl italic text-[14px]">
-                        Free shipping on purchases over $999
-                      </p>
-                    </div>
-                  ) : (
-                    <div className=" h-48 p-5 ">
-                      <div className="border border-[#e5e7eb] h-full w-full flex flex-col items-center justify-center rounded-2xl">
-                        <LiaCartPlusSolid className="text-[85px] opacity-30" />
-                        Cart's empty! Let's fill it up!
+                        <p className="font-bold">${subtotal.toFixed(2)}</p>
                       </div>
+                      <div className=" pb-5 border-b border-dashed">
+                        <div className="flex items-center justify-center px-1 text-[14px] mt-4">
+                          <FaCartArrowDown />
+                          <p className="flex items-center pl-2">
+                            Add{" "}
+                            <p className="font-bold px-2">
+                              ${subtotal.toFixed(2)}
+                            </p>{" "}
+                            more to get free shipping!
+                          </p>
+                        </div>
+                        <Progress
+                          value={progress}
+                          className="h-4 text-[#01e281]"
+                        />
+                      </div>
+                      <div
+                        onClick={() => {
+                          nav("/cart");
+                          window.scrollTo(0, 0);
+                        }}
+                        className="flex h-12 cursor-pointer font-bold items-center gap-2 px-4 bg-[#01e281] rounded-full  justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                      >
+                        Process to Checkout
+                      </div>
+                    </div>{" "}
+                    <p className="bg-[#f3f3f3] h-[50px] flex items-center justify-center rounded-b-2xl italic text-[14px]">
+                      Free shipping on purchases over $999
+                    </p>
+                  </div>
+                ) : (
+                  <div className=" h-48 p-5 ">
+                    <div className="border border-[#e5e7eb] h-full w-full flex flex-col items-center justify-center rounded-2xl">
+                      <LiaCartPlusSolid className="text-[85px] opacity-30" />
+                      Cart's empty! Let's fill it up!
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="w-[1px] h-10 bg-[#a7a7a733] mt-3  ml-2"></div>
             <Link to={"/wishlist"}>
               <IoMdHeartEmpty className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
             </Link>
-            <Link to={"/login"}>
-              <GoPerson className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
-            </Link>
+            {access ? (
+              <button
+                onClick={handleLogout}
+                className="font-semibold duration-300 h-[45px] p-[10px] text-white text-[16px] border border-[#ffffff26] rounded-full hover:bg-[#01e281] hover:text-[#122d40] transition"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to={"/login"}>
+                <GoPerson className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -492,7 +551,7 @@ const Header = () => {
                     {category.map((item, i) => {
                       return (
                         <div
-                          className="p-8 flex flex-col items-center border border-[#01e2812b] hover:border-[#01e281] transition-all duration-150 rounded-[20px] group"
+                          className="p-8 cursor-pointer flex flex-col items-center border border-[#01e2812b] hover:border-[#01e281] transition-all duration-150 rounded-[20px] group"
                           key={i}
                         >
                           <img
@@ -596,17 +655,17 @@ const Header = () => {
             </ul>
           </nav>
 
-          <div className="flex text-[18px] items-center gap-2 text-white hover:text-[#01e281] transition-all duration-200">
+          <div className="flex cursor-pointer text-[18px] items-center gap-2 text-white hover:text-[#01e281] transition-all duration-200">
             News
           </div>
-          <div className="flex text-[18px] items-center gap-2 text-white hover:text-[#01e281] transition-all duration-200">
+          <div className="flex cursor-pointer text-[18px] items-center gap-2 text-white hover:text-[#01e281] transition-all duration-200">
             Contact
           </div>
           {/* <div className="flex text-[18px] items-center gap-2 text-white">
           Buy XTRA Theme
         </div> */}
         </div>
-        <div className="flex items-center gap-2 px-4 bg-[#01e281] rounded-full w-44 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+        <div className="flex cursor-pointer items-center gap-2 px-4 bg-[#01e281] rounded-full w-44 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
           <FaGift /> Daily Offers
         </div>
       </div>

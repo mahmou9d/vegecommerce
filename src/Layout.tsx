@@ -19,6 +19,7 @@ import SingleProduct from "./component/SingleProduct";
 import Checkoutcart from "./component/Checkoutcart";
 import ScrollToTop from "./ScrollToTop";
 import Ordercomplete from "./component/Ordercomplete";
+import { Toaster } from "./components/ui/toaster";
 
 type TProduct = {
   id: number;
@@ -95,6 +96,8 @@ function Layout() {
       {!hideLayout && <Footer />}
       <ScrollToTop />
       {/* </Suspense> */}
+      <Toaster
+      />
     </>
   );
 }

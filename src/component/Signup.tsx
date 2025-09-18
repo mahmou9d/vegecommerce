@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import { RootState } from "../store";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../store/authSlice";
+import { useToast } from "../hooks/use-toast";
+
 
 interface ISignup {
   username: string;
@@ -34,6 +36,7 @@ const schema = yup.object().shape({
 });
 
 const Signup = () => {
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
      const dispatch = useAppDispatch();
@@ -59,11 +62,19 @@ const onSubmit = async (data: ISignup) => {
     };
 
     await dispatch(loginUser(loginPayload)).unwrap();
-
+    toast({
+      title: "Signup Successful 🎉",
+      description: "Welcome! You have been logged in successfully.",
+    });
 
     nav("/");
   } catch (err: any) {
     console.log(err);
+     toast({
+       title: "Signup Failed ❌",
+       description: err?.message || "Something went wrong, please try again.",
+       variant: "destructive",
+     });
   }
 };
   return (
