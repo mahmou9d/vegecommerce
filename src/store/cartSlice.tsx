@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { refreshAccessToken } from "./authSlice";
+import { error } from "console";
 
 type CartItems = {
   product_id: number;
@@ -274,7 +275,7 @@ export const Checkout = createAsyncThunk(
 
       if (res.status === 401) {
         try {
-          const refreshRes = await dispatch(refreshAccessToken()).unwrap();
+          const refreshRes = await dispatch(refreshAccessToken()).unwrap().catch((error)=>console.log(error));
           token = refreshRes.access;
 
           res = await fetch(
