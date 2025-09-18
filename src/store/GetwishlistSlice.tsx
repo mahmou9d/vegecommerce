@@ -35,28 +35,34 @@ export const GetWishlist = createAsyncThunk(
       const state = getState() as RootState;
       let token = state.auth.access;
 
-      let res = await fetch("/api/wishlist/items/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        // body: JSON.stringify(payload),
-      });
+      let res = await fetch(
+        "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          // body: JSON.stringify(payload),
+        }
+      );
 
       if (res.status === 401) {
         try {
           const refreshRes = await dispatch(refreshAccessToken()).unwrap();
           token = refreshRes.access;
 
-          res = await fetch("/api/wishlist/items/", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            // body: JSON.stringify(payload),
-          });
+          res = await fetch(
+            "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` }),
+              },
+              // body: JSON.stringify(payload),
+            }
+          );
         } catch (refreshErr) {
           return rejectWithValue("Session expired, please login again.");
         }
@@ -75,7 +81,33 @@ export const GetWishlist = createAsyncThunk(
     }
   }
 );
+// export const GetWishlist = createAsyncThunk(
+//   "wishlist/GetWishlist",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const res = await fetch(
+//         "https://e-commerce-web-production-ead4.up.railway.app/api/products/",
+//         {
+//           method: "GET",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
 
+//       if (!res.ok) {
+//         throw new Error(`HTTP error! status: ${res.status}`);
+//       }
+
+//       const data = await res.json();
+//       console.log(data, "data");
+//       return data;
+//     } catch (error: any) {
+//       console.log(error, "errorcart/add/");
+//       return rejectWithValue(error.message);
+//     }
+//   }
+// );
 const GetwishlistSlice = createSlice({
   name: "getwishlist",
   initialState,
