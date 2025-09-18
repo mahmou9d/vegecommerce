@@ -86,7 +86,7 @@ interface Product {
 }
 const Header = () => {
   const dispatch = useAppDispatch();
-  const { items, total } = useAppSelector((state) => state.cart);
+  const { items, total } = useAppSelector((state) => state?.cart);
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
@@ -352,7 +352,7 @@ const Header = () => {
               </div>
             </div>
             <div className="relative group/item">
-              <Link to={"/cart"}>
+
                 <FaBasketShopping className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
                 <span className="absolute right-[-25%] top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center">
                   {items.length}
@@ -373,7 +373,11 @@ const Header = () => {
                           return (
                             <div
                               key={i}
-                              className="p-2 border flex justify-between items-center mt-3 border-slate-200"
+                              className="p-2 border flex justify-between items-center mt-3 border-slate-200 cursor-pointer"
+                              onClick={() => {
+                                nav(`/singleProduct/${item.product_id}`);
+                                window.scrollTo(0, 0);
+                              }}
                             >
                               <div className="flex gap-4">
                                 <img
@@ -418,7 +422,10 @@ const Header = () => {
                             className="h-4 text-[#01e281]"
                           />
                         </div>
-                        <div className="flex h-12  font-bold items-center gap-2 px-4 bg-[#01e281] rounded-full  justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+                        <div onClick={()=>{
+                          nav("/cart");
+                          window.scrollTo(0,0)
+                        }} className="flex h-12  font-bold items-center gap-2 px-4 bg-[#01e281] rounded-full  justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
                           Process to Checkout
                         </div>
                       </div>{" "}
@@ -435,7 +442,6 @@ const Header = () => {
                     </div>
                   )}
                 </div>
-              </Link>
             </div>
 
             <div className="w-[1px] h-10 bg-[#a7a7a733] mt-3  ml-2"></div>
@@ -481,8 +487,8 @@ const Header = () => {
                 </a>
 
                 {/* الدروب داون */}
-                <ul className="absolute  p-12 top-full left-0 ml-[-268%] w-[169vh] opacity-0 invisible transition-all duration-300 bg-[#122d40] shadow-lg rounded-[15px] group-hover:opacity-100 group-hover:visible">
-                  <div className="flex container justify-between ">
+                <ul className="absolute  p-12 top-full left-0 ml-[-205%] w-[169vh] opacity-0 invisible transition-all duration-300 bg-[#122d40] shadow-lg rounded-[15px] group-hover:opacity-100 group-hover:visible">
+                  <div className="flex container justify-between gap-7">
                     {category.map((item, i) => {
                       return (
                         <div
@@ -519,7 +525,7 @@ const Header = () => {
                 </a>
 
                 {/* الدروب داون */}
-                <ul className="absolute p-6  top-full left-0 ml-[-300%] w-[75vh] opacity-0 invisible transition-all duration-300 bg-[#122d40] shadow-lg rounded-[15px] group-hover:opacity-100 group-hover:visible">
+                <ul className="absolute p-6  top-full left-0 ml-[-190%] w-[75vh] opacity-0 invisible transition-all duration-300 bg-[#122d40] shadow-lg rounded-[15px] group-hover:opacity-100 group-hover:visible">
                   <div className="container flex justify-between">
                     <div>
                       <h1 className="font-bold text-green-400 mb-4 text-lg ">
@@ -545,7 +551,7 @@ const Header = () => {
                         );
                       })}
                     </div>
-                    <div className="w-[1px] bg-[#a7a7a733] "></div>
+                    <div className="w-[1px] bg-[#a7a7a733] mr-3"></div>
                     <div>
                       <h1 className="font-bold text-green-400 mb-4 text-lg">
                         Top Tags

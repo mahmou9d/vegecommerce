@@ -92,7 +92,7 @@ const Blog = () => {
         </div>
         <img
           className="w-[40%] rounded-t-3xl"
-          src="/public/images/man-supermarket-as-shop-assistant-20446866.webp"
+          src="/images/man-supermarket-as-shop-assistant-20446866.webp"
           alt=""
         />
       </div>
@@ -102,7 +102,7 @@ const Blog = () => {
           <span
             className="text-[#01e281] pl-2 relative inline-block  
     after:content-[''] after:absolute after:bottom-1 after:left-[5px]
-    after:w-[30vh] after:h-[30%]
+    after:w-[33vh] after:h-[30%]
     after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
             {" "}
