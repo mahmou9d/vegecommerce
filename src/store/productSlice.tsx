@@ -31,12 +31,15 @@ export const productUser = createAsyncThunk(
   "product/productUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("/api/products/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        "https://e-commerce-web-production-ead4.up.railway.app/api/products/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
