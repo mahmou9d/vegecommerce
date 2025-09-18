@@ -200,14 +200,17 @@ export const GetToCart = createAsyncThunk(
       const state = getState() as RootState;
       let token = state.auth.access;
 
-      let res = await fetch("/api/cart/items/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        // body: JSON.stringify(payload),
-      });
+      let res = await fetch(
+        "https://e-commerce-web-production-ead4.up.railway.app/api/cart/items/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+          // body: JSON.stringify(payload),
+        }
+      );
 
       if (res.status === 401) {
         try {
