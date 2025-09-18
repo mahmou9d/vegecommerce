@@ -31,6 +31,7 @@ export const WishlistItems = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify({ product_id }),
+          credentials: "include",
         }
       );
 
@@ -48,6 +49,7 @@ export const WishlistItems = createAsyncThunk(
                 ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify({ product_id }),
+              credentials: "include",
             }
           );
         } catch {
@@ -83,6 +85,7 @@ export const WishlistRemove = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify({ product_id }),
+          credentials: "include",
         }
       );
 
@@ -101,6 +104,7 @@ export const WishlistRemove = createAsyncThunk(
                 ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify({ product_id }),
+              credentials: "include",
             }
           );
         } catch (refreshErr) {
