@@ -44,6 +44,7 @@ export const AddToCart = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 
@@ -61,6 +62,7 @@ export const AddToCart = createAsyncThunk(
                 Authorization: token ? `Bearer ${token}` : "",
               },
               body: JSON.stringify(payload),
+              credentials: "include",
             }
           );
         } catch (refreshErr) {
@@ -100,6 +102,7 @@ export const RemoveCart = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 
@@ -117,6 +120,7 @@ export const RemoveCart = createAsyncThunk(
                 Authorization: token ? `Bearer ${token}` : "",
               },
               body: JSON.stringify(payload),
+              credentials: "include",
             }
           );
         } catch (refreshErr) {
@@ -156,6 +160,7 @@ export const EditCart = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 
@@ -173,6 +178,7 @@ export const EditCart = createAsyncThunk(
                 Authorization: token ? `Bearer ${token}` : "",
               },
               body: JSON.stringify(payload),
+              credentials: "include",
             }
           );
         } catch (refreshErr) {
@@ -217,14 +223,17 @@ export const GetToCart = createAsyncThunk(
           const refreshRes = await dispatch(refreshAccessToken()).unwrap();
           token = refreshRes.access;
 
-          res = await fetch("/api/cart/items/", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-            // body: JSON.stringify(payload),
-          });
+          res = await fetch(
+            "https://e-commerce-web-production-ead4.up.railway.app/api/cart/items/",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: token ? `Bearer ${token}` : "",
+              },
+              // body: JSON.stringify(payload),
+            }
+          );
         } catch (refreshErr) {
           return rejectWithValue("Session expired, please login again.");
         }
@@ -259,6 +268,7 @@ export const Checkout = createAsyncThunk(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 
@@ -276,6 +286,7 @@ export const Checkout = createAsyncThunk(
                 Authorization: token ? `Bearer ${token}` : "",
               },
               body: JSON.stringify(payload),
+              credentials: "include",
             }
           );
         } catch (refreshErr) {
