@@ -101,9 +101,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="flex justify-between mt-10 py-7 px-10 rounded-t-[50px] border border-[#9fb6cb33]">
-            <h1 className="text-[#dddddde6]">
-              With by mahmoud mohamed. Copyright © 2025 Xtra Theme.
-            </h1>
+            <p className="text-lg font-bold text-[#dddddde6]">
+              <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 bg-clip-text text-transparent mr-1">
+                Frontend: Mahmoud Mohamed
+              </span>
+              .
+              <span className="bg-gradient-to-r from-blue-400 via-sky-500 to-indigo-500 bg-clip-text text-transparent italic mx-1">
+                Backend: Mohamed Fouad
+              </span>
+              . Copyright © 2025 Xtra Theme.
+            </p>
             <img className="w-[260px]" src="/images/22.png" alt="" />
           </div>
         </div>
