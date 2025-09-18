@@ -116,6 +116,7 @@ export const WishlistRemove = createAsyncThunk(
       console.log("WishlistRemove data:", data);
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

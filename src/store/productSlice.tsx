@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 type TProduct = {
-  id?:number
+  id?: number;
   product_id?: number;
   name: string;
   description: string;
@@ -31,15 +31,12 @@ export const productUser = createAsyncThunk(
   "product/productUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch(
-        "/api/products/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }
-      );
+      const res = await fetch("/api/products/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -49,6 +46,7 @@ export const productUser = createAsyncThunk(
       console.log(data, "data");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -57,8 +55,7 @@ export const productUser = createAsyncThunk(
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(productUser.pending, (state) => {
       state.loading = "pending";
@@ -74,6 +71,5 @@ const productSlice = createSlice({
     });
   },
 });
-
 
 export default productSlice.reducer;

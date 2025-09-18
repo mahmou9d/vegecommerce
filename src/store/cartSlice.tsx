@@ -11,7 +11,6 @@ type CartItems = {
   img_url: string;
 };
 
-
 interface CartState {
   items: CartItems[];
   total: number;
@@ -77,6 +76,7 @@ export const AddToCart = createAsyncThunk(
       console.log(data, "datrwtrqerhrehrtqta");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -132,6 +132,7 @@ export const RemoveCart = createAsyncThunk(
       console.log(data, "data");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -187,6 +188,7 @@ export const EditCart = createAsyncThunk(
       console.log(data, "data");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -233,16 +235,14 @@ export const GetToCart = createAsyncThunk(
       console.log(data, "data");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
 );
 export const Checkout = createAsyncThunk(
   "cart/Checkout",
-  async (
-    payload,
-    { rejectWithValue, getState, dispatch }
-  ) => {
+  async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const state = getState() as RootState;
       let token = state.auth.access;
@@ -288,6 +288,7 @@ export const Checkout = createAsyncThunk(
       console.log(data, "datrwtrqerhrehrtqta");
       return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -303,7 +304,7 @@ const cartSlice = createSlice({
     });
     builder.addCase(AddToCart.fulfilled, (state, action) => {
       state.loading = "succeeded";
-  state.items = action.payload.message;
+      state.items = action.payload.message;
     });
     builder.addCase(AddToCart.rejected, (state, action) => {
       state.loading = "failed";

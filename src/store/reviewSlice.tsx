@@ -11,7 +11,6 @@ interface TReview {
   product: string; // 👈 خليه string
 }
 
-
 interface ReviewState {
   items: TReview[];
   loading: "idle" | "pending" | "succeeded" | "failed";
@@ -76,12 +75,14 @@ export const GetReview = createAsyncThunk(
 );
 export const AddReviews = createAsyncThunk(
   "review/AddReviews",
-  async (payload: { product_id: number; comment: string; rating:number; }, { rejectWithValue, getState, dispatch }) => {
-    
+  async (
+    payload: { product_id: number; comment: string; rating: number },
+    { rejectWithValue, getState, dispatch }
+  ) => {
     try {
       const state = getState() as RootState;
       let token = state.auth.access;
-console.log(payload , "handleAddReviews");
+      console.log(payload, "handleAddReviews");
       let res = await fetch(
         "https://e-commerce-web-production-ead4.up.railway.app/api/reviews/add/",
         {
@@ -131,11 +132,11 @@ console.log(payload , "handleAddReviews");
         );
       }
 
-
       const data = await res.json();
       console.log(data, "handleAddReviews");
-      return data; 
+      return data;
     } catch (error: any) {
+      console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -157,18 +158,18 @@ const reviewSlice = createSlice({
       state.loading = "failed";
       state.error = (action.payload as string) || "Unexpected error";
     });
-        builder.addCase(AddReviews.pending, (state) => {
-          state.loading = "pending";
-          state.error = null;
-        });
-        builder.addCase(AddReviews.fulfilled, (state, action) => {
-          state.loading = "succeeded";
-          state.items = action.payload || [];
-        });
-        builder.addCase(AddReviews.rejected, (state, action) => {
-          state.loading = "failed";
-          state.error = (action.payload as string) || "Unexpected error";
-        });
+    builder.addCase(AddReviews.pending, (state) => {
+      state.loading = "pending";
+      state.error = null;
+    });
+    builder.addCase(AddReviews.fulfilled, (state, action) => {
+      state.loading = "succeeded";
+      state.items = action.payload || [];
+    });
+    builder.addCase(AddReviews.rejected, (state, action) => {
+      state.loading = "failed";
+      state.error = (action.payload as string) || "Unexpected error";
+    });
   },
 });
 
