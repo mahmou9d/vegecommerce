@@ -35,7 +35,8 @@ export const AddToCart = createAsyncThunk(
     try {
       const state = getState() as RootState;
       let token = state.auth.access;
-
+      console.log(token)
+if (!token) return rejectWithValue("User not logged in");
       let res = await fetch(
         "https://e-commerce-web-production-ead4.up.railway.app/api/cart/add/",
         {
