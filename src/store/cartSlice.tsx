@@ -59,7 +59,7 @@ export const AddToCart = createAsyncThunk(
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify(payload),
               credentials: "include",
@@ -117,7 +117,7 @@ export const RemoveCart = createAsyncThunk(
               method: "DELETE",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify(payload),
               credentials: "include",
@@ -175,7 +175,7 @@ export const EditCart = createAsyncThunk(
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify(payload),
               credentials: "include",
@@ -229,7 +229,7 @@ export const GetToCart = createAsyncThunk(
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               // body: JSON.stringify(payload),
             }
@@ -283,7 +283,7 @@ export const Checkout = createAsyncThunk(
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify(payload),
               credentials: "include",

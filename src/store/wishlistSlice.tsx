@@ -45,7 +45,7 @@ export const WishlistItems = createAsyncThunk(
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify({ product_id }),
             }
@@ -98,7 +98,7 @@ export const WishlistRemove = createAsyncThunk(
               method: "DELETE",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify({ product_id }),
             }

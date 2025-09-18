@@ -48,7 +48,7 @@ export const GetReview = createAsyncThunk(
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
+              ...(token && { Authorization: `Bearer ${token}` }),
             },
             // body: JSON.stringify(payload),
           });
@@ -110,7 +110,7 @@ export const AddReviews = createAsyncThunk(
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
+                ...(token && { Authorization: `Bearer ${token}` }),
               },
               body: JSON.stringify({
                 product_id: payload.product_id,

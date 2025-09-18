@@ -53,7 +53,7 @@ export const GetWishlist = createAsyncThunk(
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
+              ...(token && { Authorization: `Bearer ${token}` }),
             },
             // body: JSON.stringify(payload),
           });
