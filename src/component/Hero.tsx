@@ -55,16 +55,6 @@ export const category = [
     title2: "Foods",
   },
 ];
-// width: calc(100% + 10px);
-// position: absolute;
-// content: '';
-// height: 35%;
-// bottom: 0;
-// left: -5px;
-// background: #111;
-// z-index: -1;
-// opacity: .2;
-// border-radius: 4px;
 const Hero = () => {
   return (
     <div>

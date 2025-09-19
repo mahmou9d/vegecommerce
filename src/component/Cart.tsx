@@ -25,22 +25,30 @@ import { useToast } from "../hooks/use-toast";
 
 const Cart = () => {
   const { toast } = useToast();
-  const nav =useNavigate()
+  const nav = useNavigate();
   const dispatch = useAppDispatch();
+
+  // Get products state from Redux
   const { products, loading, error } = useAppSelector(
     (state: RootState) => state.product
   );
-  console.log(products, "ppppppppppppppppppppppp");
+
+  // Fetch products if empty
   useEffect(() => {
     if (products.length === 0) {
       dispatch(productUser());
     }
   }, [dispatch, products.length]);
+
+  // Get cart state from Redux
   const { items, total } = useAppSelector((state) => state.cart);
+
+  // Fetch cart on mount
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
-  console.log(items);
+
+  // Update item quantity in cart
   const updateQuantity = (
     product_id: number,
     type: "inc" | "dec",
@@ -48,6 +56,7 @@ const Cart = () => {
   ) => {
     const newQty =
       type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
+
     dispatch(EditCart({ product_id, quantity: newQty }))
       .unwrap()
       .then(() => {
@@ -60,6 +69,8 @@ const Cart = () => {
         });
       });
   };
+
+  // Remove item from cart
   const removeItem = (product_id: number) => {
     dispatch(RemoveCart({ product_id }))
       .unwrap()
@@ -68,19 +79,20 @@ const Cart = () => {
         toast({
           title: "Removed from cart",
           description: "The item was successfully removed.",
-          // variant: "destructive",
         });
       });
   };
 
+  // Free shipping progress logic
   const limit = 1000;
   const subtotal = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
     : 0;
   const progress = Math.min((subtotal / limit) * 100, 100);
+
   return (
     <div>
-      {/* Header */}
+      {/* ================= Page Header ================= */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Cart</h1>
@@ -92,44 +104,48 @@ const Cart = () => {
         </div>
       </div>
 
+      {/* ================= If Cart Has Items ================= */}
       {Array.isArray(items) && items?.length !== 0 ? (
         <div>
-          {/* Steps */}
+          {/* Checkout steps indicator */}
           <div className="py-24 container mx-auto flex justify-center gap-x-16">
             <Link
               to={"/cart"}
               className="flex items-center justify-between cursor-pointer"
             >
-              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 1
               </h1>
-              <h1 className="text-[25px] font-medium">Shoping cart</h1>
+              <h1 className="text-[25px] font-medium">Shopping cart</h1>
             </Link>
 
-            <h4 className=" flex items-center opacity-50">
+            <h4 className="flex items-center opacity-50">
               <FaArrowRight className="text-[24px]" />
             </h4>
+
             <Link
               to={"/checkout"}
               className="flex items-center justify-center opacity-50 cursor-pointer"
             >
-              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 2
               </h1>
               <h1 className="text-[25px] font-medium">Checkout details</h1>
             </Link>
-            <h4 className=" flex items-center opacity-50">
+
+            <h4 className="flex items-center opacity-50">
               <FaArrowRight className="text-[24px]" />
             </h4>
+
             <div className="flex items-center justify-center opacity-50">
-              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 3
               </h1>
               <h1 className="text-[25px] font-medium">Order complete</h1>
             </div>
           </div>
 
-          {/* Table */}
+          {/* ================= Cart Table ================= */}
           <div className="p-6 container mx-auto">
             <Table>
               <TableHeader>
@@ -146,25 +162,18 @@ const Cart = () => {
               <TableBody>
                 {items.map((item) => (
                   <TableRow key={item.product_id}>
+                    {/* Remove item button */}
                     <TableCell>
                       <Button
                         variant="ghost"
                         onClick={() => removeItem(item.product_id)}
                         className="hover-effect text-red-500"
                       >
-                        <IoClose
-                          style={{
-                            width: "2rem",
-                            height: "2rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "0.5rem",
-                            cursor: "pointer",
-                          }}
-                        />
+                        <IoClose style={{ width: "2rem", height: "2rem" }} />
                       </Button>
                     </TableCell>
+
+                    {/* Product image */}
                     <TableCell className="cursor-pointer gap-3">
                       <img
                         src={item.img_url}
@@ -176,6 +185,8 @@ const Cart = () => {
                         }}
                       />
                     </TableCell>
+
+                    {/* Product details */}
                     <TableCell
                       className="flex flex-col p-7 gap-3 cursor-pointer"
                       onClick={() => {
@@ -188,7 +199,11 @@ const Cart = () => {
                       </p>
                       <p className="text-sm text-gray-500">SKU: SKU_1192</p>
                     </TableCell>
+
+                    {/* Price */}
                     <TableCell className="text-[16px]">${item.price}</TableCell>
+
+                    {/* Quantity controls */}
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Button
@@ -201,7 +216,7 @@ const Cart = () => {
                               item.quantity
                             )
                           }
-                          className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281]  rounded-full text-[18px] w-12 h-12"
+                          className="bg-[#f9f9f9] text-[#01e281] hover:text-[#122d40] hover:bg-[#01e281] rounded-full w-12 h-12"
                         >
                           −
                         </Button>
@@ -218,19 +233,21 @@ const Cart = () => {
                               item.quantity
                             )
                           }
-                          className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281] rounded-full text-[18px] w-12 h-12"
+                          className="bg-[#f9f9f9] text-[#01e281] hover:text-[#122d40] hover:bg-[#01e281] rounded-full w-12 h-12"
                         >
                           +
                         </Button>
                       </div>
                     </TableCell>
+
+                    {/* Subtotal per item */}
                     <TableCell className="text-[16px]">
                       ${(Number(item.price) * item.quantity).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))}
 
-                {/* صف مستقل للزر */}
+                {/* Continue shopping button */}
                 <TableRow>
                   <TableCell colSpan={6} className="text-left">
                     <div className="flex justify-end">
@@ -239,7 +256,7 @@ const Cart = () => {
                           nav("/shop");
                           window.scrollTo(0, 0);
                         }}
-                        className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                        className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
                       >
                         Continue shopping
                       </Button>
@@ -248,42 +265,46 @@ const Cart = () => {
                 </TableRow>
               </TableBody>
             </Table>
-
-            {/* Footer Buttons */}
           </div>
-          <div className="bg-[#f1f2f6] container mx-auto w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
-            <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
+
+          {/* ================= Cart Totals ================= */}
+          <div className="bg-[#f1f2f6] container mx-auto w-[40%] p-8 rounded-[50px] flex flex-col gap-5 pb-14">
+            <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
               Cart totals
               <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
             </h2>
+
             <div>
-              <div className="border border-[#a7a7a733] ">
-                <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
-                  <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
+              {/* Cart summary list */}
+              <div className="border border-[#a7a7a733]">
+                <div className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]">
+                  <h1 className="w-3/4 border-r border-[#a7a7a733]">
                     <h2 className="p-6 text-[16px] font-bold">Product</h2>
                   </h1>
                   <h2 className="w-[28%] text-[16px] font-bold p-6">
                     Subtotal
                   </h2>
                 </div>
-                {items.map((item, i) => {
-                  return (
-                    <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
-                      <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                        <h2 className="p-6 text-[16px] font-normal">
-                          {item.product_name}
-                          <span className=" text-[16px] font-bold">
-                            × {item.quantity}
-                          </span>
-                        </h2>
-                      </h1>
-                      <h2 className="w-[28%] text-[16px] font-normal p-6">
-                        ${item.price}
+
+                {items.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]"
+                  >
+                    <h1 className="w-3/4 border-r border-[#a7a7a733]">
+                      <h2 className="p-6 text-[16px] font-normal">
+                        {item.product_name}
+                        <span className="font-bold"> × {item.quantity}</span>
                       </h2>
-                    </div>
-                  );
-                })}
-                <div className="flex  border-b border-[#a7a7a733] p-5">
+                    </h1>
+                    <h2 className="w-[28%] text-[16px] font-normal p-6">
+                      ${item.price}
+                    </h2>
+                  </div>
+                ))}
+
+                {/* Subtotal & total */}
+                <div className="flex border-b border-[#a7a7a733] p-5">
                   <h1 className="w-1/4 p-5 text-[16px] font-bold">Subtotal</h1>
                   <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
                 </div>
@@ -292,7 +313,9 @@ const Cart = () => {
                   <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
                 </div>
               </div>
-              <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
+
+              {/* Free shipping progress bar */}
+              <div className="pb-5 border-b border-dashed border-[#cdc7c7]">
                 <div className="flex items-center pb-3 px-1 text-[18px] mt-4">
                   <FaCartArrowDown />
                   <p className="flex items-center pl-2">
@@ -302,23 +325,26 @@ const Cart = () => {
                 </div>
                 <Progress value={progress} className="h-4 text-[#01e281]" />
               </div>
+
+              {/* Checkout button */}
               <div className="flex justify-end pt-5">
                 <Button
                   onClick={() => {
                     nav("/checkout");
                     window.scrollTo(0, 0);
                   }}
-                  className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                  className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
                 >
-                  Process to Checkout
+                  Proceed to Checkout
                 </Button>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className=" h-48 p-5 container mx-auto mb-[70rem]">
-          <div className=" flex flex-col items-center justify-center rounded-2xl">
+        /* ================= If Cart is Empty ================= */
+        <div className="h-48 p-5 container mx-auto mb-[70rem]">
+          <div className="flex flex-col items-center justify-center rounded-2xl">
             <LiaCartPlusSolid className="text-[240px] opacity-30" />
             <h1 className="text-[36px] font-bold">
               Looks like your cart is empty!
@@ -326,23 +352,27 @@ const Cart = () => {
             <h1 className="text-[20px] opacity-50">
               Time to start your shopping
             </h1>
-            <div className="bg-[#f1f2f6] container mx-auto mt-10  p-8 rounded-[50px] flex flex-col justify-center  gap-5  ">
-              <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
+
+            {/* Suggested products */}
+            <div className="bg-[#f1f2f6] container mx-auto mt-10 p-8 rounded-[50px] flex flex-col gap-5">
+              <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
                 You may be interested in ...
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
               </h2>
               <div className="flex justify-between my-10">
-                {products.slice(0, 4).map((product, i) => {
-                  return <Product key={i} item={product} />;
-                })}
+                {products.slice(0, 4).map((product, i) => (
+                  <Product key={i} item={product} />
+                ))}
               </div>
             </div>
+
+            {/* Return to shop button */}
             <Button
               onClick={() => {
                 nav("/checkout");
                 window.scrollTo(0, 0);
               }}
-              className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center  hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+              className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
             >
               Return to shop
             </Button>

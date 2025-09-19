@@ -1,13 +1,29 @@
 import { TiHome } from "react-icons/ti";
-import Product from "./Product"
+import Product from "./Product";
 import { IoIosArrowForward } from "react-icons/io";
 import { Rating, RatingButton } from "../components/ui/shadcn-io/rating";
 import { Button } from "../components/ui/button";
 import { Slider } from "../components/ui/slider";
 import { useEffect, useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
 
+// -----------------------------
+// Product Type
+// -----------------------------
 type TProduct = {
   id: number;
   name: string;
@@ -22,6 +38,10 @@ type TProduct = {
   average_rating: number;
   img_url: string;
 };
+
+// -----------------------------
+// Categories List
+// -----------------------------
 const list = [
   "Bestsellers",
   "Breads & Sweats",
@@ -33,46 +53,70 @@ const list = [
   "Supermarket",
   "Uncategorized",
 ];
-const Categories = ({ products, title }: { products:TProduct[], title:string}) => {
-    // const [selectedValue, setSelectedValue] = useState("8 Products");
-    console.log(products,"uihlbbbbbbbbbbbbbbbbbbbbbbbbbb")
-      const [range, setRange] = useState([0, 100]);
-const [filteredProducts, setFilteredProducts] = useState<TProduct[]>(products);
-useEffect(() => {
-  setFilteredProducts(products);
-}, [products]);
 
+// -----------------------------
+// Categories Component
+// -----------------------------
+const Categories = ({
+  products,
+  title,
+}: {
+  products: TProduct[];
+  title: string;
+}) => {
+  // -----------------------------
+  // States
+  // -----------------------------
+  const [range, setRange] = useState([0, 100]);
+  const [filteredProducts, setFilteredProducts] =
+    useState<TProduct[]>(products);
+  const [perPage, setPerPage] = useState(8);
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState("Default");
 
-        const [perPage, setPerPage] = useState(8);
+  // -----------------------------
+  // Effects
+  // -----------------------------
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
 
-        const [page, setPage] = useState(1);
+  // -----------------------------
+  // Pagination logic
+  // -----------------------------
+  const totalPages = Math.ceil(products.length / perPage);
+  const startIndex = (page - 1) * perPage;
+  const endIndex = startIndex + perPage;
 
-         const totalPages = Math.ceil(products.length / perPage);
-        const startIndex = (page - 1) * perPage;
-        const endIndex = startIndex + perPage;
+  const visibleProducts = filteredProducts.slice(startIndex, endIndex);
 
-        const visibleProducts = filteredProducts.slice(startIndex, endIndex);
-       let showingText = "";
-       if (visibleProducts.length === 0) {
-         showingText = "No results";
-       } else if (products.length <= perPage) {
-         showingText = `Showing all ${products.length} results`;
-       } else {
-         showingText = `Showing ${startIndex + 1}–${
-           startIndex + visibleProducts.length
-         } of ${products.length} results`;
-       }
-const [sortBy, setSortBy] = useState("Default");
+  let showingText = "";
+  if (visibleProducts.length === 0) {
+    showingText = "No results";
+  } else if (products.length <= perPage) {
+    showingText = `Showing all ${products.length} results`;
+  } else {
+    showingText = `Showing ${startIndex + 1}–${
+      startIndex + visibleProducts.length
+    } of ${products.length} results`;
+  }
 
-const sortedProducts = [...products].sort((a, b) => {
-  if (sortBy === "Top Rated") return b.average_rating - a.average_rating;
-  if (sortBy === "Popular") return b.stock - a.stock; // مثال
-  if (sortBy === "Featured") return a.discount - b.discount; // مثال
-  return 0; // Default
-});
+  // -----------------------------
+  // Sorting logic
+  // -----------------------------
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortBy === "Top Rated") return b.average_rating - a.average_rating;
+    if (sortBy === "Popular") return b.stock - a.stock;
+    if (sortBy === "Featured") return a.discount - b.discount;
+    return 0;
+  });
 
+  // -----------------------------
+  // Render
+  // -----------------------------
   return (
     <div>
+      {/* Page Header */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">{title}</h1>
@@ -85,19 +129,24 @@ const sortedProducts = [...products].sort((a, b) => {
           </div>
         </div>
       </div>
+
       <div>
         <div className="flex container mx-auto pt-10">
-          <div className=" container mx-auto">
+          {/* Left: Products Section */}
+          <div className="container mx-auto">
             <div className="px-5">
               <h1 className="text-[36px] font-bold mb-5">{title}</h1>
+
+              {/* Controls: Per page & Sorting */}
               <div className="flex justify-between pb-5">
                 {showingText}
                 <div className="flex gap-3">
+                  {/* Select products per page */}
                   <Select
                     defaultValue="8"
                     onValueChange={(value) => {
                       setPerPage(Number(value));
-                      setPage(1); // نرجع لأول صفحة
+                      setPage(1); // Reset to first page
                     }}
                   >
                     <SelectTrigger className="w-[195px] h-[50px] rounded-3xl px-4 py-2 border-0">
@@ -110,6 +159,8 @@ const sortedProducts = [...products].sort((a, b) => {
                       <SelectItem value="48">48 Products</SelectItem>
                     </SelectContent>
                   </Select>
+
+                  {/* Select sorting */}
                   <Select
                     onValueChange={(value) => setSortBy(value)}
                     defaultValue="Default"
@@ -127,15 +178,20 @@ const sortedProducts = [...products].sort((a, b) => {
                 </div>
               </div>
             </div>
+
+            {/* Products Grid */}
             <div className="flex flex-col p-[10px] ">
               <div className="flex flex-wrap p-[10px] justify-between gap-y-12">
                 {visibleProducts.map((product, i) => {
                   return <Product key={i} item={product} />;
                 })}
               </div>
+
+              {/* Pagination */}
               {products.length > perPage && (
                 <Pagination>
                   <PaginationContent>
+                    {/* Previous */}
                     {page > 1 && (
                       <PaginationItem>
                         <PaginationPrevious
@@ -146,6 +202,7 @@ const sortedProducts = [...products].sort((a, b) => {
                       </PaginationItem>
                     )}
 
+                    {/* Page Numbers */}
                     {Array.from({ length: totalPages }).map((_, i) => (
                       <PaginationItem key={i}>
                         <PaginationLink
@@ -161,6 +218,7 @@ const sortedProducts = [...products].sort((a, b) => {
                       </PaginationItem>
                     ))}
 
+                    {/* Next */}
                     {page < totalPages && (
                       <PaginationItem>
                         <PaginationNext
@@ -175,7 +233,10 @@ const sortedProducts = [...products].sort((a, b) => {
               )}
             </div>
           </div>
+
+          {/* Right: Sidebar */}
           <div className="flex flex-col gap-10">
+            {/* Filter by price */}
             <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center items-center gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Filter by price
@@ -201,13 +262,15 @@ const sortedProducts = [...products].sort((a, b) => {
                       Number(item.final_price) <= range[1]
                   );
                   setFilteredProducts(newFiltered);
-                  setPage(1); // نرجع لأول صفحة بعد الفلترة
+                  setPage(1);
                 }}
                 className="w-3/4 text-[16px] rounded-full bg-[#01e281] hover:bg-[#122d40] text-[#122d40] hover:text-[#01e281] font-bold"
               >
                 Filter
               </Button>
             </div>
+
+            {/* Product categories (list) */}
             <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Product categories
@@ -223,6 +286,8 @@ const sortedProducts = [...products].sort((a, b) => {
                 })}
               </div>
             </div>
+
+            {/* Product categories (with images) */}
             <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Product categories
@@ -231,30 +296,28 @@ const sortedProducts = [...products].sort((a, b) => {
               <div>
                 {products.map((item, i) => {
                   return (
-                    <div className="">
-                      <div
-                        key={i}
-                        className="p-2  flex items-center mt-3 border-b-slate-200"
-                      >
-                        <img
-                          className="w-28 pr-2 rounded-3xl"
-                          src={item.img_url}
-                          alt={item.name}
-                        />
-                        <div className="">
-                          <p className="font-extrabold ">{item.name}</p>
-                          <p className="font-extrabold py-2">
-                            <Rating value={item.average_rating} readOnly>
-                              {Array.from({ length: 5 }).map((_, index) => (
-                                <RatingButton
-                                  className="text-yellow-500 text-[14px]"
-                                  key={index}
-                                />
-                              ))}
-                            </Rating>
-                          </p>
-                          <p className="text-[14px]">{item.description}</p>
-                        </div>
+                    <div
+                      key={i}
+                      className="p-2 flex items-center mt-3 border-b-slate-200"
+                    >
+                      <img
+                        className="w-28 pr-2 rounded-3xl"
+                        src={item.img_url}
+                        alt={item.name}
+                      />
+                      <div>
+                        <p className="font-extrabold">{item.name}</p>
+                        <p className="font-extrabold py-2">
+                          <Rating value={item.average_rating} readOnly>
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <RatingButton
+                                className="text-yellow-500 text-[14px]"
+                                key={index}
+                              />
+                            ))}
+                          </Rating>
+                        </p>
+                        <p className="text-[14px]">{item.description}</p>
                       </div>
                     </div>
                   );
@@ -268,4 +331,4 @@ const sortedProducts = [...products].sort((a, b) => {
   );
 };
 
-export default Categories
+export default Categories;

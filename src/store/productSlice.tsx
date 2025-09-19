@@ -46,10 +46,10 @@ export const productUser = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

@@ -35,10 +35,9 @@ export const loginUser = createAsyncThunk(
       }
 
       const data = await res.json();
-      alert(data);
       return data;
     } catch (error: any) {
-      console.log(error, "errorlogin");
+      // console.log(error, "errorlogin");
       return rejectWithValue(error.message);
     }
   }

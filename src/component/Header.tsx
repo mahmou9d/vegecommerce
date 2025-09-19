@@ -91,13 +91,13 @@ const Header = () => {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
     const { access } = useAppSelector((state) => state?.auth);
-    console.log(access,"ebtetrr")
+    // console.log(access,"ebtetrr")
   const { items, total } = useAppSelector((state) => state?.cart);
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
 
-  console.log(items.length);
+  // console.log(items.length);
   const [cart, setCart] = useState<Product[]>([]);
     const { items:items2, loading, error } = useAppSelector(
       (state) => state.Getwishlists
@@ -107,43 +107,32 @@ const Header = () => {
   const subquantity = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.quantity), 0)
     : 0;
-    console.log(subquantity, "subquantity");
+    // console.log(subquantity, "subquantity");
   const subtotal = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
     : 0;
-  // const freeShippingThreshold = 999;
-  // const remaining = freeShippingThreshold - subtotal;
-  // const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
   const progress = Math.min((subtotal / limit) * 100, 100);
-
-  // const addToCart = (product: Product) => {
-  //   setCart([...cart, product]);
-  // };
   const removeItem = (product_id: number) => {
     dispatch(RemoveCart({ product_id }))
       .unwrap()
       .then(() => {
         dispatch(GetToCart());
 
-        // 🟢 Toast بعد ما المنتج يتمسح
         toast({
           title: "Removed from cart 🛒",
           description: "The item has been removed successfully.",
         });
       })
       .catch(() => {
-        // 🔴 Toast لو حصل خطأ
         if(access){
         toast({
           title: "Error ❌",
           description: "Failed to remove item from cart.",
-          // variant: "destructive",
         });
         }else{
         toast({
           title: "Error ❌",
           description: "Please login first",
-          // variant: "destructive",
         });
         }
 
@@ -236,7 +225,6 @@ const Header = () => {
                     collapsible
                     className="w-full  space-y-2"
                   >
-                    {/* Section 1 */}
                     <AccordionItem value="categories">
                       <AccordionTrigger className="text-white hover:text-green-400">
                         <div className="flex text-[14px] font-bold items-center gap-2 text-white">
@@ -424,11 +412,10 @@ const Header = () => {
                 to={access ? "/cart" : "/"}
                 onClick={(e) => {
                   if (!access) {
-                    e.preventDefault(); // يمنع الانتقال
+                    e.preventDefault();
                     toast({
                       title: "Error ❌",
                       description: "Please login first",
-                      // variant: "destructive",
                     });
                   }
                 }}
@@ -539,11 +526,10 @@ const Header = () => {
               to={access ? "/wishlist" : "/"}
               onClick={(e) => {
                 if (!access) {
-                  e.preventDefault(); // يمنع فتح الصفحة
+                  e.preventDefault();
                   toast({
                     title: "Error ❌",
                     description: "Please login first",
-                    // variant: "destructive",
                   });
                 }
               }}
@@ -566,7 +552,6 @@ const Header = () => {
           </div>
         </div>
       </div>
-      {/* <div></div> */}
       <div className="z-50 relative container hidden lg:flex justify-between pl-10 w-full h-[78px] bg-[#1c3e56] rounded-full mx-auto -m-[50px]">
         <div className="flex justify-between gap-14">
           <Link
@@ -714,9 +699,6 @@ const Header = () => {
           <div className="flex cursor-pointer text-[18px] items-center gap-2 text-white hover:text-[#01e281] transition-all duration-200">
             Contact
           </div>
-          {/* <div className="flex text-[18px] items-center gap-2 text-white">
-          Buy XTRA Theme
-        </div> */}
         </div>
         <div className="flex cursor-pointer items-center gap-2 px-4 bg-[#01e281] rounded-full w-44 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
           <FaGift /> Daily Offers

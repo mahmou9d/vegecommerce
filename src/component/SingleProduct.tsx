@@ -73,7 +73,7 @@ const SingleProduct = () => {
   const { products, loading, error } = useAppSelector(
     (state: RootState) => state.product
   );
-  const [rating, setRating] = useState(5); // القيمة الافتراضية
+  const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
 
   useEffect(() => {
@@ -81,22 +81,20 @@ const SingleProduct = () => {
       dispatch(productUser());
     }
   }, [dispatch, products.length]);
-console.log(products,"hglkjghfhvkgcfhig")
+// console.log(products,"hglkjghfhvkgcfhig")
   const { items } = useAppSelector((state) => state.review);
   useEffect(() => {
     dispatch(GetReview());
   }, [dispatch]);
-  console.log(items,"atrtehqeterter");
+  // console.log(items,"atrtehqeterter");
 const filterProduct = products.filter((item) => item?.id?.toString() === id);
 const firstItem = filterProduct[0];
-console.log(firstItem,"firstItemuymmytmyt")
-// console.log(id)
-// console.log(filterProduct,"wqgqtetjtyejtyte");
+// console.log(firstItem,"firstItemuymmytmyt")
 const filterReview = items.filter(
   (item) => item?.toString() === firstItem.name
 );
 const firstReview = filterReview[0];
-console.log(firstReview, "wqgqtetjtyejtyte");
+// console.log(firstReview, "wqgqtetjty/ejtyte");
 
   const handleAddReviews = () => {
     dispatch(
@@ -110,8 +108,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
     const { access } = useAppSelector((state) => state?.auth);
     const wishlist = useAppSelector((state) => state.wishlist.items);
     const getwishlist = useAppSelector((state) => state.Getwishlists.items);
-    console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
-    // 👇 تحقق إذا المنتج موجود
+    // console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
     const inWishlist = id
       ? getwishlist.some((w) => w.product_id === Number(id))
       : false;
@@ -147,7 +144,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
       dispatch(GetToCart());
     };
   const { items:items3, total } = useAppSelector((state) => state.cart);
-  console.log(items3,"vvvvvvvvvvvvvvvvvvv")
+  // console.log(items3,"vvvvvvvvvvvvvvvvvvv")
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
@@ -169,13 +166,11 @@ console.log(firstReview, "wqgqtetjtyejtyte");
               toast({
                 title: "Error ❌",
                 description: "Failed to add item to cart.",
-                // variant: "destructive",
               });
             } else {
               toast({
                 title: "Error ❌",
                 description: "Please login first",
-                // variant: "destructive",
               });
             }
           });
@@ -202,7 +197,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
         <div className="w-[50%]">
           <div className="w-[400px] h-[400px]">
             <img
-              src={firstItem?.img_url} // نفس الصورة العادية
+              src={firstItem?.img_url}
               alt={""}
             />
           </div>

@@ -59,14 +59,14 @@ export const GetReview = createAsyncThunk(
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        console.error("Review API error:", errorData);
+        // console.error("Review API error:", errorData);
         return rejectWithValue(
           errorData || `HTTP error! status: ${res.status}`
         );
       }
 
       const data = await res.json();
-      console.log(data, "datafckcllclllcclcllclccc");
+      // console.log(data, "datafckcllclllcclcllclccc");
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -82,7 +82,7 @@ export const AddReviews = createAsyncThunk(
     try {
       const state = getState() as RootState;
       let token = state.auth.access;
-      console.log(payload, "handleAddReviews");
+      // console.log(payload, "handleAddReviews");
       let res = await fetch(
         "https://e-commerce-web-production-ead4.up.railway.app/api/reviews/add/",
         {
@@ -126,17 +126,17 @@ export const AddReviews = createAsyncThunk(
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        console.error("Review API error:", errorData);
+        // console.error("Review API error:", errorData);
         return rejectWithValue(
           errorData || `HTTP error! status: ${res.status}`
         );
       }
 
       const data = await res.json();
-      console.log(data, "handleAddReviews");
+      // console.log(data, "handleAddReviews");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

@@ -44,7 +44,7 @@ const Signup = () => {
           const { loading, message, error } = useAppSelector(
             (state: RootState) => state.authSec
           );
-          console.log(message, "message");
+          // console.log(message, "message");
   const {
     register,
     handleSubmit,
@@ -69,11 +69,10 @@ const onSubmit = async (data: ISignup) => {
 
     nav("/");
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
      toast({
        title: "Signup Failed ❌",
        description: err?.message || "Something went wrong, please try again.",
-       variant: "destructive",
      });
   }
 };

@@ -22,7 +22,7 @@ const dispatch = useAppDispatch();
     const { products, loading, error } = useAppSelector(
       (state: RootState) => state.product
     );
-console.log(products,'ppppppppppppppppppppppp')
+// console.log(products,'ppppppppppppppppppppppp')
     useEffect(() => {
       if (products.length === 0) {
         dispatch(productUser());

@@ -33,40 +33,13 @@ const Product = ({ item }: { item: IItem }) => {
   const wishlist = useAppSelector((state) => state.wishlist.items);
   const getwishlist = useAppSelector((state) => state.Getwishlists.items);
       const { access } = useAppSelector((state) => state?.auth);
-  console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
-  // 👇 تحقق إذا المنتج موجود
+  // console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
   const inWishlist = item.id
     ? getwishlist.some((w) => w.product_id === item.id)
     : false;
       useEffect(() => {
           dispatch(GetWishlist());
       }, [dispatch]);
-// const toggleWishlist = async () => {
-//   if (!item.id) return;
-
-//   try {
-//     if (inWishlist) {
-//       await dispatch(WishlistRemove(item.id)).unwrap();
-//       toast({
-//         title: "Removed ❤️",
-//         description: `${item.name} has been removed from your wishlist.`,
-//       });
-//     } else {
-//       await dispatch(WishlistItems(item.id)).unwrap();
-//       toast({
-//         title: "Added ❤️",
-//         description: `${item.name} has been added to your wishlist.`,
-//       });
-//     }
-//     dispatch(GetWishlist());
-//   } catch {
-//     toast({
-//       title: "Error ❌",
-//       description: "Something went wrong with your wishlist.",
-//       variant: "destructive",
-//     });
-//   }
-// };
 
   const toggleWishlist = () => {
     if (!item.id) return;
@@ -88,16 +61,6 @@ const Product = ({ item }: { item: IItem }) => {
     dispatch(GetWishlist());
   };
 
-  // const handleAddToCart = async () => {
-  //   if (!item.id) return;
-  //   await dispatch(AddToCart({ product_id: item.id, quantity: 1 }));
-    
-  //   dispatch(GetToCart());
-  //       toast({
-  //         title: "Added to cart 🛒",
-  //         description: `${item.name} has been added to your cart.`,
-  //       });
-  // };
 const handleAddToCart = async () => {
   if (!item.id) return;
   try {
@@ -112,58 +75,54 @@ const handleAddToCart = async () => {
     toast({
       title: "Error ❌",
       description: "Failed to add item to cart.",
-      // variant: "destructive",
     });
             if (access) {
     toast({
       title: "Error ❌",
       description: "Failed to add item to cart.",
-      // variant: "destructive",
     });
             } else {
               toast({
                 title: "Error ❌",
                 description: "Please login first",
-                // variant: "destructive",
               });
             }
   }
 };
   return (
     <div className="cursor-pointer relative overflow-visible group/item w-[440px] h-[500px] py-12 bg-white p-[30px] -mt-3 flex flex-col justify-between rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]">
-              <div className="relative group flex">
-          {inWishlist ? (
-            <GoHeartFill
-              onClick={toggleWishlist}
-              className="absolute right-[-5%] top-[-20px] border border-[#01e281] text-[#01e281] w-10 h-10 p-[6px] rounded-full duration-300 cursor-pointer"
-            />
-          ) : (
-            <GoHeart
-              onClick={toggleWishlist}
-              className="absolute right-[-5%] top-[-20px] border border-[#9fb6cb33] group-hover:border-[#01e281] group-hover:text-[#01e281] w-10 h-10 p-[6px] rounded-full duration-300 cursor-pointer"
-            />
-          )}
-          <div
-            className={`absolute   ${
-              inWishlist ? "ml-[9.5rem]" : "ml-[13rem]"
-            } z-10 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-          >
-            <button
-              onClick={toggleWishlist}
-              className="bg-[#01e281] text-white px-4 py-2 rounded-full text-sm font-medium shadow-md"
-            >
-              {inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-            </button>
-          </div>
-        </div>
+      <div className="relative group flex">
+        {inWishlist ? (
+          <GoHeartFill
+            onClick={toggleWishlist}
+            className="absolute right-[-5%] top-[-20px] border border-[#01e281] text-[#01e281] w-10 h-10 p-[6px] rounded-full duration-300 cursor-pointer"
+          />
+        ) : (
+          <GoHeart
+            onClick={toggleWishlist}
+            className="absolute right-[-5%] top-[-20px] border border-[#9fb6cb33] group-hover:border-[#01e281] group-hover:text-[#01e281] w-10 h-10 p-[6px] rounded-full duration-300 cursor-pointer"
+          />
+        )}
         <div
+          className={`absolute   ${
+            inWishlist ? "ml-[9.5rem]" : "ml-[13rem]"
+          } z-10 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        >
+          <button
+            onClick={toggleWishlist}
+            className="bg-[#01e281] text-white px-4 py-2 rounded-full text-sm font-medium shadow-md"
+          >
+            {inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          </button>
+        </div>
+      </div>
+      <div
         onClick={() => {
           nav(`/singleProduct/${item.id}`);
-          window.scrollTo(0,0)
+          window.scrollTo(0, 0);
         }}
         className="flex justify-between flex-col h-full"
       >
-
         <img
           className="w-[400px] h-[200px] object-contain"
           src={item.img_url}
@@ -174,7 +133,7 @@ const handleAddToCart = async () => {
             {item.name}{" "}
           </h1>
           <p className="text-[14px]  group-hover/item:text-[#01e281] duration-200">
-            {item.description[0]}
+            {item.categories[2] || item.categories[1] || item.categories[0]}
           </p>
         </div>
 

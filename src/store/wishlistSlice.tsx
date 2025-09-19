@@ -60,7 +60,7 @@ export const WishlistItems = createAsyncThunk(
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
-      console.log(data, "EWME;LML;EWQ");
+      // console.log(data, "EWME;LML;EWQ");
       return product_id; // backend لازم يرجع المنتج نفسه أو { product }
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -117,10 +117,10 @@ export const WishlistRemove = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log("WishlistRemove data:", data);
+      // console.log("WishlistRemove data:", data);
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

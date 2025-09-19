@@ -50,7 +50,7 @@ function Layout() {
     }
   }, [dispatch, products.length]);
 
-  console.log(products, "lay");
+  // console.log(products, "lay");
   const categoryName = decodeURIComponent(
     location.pathname.split("/").pop() || ""
   ).toLowerCase();
@@ -61,8 +61,8 @@ function Layout() {
       item.tags.some((tag) => tag.toLowerCase() === categoryName)
   );
 
-  console.log(categoryName, "categoryName");
-  console.log(mergedFiltered, "mergedFiltered");
+  // console.log(categoryName, "categoryName");
+  // console.log(mergedFiltered, "mergedFiltered");
 
   return (
     <>

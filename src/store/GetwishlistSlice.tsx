@@ -73,10 +73,10 @@ export const GetWishlist = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data.wishlist.products, "datafckcllclllcclcllclccc");
+      // console.log(data.wishlist.products, "datafckcllclllcclcllclccc");
       return data.wishlist.products;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

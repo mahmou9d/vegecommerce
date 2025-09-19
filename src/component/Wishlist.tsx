@@ -25,7 +25,7 @@ const { toast } = useToast();
       dispatch(GetWishlist());
     }
   }, [dispatch, items.length]);
-  console.log(items, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  // console.log(items, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
   const removeItem = (product_id: number) => {
     dispatch(WishlistRemove(product_id))
@@ -40,7 +40,7 @@ const { toast } = useToast();
   };
 
   const handleAddToCart = (product: any) => {
-    console.log("Adding to cart:", product);
+    // console.log("Adding to cart:", product);
     dispatch(AddToCart({ product_id: product, quantity: 1 }))
       .unwrap()
       .then(() => {
@@ -51,11 +51,10 @@ const { toast } = useToast();
         });
       })
       .catch((err) => {
-        console.error("Failed to add:", err);
+        // console.error("Failed to add:", err);
         toast({
           title: "Error ❌",
           description: "Could not add item to cart.",
-          // variant: "destructive",
         });
       });
   };
@@ -110,7 +109,7 @@ const { toast } = useToast();
                 <div
                   onClick={() => {
                     handleAddToCart(product.product_id);
-                    console.log(product);
+                    // console.log(product);
                   }}
                   className="absolute -bottom-4 w-[180px] h-[50px] text-[#122d40] font-bold opacity-0 right-0 group-hover/item:opacity-100 transition-opacity duration-300"
                 >

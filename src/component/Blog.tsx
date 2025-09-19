@@ -1,8 +1,14 @@
 import { motion } from "framer-motion";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "../components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "../components/ui/carousel";
 import { FaLink } from "react-icons/fa6";
 
-
+// Blog data
 const blogs = [
   {
     title: "Tutorial",
@@ -45,6 +51,7 @@ const blogs = [
 const Blog = () => {
   return (
     <div className="container mx-auto mt-40">
+      {/* ================= Hero Section ================= */}
       <div
         style={{
           backgroundColor: "#01E281",
@@ -62,6 +69,7 @@ const Blog = () => {
           color: "white",
         }}
       >
+        {/* Text content on the left */}
         <div className="w-[50%] pt-10">
           <h1 className="text-[42px] font-light">XtraSupermarket</h1>
           <h1 className="text-[60px] font-bold py-10">Faster on Mobile</h1>
@@ -69,6 +77,8 @@ const Blog = () => {
             A supermarket is a self-service shop offering a wide variety of
             food, beverages and household products, organized into sections.
           </p>
+
+          {/* Store buttons (download links) */}
           <div className="flex gap-8 pb-10">
             <motion.img
               className="w-[170px] h-[54px] rounded-[15px] cursor-pointer"
@@ -90,67 +100,82 @@ const Blog = () => {
             />
           </div>
         </div>
+
+        {/* Hero image on the right */}
         <img
           className="w-[40%] rounded-t-3xl"
           src="/images/man-supermarket-as-shop-assistant-20446866.webp"
-          alt=""
+          alt="hero"
         />
       </div>
+
+      {/* ================= Blog Section ================= */}
       <div className="pt-20">
-        <h1 className="text-[36px] font-bold flex ">
+        {/* Section title */}
+        <h1 className="text-[36px] font-bold flex">
           Latest{" "}
           <span
             className="text-[#01e281] pl-2 relative inline-block  
-    after:content-[''] after:absolute after:bottom-1 after:left-[5px]
-    after:w-[33vh] after:h-[30%]
-    after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
+              after:content-[''] after:absolute after:bottom-1 after:left-[5px]
+              after:w-[33vh] after:h-[30%]
+              after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
-            {" "}
             News & Blog
           </span>
         </h1>
+
+        {/* Carousel container */}
         <Carousel className="relative w-full mt-16">
           <CarouselContent className="-ml-4 flex justify-between w-full pt-10">
-            {blogs.map((item, i) => {
-              return (
-                <CarouselItem className="basis-1/4 relative group cursor-pointer">
-                  <p className="absolute text-[12px] z-10 -top-6 border-[7px] rounded-full px-5 py-2 text-white border-white left-1/2 -translate-x-1/2 bg-[#122d40]">
-                    {item.title}
-                  </p>
-                  <div className="relative h-80 rounded-3xl overflow-hidden">
-                    <img
-                      className="w-full h-full object-cover"
-                      src={item.img}
-                      alt={item.title}
-                    />
+            {/* Loop through blogs */}
+            {blogs.map((item, i) => (
+              <CarouselItem
+                key={i}
+                className="basis-1/4 relative group cursor-pointer"
+              >
+                {/* Blog category label */}
+                <p className="absolute text-[12px] z-10 -top-6 border-[7px] rounded-full px-5 py-2 text-white border-white left-1/2 -translate-x-1/2 bg-[#122d40]">
+                  {item.title}
+                </p>
 
-                    {/* الأوفرلاي الأخضر */}
-                    <div className="absolute inset-0 bg-[#01e281] opacity-0 group-hover:opacity-60 transition duration-500"></div>
+                {/* Blog image with hover overlay */}
+                <div className="relative h-80 rounded-3xl overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover"
+                    src={item.img}
+                    alt={item.title}
+                  />
 
-                    {/* الأيكون */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-14 h-14 rounded-md bg-transparent flex items-center justify-center transform scale-75 opacity-0 transition duration-500  group-hover:scale-100 group-hover:opacity-100">
-                        <FaLink className="text-white text-[2.5rem]" />
-                      </div>
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-[#01e281] opacity-0 group-hover:opacity-60 transition duration-500"></div>
+
+                  {/* Hover link icon */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-md bg-transparent flex items-center justify-center transform scale-75 opacity-0 transition duration-500 group-hover:scale-100 group-hover:opacity-100">
+                      <FaLink className="text-white text-[2.5rem]" />
                     </div>
                   </div>
-                  <h1 className="text-[#01e281] my-6 flex justify-between items-center">
-                    {item.time}{" "}
-                    <div className="h-[1px] w-[65%] bg-[#122d402b]" />
-                  </h1>
-                  <h1 className="text-[24px] font-medium">{item.desc}</h1>
-                </CarouselItem>
-              );
-            })}
+                </div>
+
+                {/* Date + divider */}
+                <h1 className="text-[#01e281] my-6 flex justify-between items-center">
+                  {item.time}
+                  <div className="h-[1px] w-[65%] bg-[#122d402b]" />
+                </h1>
+
+                {/* Blog description */}
+                <h1 className="text-[24px] font-medium">{item.desc}</h1>
+              </CarouselItem>
+            ))}
           </CarouselContent>
 
-          {/* الأسهم */}
+          {/* Carousel navigation buttons */}
           <CarouselPrevious className="absolute left-[90%] top-[-5%] -translate-y-1/2" />
           <CarouselNext className="absolute left-[95%] top-[-5%] -translate-y-1/2" />
         </Carousel>
       </div>
     </div>
   );
-}
+};
 
-export default Blog
+export default Blog;

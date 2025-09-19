@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { refreshAccessToken } from "./authSlice";
-import { error } from "console";
 
 type CartItems = {
   product_id: number;
@@ -35,7 +34,7 @@ export const AddToCart = createAsyncThunk(
     try {
       const state = getState() as RootState;
       let token = state?.auth.access;
-      console.log(token,"tsthrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+      // console.log(token,"tsthrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
 if (!token) return rejectWithValue("User not logged in");
       let res = await fetch(
         "https://e-commerce-web-production-ead4.up.railway.app/api/cart/add/",
@@ -77,10 +76,10 @@ if (!token) return rejectWithValue("User not logged in");
       }
 
       const data = await res.json();
-      console.log(data, "datrwtrqerhrehrtqta");
+      // console.log(data, "datrwtrqerhrehrtqta");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -135,10 +134,10 @@ export const RemoveCart = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -193,10 +192,10 @@ export const EditCart = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -246,10 +245,10 @@ export const GetToCart = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }
@@ -276,7 +275,9 @@ export const Checkout = createAsyncThunk(
 
       if (res.status === 401) {
         try {
-          const refreshRes = await dispatch(refreshAccessToken()).unwrap().catch((error)=>console.log(error));
+          const refreshRes = await dispatch(refreshAccessToken()).unwrap().catch((error)=>{
+            // console.log(error)
+          });
           token = refreshRes.access;
 
           res = await fetch(
@@ -301,10 +302,10 @@ export const Checkout = createAsyncThunk(
       }
 
       const data = await res.json();
-      console.log(data, "datrwtrqerhrehrtqta");
+      // console.log(data, "datrwtrqerhrehrtqta");
       return data;
     } catch (error: any) {
-      console.log(error, "errorcart/add/");
+      // console.log(error, "errorcart/add/");
       return rejectWithValue(error.message);
     }
   }

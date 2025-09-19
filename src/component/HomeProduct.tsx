@@ -16,7 +16,7 @@ const HomeProduct = () => {
   useEffect(() => {
     dispatch(productUser());
   }, [dispatch]);
-console.log(products,"product")
+// console.log(products,"product")
 
   return (
     <div className="container mx-auto mt-40">
