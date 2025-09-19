@@ -107,7 +107,7 @@ console.log(firstReview, "wqgqtetjtyejtyte");
       })
     );
   };
-
+    const { access } = useAppSelector((state) => state?.auth);
     const wishlist = useAppSelector((state) => state.wishlist.items);
     const getwishlist = useAppSelector((state) => state.Getwishlists.items);
     console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
@@ -152,15 +152,32 @@ console.log(firstReview, "wqgqtetjtyejtyte");
     dispatch(GetToCart());
   }, [dispatch]);
       const updateQuantity = () => {
-        dispatch(AddToCart({ product_id: Number(firstItem.id), quantity: edit }))
+        dispatch(
+          AddToCart({ product_id: Number(firstItem.id), quantity: edit })
+        )
           .unwrap()
           .then(() => {
             dispatch(GetToCart());
-            setEdit(1);   
-               toast({
+            setEdit(1);
+            toast({
               title: "🛒 Added to Cart",
               description: `${firstItem?.name} (x${edit}) has been added to your cart.`,
             });
+          })
+          .catch((error) => {
+            if (access) {
+              toast({
+                title: "Error ❌",
+                description: "Failed to add item to cart.",
+                // variant: "destructive",
+              });
+            } else {
+              toast({
+                title: "Error ❌",
+                description: "Please login first",
+                // variant: "destructive",
+              });
+            }
           });
       };
   return (

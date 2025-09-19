@@ -29,6 +29,7 @@ import { GetToCart, RemoveCart } from "../store/cartSlice";
 import { LiaCartPlusSolid } from "react-icons/lia";
 import { useToast } from "../hooks/use-toast";
 import { Logout } from "../store/authSlice";
+import { WishlistRemove } from "../store/wishlistSlice";
 const category = [
   {
     Icon: "/images/s1.png",
@@ -98,6 +99,9 @@ const Header = () => {
 
   console.log(items.length);
   const [cart, setCart] = useState<Product[]>([]);
+    const { items:items2, loading, error } = useAppSelector(
+      (state) => state.Getwishlists
+    );
   const limit = 1000;
   const nav = useNavigate();
   const subquantity = Array.isArray(items)
@@ -129,11 +133,20 @@ const Header = () => {
       })
       .catch(() => {
         // 🔴 Toast لو حصل خطأ
+        if(access){
         toast({
           title: "Error ❌",
           description: "Failed to remove item from cart.",
           // variant: "destructive",
         });
+        }else{
+        toast({
+          title: "Error ❌",
+          description: "Please login first",
+          // variant: "destructive",
+        });
+        }
+
       });
   };
     const handleLogout = () => {
@@ -144,6 +157,20 @@ const Header = () => {
             title: "Logged out ✅",
             description: "You have been logged out successfully.",
           });
+                        Promise.all(
+                          items.map((item) =>
+                            dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
+                          )
+                        )
+                                                    Promise.all(
+                                                      items2.map((item) =>
+                                                        dispatch(
+                                                          WishlistRemove(
+                                                            item.product_id
+                                                          )
+                                                        ).unwrap()
+                                                      )
+                                                    );
           nav("/login")
         })
         .catch((err) => {
@@ -393,12 +420,25 @@ const Header = () => {
               </div>
             </div>
             <div className="relative group/item">
-              <Link to={"/cart"}>
+              <Link
+                to={access ? "/cart" : "/"}
+                onClick={(e) => {
+                  if (!access) {
+                    e.preventDefault(); // يمنع الانتقال
+                    toast({
+                      title: "Error ❌",
+                      description: "Please login first",
+                      // variant: "destructive",
+                    });
+                  }
+                }}
+              >
                 <FaBasketShopping className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
                 <span className="absolute right-[-25%] top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center">
                   {subquantity}
                 </span>
               </Link>
+
               <div
                 className="
       absolute right-[-45%] z-[100] w-[400px] bg-white shadow-xl rounded-xl 
@@ -495,9 +535,22 @@ const Header = () => {
             </div>
 
             <div className="w-[1px] h-10 bg-[#a7a7a733] mt-3  ml-2"></div>
-            <Link to={"/wishlist"}>
+            <Link
+              to={access ? "/wishlist" : "/"}
+              onClick={(e) => {
+                if (!access) {
+                  e.preventDefault(); // يمنع فتح الصفحة
+                  toast({
+                    title: "Error ❌",
+                    description: "Please login first",
+                    // variant: "destructive",
+                  });
+                }
+              }}
+            >
               <IoMdHeartEmpty className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
             </Link>
+
             {access ? (
               <button
                 onClick={handleLogout}

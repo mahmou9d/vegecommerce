@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useNavigate } from "react-router";
 import { useToast } from "../hooks/use-toast";
+import { WishlistRemove } from "../store/wishlistSlice";
 
 const frameworks = [
   {
@@ -67,7 +68,7 @@ const Checkoutcart = () => {
   const nav = useNavigate();
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
-  // const [value, setValue] = React.useState("");
+
   const [placeholder, setPlaceholder] = useState(
     "Notes about your order, e.g. special notes for delivery"
   );
@@ -125,26 +126,29 @@ const Checkoutcart = () => {
                   dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
                 )
               )
-                .then(() => {
-                  // رجّع الكارت فاضي من الـ API
-                  dispatch(GetToCart());
 
-                  // 🟢 Toast مسح الكارت
-                  toast({
-                    title: "Cart cleared 🛒",
-                    description: "Your cart has been emptied successfully.",
-                  });
-                })
-                .catch((err) => {
-                  console.error("Failed to clear cart:", err);
+                              .then(() => {
+                                // رجّع الكارت فاضي من الـ API
+                                dispatch(GetToCart());
 
-                  // 🔴 Toast لو حصل خطأ
-                  toast({
-                    title: "Error ❌",
-                    description: "Failed to clear your cart, please try again.",
-                    // variant: "destructive",
-                  });
-                });
+                                // 🟢 Toast مسح الكارت
+                                toast({
+                                  title: "Cart cleared 🛒",
+                                  description:
+                                    "Your cart has been emptied successfully.",
+                                });
+                              })
+                              .catch((err) => {
+                                console.error("Failed to clear cart:", err);
+
+                                // 🔴 Toast لو حصل خطأ
+                                toast({
+                                  title: "Error ❌",
+                                  description:
+                                    "Failed to clear your cart, please try again.",
+                                  // variant: "destructive",
+                                });
+                              });
 
         nav("/ordercomplete", { replace: true });
       })

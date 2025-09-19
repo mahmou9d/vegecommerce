@@ -91,12 +91,12 @@ export const Logout = createAsyncThunk(
       }
 
       const res = await fetch(
-        "https://e-commerce-web-production-ead4.up.railway.app/api/auth/token/logout/",
+        "https://e-commerce-web-production-ead4.up.railway.app/api/auth/logout/",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${accessToken}`, // ⬅️ مهم
+            Authorization: `Bearer ${accessToken}`, // ⬅️ مهم
           },
           body: JSON.stringify({
             refresh: refreshToken,

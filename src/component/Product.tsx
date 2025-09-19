@@ -32,6 +32,7 @@ const Product = ({ item }: { item: IItem }) => {
   const dispatch = useAppDispatch();
   const wishlist = useAppSelector((state) => state.wishlist.items);
   const getwishlist = useAppSelector((state) => state.Getwishlists.items);
+      const { access } = useAppSelector((state) => state?.auth);
   console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
   // 👇 تحقق إذا المنتج موجود
   const inWishlist = item.id
@@ -78,6 +79,7 @@ const Product = ({ item }: { item: IItem }) => {
         });
     } else {
       dispatch(WishlistItems(item.id));
+      
        toast({
          title: "Added ❤️",
          description: `${item.name} has been added to your wishlist.`,
@@ -112,6 +114,19 @@ const handleAddToCart = async () => {
       description: "Failed to add item to cart.",
       // variant: "destructive",
     });
+            if (access) {
+    toast({
+      title: "Error ❌",
+      description: "Failed to add item to cart.",
+      // variant: "destructive",
+    });
+            } else {
+              toast({
+                title: "Error ❌",
+                description: "Please login first",
+                // variant: "destructive",
+              });
+            }
   }
 };
   return (
