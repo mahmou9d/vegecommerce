@@ -205,7 +205,7 @@ const Header = () => {
           )
         );
 
-        nav("/login");
+        nav("/");
       })
       .catch((err) => {
         toast({ title: "Error ❌", description: err || "Logout failed" });

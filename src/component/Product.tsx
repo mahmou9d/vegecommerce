@@ -112,6 +112,18 @@ const loadingwish = useAppSelector((state)=>state.wishlist.loading)
           description: `${item.name} added to wishlist`,
         });
       }
+    } catch {
+      if (access) {
+        toast({
+          title: "Error ❌",
+          description: "Failed to add item to wishlist.",
+        });
+      } else {
+        toast({
+          title: "Error ❌",
+          description: "Please login first",
+        });
+      }
     } finally {
       dispatch(GetWishlist());
       setWishlistBtnLoading(false);
