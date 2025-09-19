@@ -4,8 +4,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "../components/ui/button";
 import { signupUser } from "../store/authSecSlice";
 import { useAppDispatch, useAppSelector } from "../store/hook";
@@ -14,7 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { loginUser } from "../store/authSlice";
 import { useToast } from "../hooks/use-toast";
 
-
+// -------------------------------
+// Signup form interface
+// -------------------------------
 interface ISignup {
   username: string;
   email: string;
@@ -22,6 +23,9 @@ interface ISignup {
   password2: string;
 }
 
+// -------------------------------
+// Validation schema (Yup)
+// -------------------------------
 const schema = yup.object().shape({
   username: yup.string().required("Name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -35,16 +39,23 @@ const schema = yup.object().shape({
     .required("Confirm your password"),
 });
 
+// -------------------------------
+// Signup Component
+// -------------------------------
 const Signup = () => {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-     const dispatch = useAppDispatch();
-     const nav = useNavigate();
-          const { loading, message, error } = useAppSelector(
-            (state: RootState) => state.authSec
-          );
-          // console.log(message, "message");
+
+  const dispatch = useAppDispatch();
+  const nav = useNavigate();
+
+  // Access signup state from Redux
+  const { loading, message, error } = useAppSelector(
+    (state: RootState) => state.authSec
+  );
+
+  // React Hook Form setup with Yup validation
   const {
     register,
     handleSubmit,
@@ -53,48 +64,63 @@ const Signup = () => {
     resolver: yupResolver(schema),
   });
 
-const onSubmit = async (data: ISignup) => {
-  try {
-    await dispatch(signupUser(data)).unwrap();
-    const loginPayload = {
-      email: data.email, 
-      password: data.password1,
-    };
+  // -------------------------------
+  // Submit Handler
+  // -------------------------------
+  const onSubmit = async (data: ISignup) => {
+    try {
+      // First: signup
+      await dispatch(signupUser(data)).unwrap();
 
-    await dispatch(loginUser(loginPayload)).unwrap();
-    toast({
-      title: "Signup Successful 🎉",
-      description: "Welcome! You have been logged in successfully.",
-    });
+      // Second: auto-login after signup
+      const loginPayload = {
+        email: data.email,
+        password: data.password1,
+      };
+      await dispatch(loginUser(loginPayload)).unwrap();
 
-    nav("/");
-  } catch (err: any) {
-    // console.log(err);
-     toast({
-       title: "Signup Failed ❌",
-       description: err?.message || "Something went wrong, please try again.",
-     });
-  }
-};
+      // Success notification
+      toast({
+        title: "Signup Successful 🎉",
+        description: "Welcome! You have been logged in successfully.",
+      });
+
+      nav("/");
+    } catch (err: any) {
+      // Error notification
+      toast({
+        title: "Signup Failed ❌",
+        description: err?.message || "Something went wrong, please try again.",
+      });
+    }
+  };
+
+  // -------------------------------
+  // JSX Layout
+  // -------------------------------
   return (
     <div
       className="
-    bg-[right_bottom] 
-    bg-contain 
-    bg-[url('/images/bg-hero.jpg')] 
-    h-[100vh] flex justify-center items-center
-  "
+        bg-[right_bottom] 
+        bg-contain 
+        bg-[url('/images/bg-hero.jpg')] 
+        h-[100vh] flex justify-center items-center
+      "
     >
-      <div className="container mx-auto bg-[#f1f2f6] mt-10 w-[500px] min-h-[500px] rounded-[50px] px-12 py-4  flex flex-col items-center justify-center">
+      <div className="container mx-auto bg-[#f1f2f6] mt-10 w-[500px] min-h-[500px] rounded-[50px] px-12 py-4 flex flex-col items-center justify-center">
+        {/* Title */}
         <h1 className="text-[25px] font-extrabold pb-4">Sign up</h1>
         <div className="h-[1px] w-full bg-[#a7a7a733]" />
+
+        {/* Signup Form */}
         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          {/* Username Field */}
           <div className="pt-10 flex flex-col w-full">
-            <label className="flex items-center gap-1" htmlFor="">
+            <label className="flex items-center gap-1">
               Username<span className="text-red-700"> *</span>
             </label>
             <input
-              className=" mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
+              className="mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
               type="text"
               {...register("username")}
             />
@@ -104,12 +130,14 @@ const onSubmit = async (data: ISignup) => {
               </p>
             )}
           </div>
+
+          {/* Email Field */}
           <div className="pt-10 flex flex-col w-full">
-            <label className="flex items-center gap-1" htmlFor="">
-              Email address <span className="text-red-700"> *</span>
+            <label className="flex items-center gap-1">
+              Email address<span className="text-red-700"> *</span>
             </label>
             <input
-              className=" mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
+              className="mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
               type="email"
               {...register("email")}
             />
@@ -119,13 +147,15 @@ const onSubmit = async (data: ISignup) => {
               </p>
             )}
           </div>
+
+          {/* Password Field */}
           <div className="pt-10 flex flex-col w-full">
-            <label className="flex items-center gap-1" htmlFor="">
+            <label className="flex items-center gap-1">
               Password<span className="text-red-700"> *</span>
             </label>
             <div className="relative">
               <input
-                className=" w-full mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
+                className="w-full mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
                 type={showPassword ? "text" : "password"}
                 {...register("password1")}
               />
@@ -147,13 +177,15 @@ const onSubmit = async (data: ISignup) => {
               </p>
             )}
           </div>
+
+          {/* Confirm Password Field */}
           <div className="pt-10 flex flex-col w-full">
-            <label className="flex items-center gap-1" htmlFor="">
+            <label className="flex items-center gap-1">
               Confirm password<span className="text-red-700"> *</span>
             </label>
             <div className="relative">
               <input
-                className=" w-full mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
+                className="w-full mt-4 h-10 rounded-full shadow-[#01e281] shadow-sm outline-none py-2 px-6"
                 type={showConfirmPassword ? "text" : "password"}
                 {...register("password2")}
               />
@@ -175,6 +207,8 @@ const onSubmit = async (data: ISignup) => {
               </p>
             )}
           </div>
+
+          {/* Submit Button */}
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -183,6 +217,8 @@ const onSubmit = async (data: ISignup) => {
             {isSubmitting ? "Signing up..." : "Signup"}
           </Button>
         </form>
+
+        {/* Redirect to Login */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?
           <a

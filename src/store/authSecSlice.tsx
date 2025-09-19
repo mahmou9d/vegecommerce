@@ -52,8 +52,13 @@ export const signupUser = createAsyncThunk(
 const authSlicesec = createSlice({
   name: "authsec",
   initialState,
-  reducers: {
-  },
+reducers: {
+  resetAuthSec: (state) => {
+    state.message = "";
+    state.error = null;
+    state.loading = "idle";
+  }
+},
   extraReducers: (builder) => {
     builder.addCase(signupUser.pending, (state) => {
       state.loading = "pending";

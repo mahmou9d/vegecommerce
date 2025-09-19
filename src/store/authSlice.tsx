@@ -122,6 +122,12 @@ const authSlice = createSlice({
     logout: (state) => {
       state.refresh = "";
       state.access = "";
+      state.loading = "idle";
+      state.error = null;
+    },
+    resetAuthState: (state) => {
+      state.loading = "idle";
+      state.error = null;
     },
   },
   extraReducers: (builder) => {

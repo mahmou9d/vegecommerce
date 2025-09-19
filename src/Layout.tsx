@@ -1,25 +1,32 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Header from "./component/Header";
-import Home from "./component/Home";
-import Footer from "./component/Footer";
-import Login from "./component/Login";
-import Signup from "./component/Signup";
-import Wishlist from "./component/Wishlist";
-// import Shop from "./component/Shop";
-import Cart from "./component/Cart";
-// import Product from "./component/Product";
 import { useAppDispatch, useAppSelector } from "./store/hook";
 import { RootState } from "./store";
 import { productUser } from "./store/productSlice";
-import Categories from "./component/Categories";
-// import Checkoutcart from "./component/Checkoutcart";
-import Shop from "./component/Shop";
-import SingleProduct from "./component/SingleProduct";
-import Checkoutcart from "./component/Checkoutcart";
 import ScrollToTop from "./ScrollToTop";
-import Ordercomplete from "./component/Ordercomplete";
 import { Toaster } from "./components/ui/toaster";
+
+// ✅ Lazy load components
+const Header = lazy(() => import("./component/Header"));
+const Footer = lazy(() => import("./component/Footer"));
+const Home = lazy(() => import("./component/Home"));
+const Login = lazy(() => import("./component/Login"));
+const Signup = lazy(() => import("./component/Signup"));
+const Wishlist = lazy(() => import("./component/Wishlist"));
+const Shop = lazy(() => import("./component/Shop"));
+const Cart = lazy(() => import("./component/Cart"));
+const Product = lazy(() => import("./component/Product"));
+const Categories = lazy(() => import("./component/Categories"));
+const Checkoutcart = lazy(() => import("./component/Checkoutcart"));
+const SingleProduct = lazy(() => import("./component/SingleProduct"));
+const Ordercomplete = lazy(() => import("./component/Ordercomplete"));
+
+// ✅ Loader component
+const Loader = () => (
+  <div className="w-full h-[60vh] flex justify-center items-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#01e281] border-solid"></div>
+  </div>
+);
 
 type TProduct = {
   id: number;
@@ -40,9 +47,7 @@ function Layout() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const hideLayout = ["/login", "/signup"].includes(location.pathname);
-  const { products, loading, error } = useAppSelector(
-    (state: RootState) => state.product
-  );
+  const { products } = useAppSelector((state: RootState) => state.product);
 
   useEffect(() => {
     if (products.length === 0) {
@@ -50,7 +55,6 @@ function Layout() {
     }
   }, [dispatch, products.length]);
 
-  // console.log(products, "lay");
   const categoryName = decodeURIComponent(
     location.pathname.split("/").pop() || ""
   ).toLowerCase();
@@ -61,15 +65,9 @@ function Layout() {
       item.tags.some((tag) => tag.toLowerCase() === categoryName)
   );
 
-  // console.log(categoryName, "categoryName");
-  // console.log(mergedFiltered, "mergedFiltered");
-
   return (
-    <>
-      {/* <Suspense fallback={<Loader />}> */}
+    <Suspense fallback={<Loader />}>
       {!hideLayout && <Header />}
-      {/* </Suspense> */}
-      {/* <Suspense fallback={<Loader />}> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -90,15 +88,10 @@ function Layout() {
         <Route path="/checkout" element={<Checkoutcart />} />
         <Route path="/singleproduct/:id" element={<SingleProduct />} />
       </Routes>
-      {/* </Suspense> */}
-      {/* <Suspense fallback={<Loader />}> */}
-      {/* <Newsletter /> */}
       {!hideLayout && <Footer />}
       <ScrollToTop />
-      {/* </Suspense> */}
-      <Toaster
-      />
-    </>
+      <Toaster />
+    </Suspense>
   );
 }
 

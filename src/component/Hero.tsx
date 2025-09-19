@@ -1,6 +1,7 @@
 import { Button } from "../components/ui/button";
 import { FaArrowRight } from "react-icons/fa";
 
+// ✅ Top info boxes (links under hero banner)
 const link = [
   {
     icon: "/images/icon-1.png",
@@ -23,6 +24,8 @@ const link = [
     desc: "Contact us anytime want",
   },
 ];
+
+// ✅ Categories section at bottom of hero
 export const category = [
   {
     Icon: "/images/s1.png",
@@ -55,28 +58,37 @@ export const category = [
     title2: "Foods",
   },
 ];
+
 const Hero = () => {
   return (
     <div>
-      <div className="h-[80vh] bg-[url('/images/bg-hero.jpg')] bg-cover pt-20 flex ">
-        <div className="container mx-auto flex  justify-between px-5">
+      {/* ✅ Hero Banner */}
+      <div className="h-[80vh] bg-[url('/images/bg-hero.jpg')] bg-cover pt-20 flex">
+        <div className="container mx-auto flex justify-between px-5">
+          {/* Left content (title + description + buttons) */}
           <div className="w-[42%] flex flex-col justify-center h-full">
+            {/* Highlighted Title with background effect */}
             <h1
               className="
-    relative inline-block text-[42px] text-[#01e281] font-light
-    after:content-[''] after:absolute after:bottom-1 after:left-0
-    after:w-[50vh] after:h-[30%]
-    after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]
-  "
+                relative inline-block text-[42px] text-[#01e281] font-light
+                after:content-[''] after:absolute after:bottom-1 after:left-0
+                after:w-[50vh] after:h-[30%]
+                after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]
+              "
             >
               XtraSupermarket
             </h1>
 
+            {/* Main Headline */}
             <h1 className="text-[60px] font-bold pb-10">Fresher than Ever</h1>
+
+            {/* Description */}
             <p className="text-[20px] text-[#818c96]">
               A supermarket is a self-service shop offering a wide variety of
               food, beverages and household products, organized into sections.
             </p>
+
+            {/* Buttons */}
             <div className="flex gap-9 pt-6">
               <Button className="w-48 h-14 text-white bg-[#122d40] hover:bg-[#01e281] hover:text-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
                 25% Off Feastival
@@ -86,6 +98,8 @@ const Hero = () => {
               </Button>
             </div>
           </div>
+
+          {/* Right Image */}
           <img
             src="/images/man-supermarket-as-shop-assistant-20446866.webp"
             alt="man-supermarket"
@@ -93,15 +107,19 @@ const Hero = () => {
           />
         </div>
       </div>
+
+      {/* ✅ Info Links Section (under hero) */}
       <div className="z-50 relative container hidden lg:flex items-center justify-between pl-10 w-full h-[150px] bg-[#fff] shadow-[0_15px_60px_0_#122d4026] px-5 pt-3 rounded-full mx-auto -mt-[28px] -m-[50px]">
         {link.map((item, i) => {
           return (
-            <div className="flex gap-3">
+            <div key={i} className="flex gap-3">
+              {/* Icon */}
               <img
                 src={item.icon}
                 alt={item.title}
                 className="w-20 h-20 p-2 rounded-full bg-[#01e28126]"
               />
+              {/* Text */}
               <div className="flex justify-center flex-col">
                 <h1 className="text-[22px] font-medium">{item.title}</h1>
                 <p className="text-[14px] text-[#666666]">{item.desc}</p>
@@ -110,10 +128,14 @@ const Hero = () => {
           );
         })}
       </div>
+
+      {/* ✅ Promotions Section (middle offers) */}
       <div className="flex container mx-auto flex-wrap mt-32 p-[30px] lg:p-0">
         <div className="flex w-full">
+          {/* Left: 2 small offers + 1 big offer */}
           <div className="flex flex-col w-[66.66%]">
             <div className="flex">
+              {/* Offer 1 - Sauces */}
               <div
                 style={{
                   backgroundRepeat: "no-repeat",
@@ -134,6 +156,8 @@ const Hero = () => {
                   Sauces
                 </h1>
               </div>
+
+              {/* Offer 2 - Chips */}
               <div
                 style={{
                   backgroundRepeat: "no-repeat",
@@ -160,6 +184,8 @@ const Hero = () => {
                 </h1>
               </div>
             </div>
+
+            {/* Big Offer - Fruits */}
             <div
               style={{
                 backgroundRepeat: "no-repeat",
@@ -187,6 +213,8 @@ const Hero = () => {
               </Button>
             </div>
           </div>
+
+          {/* Right: Vegetable Offer */}
           <div className="w-[33.33%] ml-10 h-full">
             <div
               style={{
@@ -200,7 +228,6 @@ const Hero = () => {
                 height: "100%",
               }}
             >
-              {" "}
               <h1 className="text-[30px] font-light text-white">50% OFF</h1>
               <h1 className="text-[42px] font-extrabold text-white mt-[10px]">
                 Full Fresh
@@ -215,24 +242,29 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* ✅ Categories Section */}
       <div className="container mx-auto mt-40 flex flex-col justify-center">
+        {/* Title */}
         <h1 className="text-[36px] font-bold flex justify-center">
           Discover our{" "}
           <span
-            className="text-[#01e281]     relative inline-block  
-    after:content-[''] after:absolute after:bottom-1 after:left-0
-    after:w-[29vh] after:h-[30%]
-    after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
+            className="text-[#01e281] relative inline-block  
+              after:content-[''] after:absolute after:bottom-1 after:left-0
+              after:w-[29vh] after:h-[30%]
+              after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
             Categories
           </span>
         </h1>
+
+        {/* Categories Grid */}
         <div className="flex container justify-between flex-row mt-10 gap-5">
           {category.map((item, i) => {
             return (
               <div
-                className="p-6 cursor-pointer group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281]  hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
                 key={i}
+                className="p-6 cursor-pointer group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281] hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
               >
                 <img
                   className="w-40 p-8 flip-hover"

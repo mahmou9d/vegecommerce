@@ -13,45 +13,51 @@ import { Link } from "react-router-dom";
 import { GetWishlist } from "../store/GetwishlistSlice";
 import { useToast } from "../hooks/use-toast";
 
-
 const Wishlist = () => {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
+
+  // Select wishlist state from Redux store
   const { items, loading, error } = useAppSelector(
     (state: RootState) => state.Getwishlists
   );
-const { toast } = useToast();
+
+  // Fetch wishlist items when component loads (if empty)
   useEffect(() => {
     if (items.length === 0) {
       dispatch(GetWishlist());
     }
   }, [dispatch, items.length]);
-  // console.log(items, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
+  /**
+   * Remove an item from wishlist
+   */
   const removeItem = (product_id: number) => {
     dispatch(WishlistRemove(product_id))
       .unwrap()
       .then(() => {
-        dispatch(GetWishlist());
+        dispatch(GetWishlist()); // Refresh wishlist after removing
         toast({
           title: "Removed ❤️",
-          description: `${name} has been removed from your wishlist.`,
+          description: `The item has been removed from your wishlist.`,
         });
       });
   };
 
+  /**
+   * Add an item from wishlist to cart
+   */
   const handleAddToCart = (product: any) => {
-    // console.log("Adding to cart:", product);
     dispatch(AddToCart({ product_id: product, quantity: 1 }))
       .unwrap()
       .then(() => {
-        dispatch(GetToCart());
+        dispatch(GetToCart()); // Refresh cart after adding
         toast({
           title: "Added 🛒",
-          description: `${product.name} has been added to your cart.`,
+          description: `The item has been added to your cart.`,
         });
       })
-      .catch((err) => {
-        // console.error("Failed to add:", err);
+      .catch(() => {
         toast({
           title: "Error ❌",
           description: "Could not add item to cart.",
@@ -61,6 +67,7 @@ const { toast } = useToast();
 
   return (
     <div>
+      {/* Wishlist Header Section */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Wishlist</h1>
@@ -72,62 +79,66 @@ const { toast } = useToast();
         </div>
       </div>
 
+      {/* If wishlist has items */}
       {Array.isArray(items) && items?.length !== 0 ? (
         <div className="flex flex-wrap container mx-auto">
-          {items.map((product, i) => {
-            return (
-              <div
-                key={i}
-                className="relative cursor-pointer container mx-auto mt-10 overflow-visible group/item w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
-              >
-                <div className="relative group flex">
-                  <IoClose
-                    onClick={() => removeItem(product.product_id)}
-                    className="absolute right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
-                  />
-                </div>
+          {items.map((product, i) => (
+            <div
+              key={i}
+              className="relative cursor-pointer container mx-auto mt-10 overflow-visible group/item w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
+            >
+              {/* Remove Button */}
+              <div className="relative group flex">
+                <IoClose
+                  onClick={() => removeItem(product.product_id)}
+                  className="absolute right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
+                />
+              </div>
+
+              {/* Product Content */}
               <div className="h-full flex flex-col justify-between items-start">
-                <img className="max-w-[350px]" src={product.img_url} alt={product.name} />
+                <img
+                  className="max-w-[350px]"
+                  src={product.img_url}
+                  alt={product.name}
+                />
                 <div>
-                  <h1 className="text-[22px] font-extrabold  group-hover/item:text-[#01e281] duration-200">
+                  <h1 className="text-[22px] font-extrabold group-hover/item:text-[#01e281] duration-200">
                     {product.name}
                   </h1>
                 </div>
-                <div className="flex justify-between mt-2  gap-2 items-center">
-                  <p className="">
-                    <Rating value={product.average_rating} readOnly>
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <RatingButton className="text-yellow-500" key={index} />
-                      ))}
-                    </Rating>
-                  </p>
+
+                {/* Rating + Price */}
+                <div className="flex justify-between mt-2 gap-2 items-center">
+                  <Rating value={product.average_rating} readOnly>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <RatingButton className="text-yellow-500" key={index} />
+                    ))}
+                  </Rating>
                   <h1 className="text-[26px] bg-white py-4 px-3 rounded-full ">
                     ${product.final_price}
                   </h1>
                 </div>
               </div>
-                <div
-                  onClick={() => {
-                    handleAddToCart(product.product_id);
-                    // console.log(product);
-                  }}
-                  className="absolute -bottom-4 w-[180px] h-[50px] text-[#122d40] font-bold opacity-0 right-0 group-hover/item:opacity-100 transition-opacity duration-300"
-                >
-                  <button className="bg-[#01e281] text-[#122d40] hover:bg-[#122d40] hover:text-[#01e281] text-[18px] flex items-center justify-center gap-3 font-bold px-4 py-2 w-full h-full  rounded-full  shadow-md">
-                    <RiShoppingCartLine className="text-[18px]" /> Add to cart
-                  </button>
-                </div>
+
+              {/* Add to Cart Button (appears on hover) */}
+              <div
+                onClick={() => handleAddToCart(product.product_id)}
+                className="absolute -bottom-4 w-[180px] h-[50px] text-[#122d40] font-bold opacity-0 right-0 group-hover/item:opacity-100 transition-opacity duration-300"
+              >
+                <button className="bg-[#01e281] text-[#122d40] hover:bg-[#122d40] hover:text-[#01e281] text-[18px] flex items-center justify-center gap-3 font-bold px-4 py-2 w-full h-full rounded-full shadow-md">
+                  <RiShoppingCartLine className="text-[18px]" /> Add to cart
+                </button>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       ) : (
+        // If wishlist is empty
         <div className="container mx-auto flex flex-col items-center py-5">
-          <h1 className="text-[36px] font-bold">Your wishlist list is empty.</h1>
-          <Button className="flex text-[18px] items-center gap-2 px-6 py-6 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center  hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
-            <Link to={"/shop"}>
-            Back to shop
-            </Link>
+          <h1 className="text-[36px] font-bold">Your wishlist is empty.</h1>
+          <Button className="flex text-[18px] items-center gap-2 px-6 py-6 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 justify-center hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
+            <Link to={"/shop"}>Back to shop</Link>
           </Button>
         </div>
       )}

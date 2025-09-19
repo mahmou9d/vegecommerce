@@ -1,10 +1,18 @@
+// UI Components imports
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
+
+// React + hooks
 import React, { useEffect, useState } from "react";
+
+// Icons
 import { FaArrowRight, FaCartArrowDown } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { TiHome } from "react-icons/ti";
+import { FiChevronUp, FiChevronDown, FiCheck } from "react-icons/fi";
+
+// UI popover and command menu components
 import {
   Popover,
   PopoverContent,
@@ -18,16 +26,21 @@ import {
   CommandItem,
   CommandList,
 } from "../components/ui/command";
-import { FiChevronUp, FiChevronDown, FiCheck } from "react-icons/fi";
+
+// Redux store hooks + actions
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { Checkout, GetToCart, RemoveCart } from "../store/cartSlice";
+
+// Form validation + react-hook-form
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+// Navigation and toast hook
 import { Link, useNavigate } from "react-router";
 import { useToast } from "../hooks/use-toast";
 
-// Country options for checkout
+// Dropdown options for countries
 const frameworks = [
   { value: "egypt", label: "Egypt" },
   { value: "saudi-arabia", label: "Saudi Arabia" },
@@ -36,7 +49,7 @@ const frameworks = [
   { value: "morocco", label: "Morocco" },
 ];
 
-// Validation schema using yup
+// Validation schema with yup
 const schema = yup.object().shape({
   full_name: yup.string().required("Full name is required"),
   full_address: yup.string().required("Address is required"),
@@ -50,19 +63,27 @@ const schema = yup.object().shape({
 });
 
 const Checkoutcart = () => {
+  // Toast notification
   const { toast } = useToast();
+  // Router navigation
   const nav = useNavigate();
+  // Redux dispatch
   const dispatch = useAppDispatch();
 
+  // State for popover open/close
   const [open, setOpen] = React.useState(false);
+
+  // Placeholder for textarea
   const [placeholder, setPlaceholder] = useState(
     "Notes about your order, e.g. special notes for delivery"
   );
+  // Country selected value
   const [countryValue, setCountryValue] = React.useState("");
 
-  // Get cart items from Redux store
+  // Get items from redux store
   const { items } = useAppSelector((state) => state?.cart);
 
+  // On mount, fetch cart items
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
@@ -73,17 +94,18 @@ const Checkoutcart = () => {
     0
   );
 
+  // Free shipping progress
   const limit = 1000;
   const progress = Math.min((total / limit) * 100, 100);
 
-  // Handle placeholder animation for textarea
+  // Clear placeholder after focus delay
   const handleFocus = () => {
     setTimeout(() => {
       setPlaceholder("");
     }, 2000);
   };
 
-  // React Hook Form setup
+  // React Hook Form config
   const {
     register,
     handleSubmit,
@@ -93,7 +115,7 @@ const Checkoutcart = () => {
     resolver: yupResolver(schema),
   });
 
-  // Submit order
+  // Submit form handler
   const onSubmit = (data: any) => {
     const payload = {
       ...data,
@@ -103,6 +125,7 @@ const Checkoutcart = () => {
       })),
     };
 
+    // Dispatch checkout
     dispatch(Checkout(payload))
       .unwrap()
       .then((res) => {
@@ -111,7 +134,7 @@ const Checkoutcart = () => {
           description: "Your order has been submitted, redirecting...",
         });
 
-        // Clear cart after successful order
+        // Clear cart after order placed
         Promise.all(
           items.map((item) =>
             dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
@@ -124,16 +147,17 @@ const Checkoutcart = () => {
               description: "Your cart has been emptied successfully.",
             });
           })
-          .catch(() => {
+          .catch((err) => {
             toast({
               title: "Error ❌",
               description: "Failed to clear your cart, please try again.",
             });
           });
 
+        // Redirect to order complete page
         nav("/ordercomplete", { replace: true });
       })
-      .catch(() => {
+      .catch((err) => {
         toast({
           title: "Failed to place order ❌",
           description: "Please try again later.",
@@ -143,7 +167,7 @@ const Checkoutcart = () => {
 
   return (
     <div>
-      {/* Header section */}
+      {/* Top breadcrumb */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Cart</h1>
@@ -155,8 +179,9 @@ const Checkoutcart = () => {
         </div>
       </div>
 
-      {/* Checkout steps navigation */}
+      {/* Checkout steps header */}
       <div className="py-24 container mx-auto flex justify-center gap-x-16">
+        {/* Step 1 */}
         <Link
           to={"/cart"}
           className="flex items-center justify-between opacity-50 cursor-pointer"
@@ -164,20 +189,22 @@ const Checkoutcart = () => {
           <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
             1
           </h1>
-          <h1 className="text-[25px] font-medium">Shopping cart</h1>
+          <h1 className="text-[25px] font-medium">Shoping cart</h1>
         </Link>
-
-        <FaArrowRight className="text-[24px] opacity-50" />
-
-        <div className="flex items-center justify-center cursor-pointer">
+        <h4 className=" flex items-center opacity-50">
+          <FaArrowRight className="text-[24px]" />
+        </h4>
+        {/* Step 2 */}
+        <div className="flex items-center justify-center  cursor-pointer">
           <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
             2
           </h1>
           <h1 className="text-[25px] font-medium">Checkout details</h1>
         </div>
-
-        <FaArrowRight className="text-[24px] opacity-50" />
-
+        <h4 className=" flex items-center opacity-50">
+          <FaArrowRight className="text-[24px]" />
+        </h4>
+        {/* Step 3 */}
         <div className="flex items-center justify-center opacity-50">
           <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
             3
@@ -186,15 +213,16 @@ const Checkoutcart = () => {
         </div>
       </div>
 
+      {/* Main checkout content */}
       <div className="flex gap-5 container mx-auto">
-        {/* Left side - Billing details */}
-        <div className="bg-[#f1f2f6] container mx-auto w-[60%] p-8 rounded-[50px] flex flex-col gap-5 pb-14">
-          <h2 className="bg-[#01e281] text-[18px] relative flex items-center justify-center text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
+        {/* Left column - billing details form */}
+        <div className="bg-[#f1f2f6] container mx-auto w-[60%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+          <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
             Billing details
             <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
           </h2>
 
-          {/* Billing form */}
+          {/* Form */}
           <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             {/* Full Name */}
             <div className="pt-10 flex flex-col w-full">
@@ -230,7 +258,7 @@ const Checkoutcart = () => {
               )}
             </div>
 
-            {/* Phone */}
+            {/* Phone Number */}
             <div className="pt-10 flex flex-col w-full">
               <label className="flex items-center gap-1">
                 Phone <span className="text-red-700">*</span>
@@ -247,10 +275,10 @@ const Checkoutcart = () => {
               )}
             </div>
 
-            {/* Country Selector */}
+            {/* Country dropdown */}
             <div className="pt-10 flex flex-col w-full">
               <label className="flex items-center gap-1">
-                Country <span className="text-red-700">*</span>
+                Country<span className="text-red-700"> *</span>
               </label>
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -307,8 +335,8 @@ const Checkoutcart = () => {
               )}
             </div>
 
-            {/* Notes */}
-            <div className="mt-10">
+            {/* Order Notes */}
+            <div className="mt-10 ">
               <h1 className="pb-5 border-b border-[#a7a7a733] text-[22px] font-bold">
                 Additional information
               </h1>
@@ -317,16 +345,15 @@ const Checkoutcart = () => {
               </p>
               <Textarea
                 {...register("order_notes")}
-                placeholder={placeholder}
-                onFocus={handleFocus}
+                placeholder="Notes about your order, e.g. special notes for delivery"
               />
             </div>
 
-            {/* Submit */}
+            {/* Submit button */}
             <div className="flex w-full pt-5">
               <Button
                 type="submit"
-                className="flex w-full text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
+                className="flex w-full text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
               >
                 Place order
               </Button>
@@ -334,45 +361,43 @@ const Checkoutcart = () => {
           </form>
         </div>
 
-        {/* Right side - Cart totals */}
-        <div className="bg-[#f1f2f6] container mx-auto h-fit w-[35%] p-8 rounded-[50px] flex flex-col gap-5 pb-14">
-          <h2 className="bg-[#01e281] text-[18px] relative flex items-center justify-center text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
+        {/* Right column - cart totals */}
+        <div className="bg-[#f1f2f6] container mx-auto h-fit w-[35%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+          <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
             Cart totals
             <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
           </h2>
 
           <div>
-            {/* Products in cart */}
-            <div className="border border-[#a7a7a733]">
-              <div className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]">
-                <h1 className="w-3/4 border-r border-[#a7a7a733] h-full">
+            {/* Cart items summary */}
+            <div className="border border-[#a7a7a733] ">
+              <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
+                <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
                   <h2 className="p-6 text-[16px] font-bold">Product</h2>
                 </h1>
                 <h2 className="w-[28%] text-[16px] font-bold p-6">Subtotal</h2>
               </div>
-
-              {items.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]"
-                >
-                  <h1 className="w-3/4 border-r border-[#a7a7a733] h-full">
-                    <h2 className="p-6 text-[16px] font-normal">
-                      {item.product_name}
-                      <span className="text-[16px] font-bold">
-                        × {item.quantity}
-                      </span>
+              {items.map((item, i) => {
+                return (
+                  <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
+                    <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
+                      <h2 className="p-6 text-[16px] font-normal">
+                        {item.product_name}
+                        <span className=" text-[16px] font-bold">
+                          × {item.quantity}
+                        </span>
+                      </h2>
+                    </h1>
+                    <h2 className="w-[28%] text-[16px] font-normal p-6">
+                      ${item.price}
                     </h2>
-                  </h1>
-                  <h2 className="w-[28%] text-[16px] font-normal p-6">
-                    ${item.price}
-                  </h2>
-                </div>
-              ))}
+                  </div>
+                );
+              })}
 
               {/* Subtotal */}
-              <div className="flex border-b border-[#a7a7a733]">
-                <h1 className="w-3/4 border-r border-[#a7a7a733] h-full">
+              <div className="flex  border-b border-[#a7a7a733] ">
+                <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
                   <h2 className="p-6 text-[16px] font-bold">Subtotal</h2>
                 </h1>
                 <h2 className="w-[28%] text-[16px] font-bold p-6">
@@ -382,20 +407,22 @@ const Checkoutcart = () => {
 
               {/* Total */}
               <div className="flex text-[16px] font-bold">
-                <h1 className="w-3/4 border-r border-[#a7a7a733] h-full">
+                <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
                   <h2 className="p-6 text-[16px] font-bold">Total</h2>
                 </h1>
                 <h2 className="w-[28%] p-6">${total.toFixed(2)}</h2>
               </div>
             </div>
 
-            {/* Free shipping progress */}
-            <div className="pb-5 border-b border-dashed border-[#cdc7c7]">
+            {/* Progress to free shipping */}
+            <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
               <div className="flex items-center pb-3 px-1 text-[18px] mt-4">
                 <FaCartArrowDown />
                 <p className="flex items-center pl-2">
                   Add{" "}
-                  <span className="font-bold px-2">${total.toFixed(2)}</span>{" "}
+                  <p className="font-bold px-2">
+                    ${(limit - total).toFixed(2)}
+                  </p>{" "}
                   more to get free shipping!
                 </p>
               </div>

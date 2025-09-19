@@ -1,7 +1,16 @@
+
+// ==================== Imports ====================
+// React hooks
 import { useEffect, useState } from "react";
+
+// Icons
 import { IoIosArrowForward } from "react-icons/io";
 import { TiHome } from "react-icons/ti";
 import { FaArrowRight, FaCartArrowDown } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
+import { LiaCartPlusSolid } from "react-icons/lia";
+
+// UI components
 import {
   Table,
   TableBody,
@@ -11,36 +20,45 @@ import {
   TableRow,
 } from "../components/ui/table";
 import { Button } from "../components/ui/button";
-import { IoClose } from "react-icons/io5";
-import "./Header.css";
 import { Progress } from "../components/ui/progress";
+
+// Redux actions
 import { EditCart, GetToCart, RemoveCart } from "../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { LiaCartPlusSolid } from "react-icons/lia";
 import { RootState } from "../store";
 import { productUser } from "../store/productSlice";
+
+// Components
 import Product from "./Product";
+
+// Routing
 import { Link, useNavigate } from "react-router-dom";
+
+// Custom hook for toast notifications
 import { useToast } from "../hooks/use-toast";
 
-const Cart = () => {
-  const { toast } = useToast();
-  const nav = useNavigate();
-  const dispatch = useAppDispatch();
+// Styles
+import "./Header.css";
 
-  // Get products state from Redux
+// ==================== Component ====================
+const Cart = () => {
+  const { toast } = useToast(); // Toast hook for notifications
+  const nav = useNavigate(); // Navigation hook
+  const dispatch = useAppDispatch(); // Redux dispatch
+
+  // Get products from Redux store
   const { products, loading, error } = useAppSelector(
     (state: RootState) => state.product
   );
 
-  // Fetch products if empty
+  // Fetch products if not loaded yet
   useEffect(() => {
     if (products.length === 0) {
       dispatch(productUser());
     }
   }, [dispatch, products.length]);
 
-  // Get cart state from Redux
+  // Get cart items from Redux store
   const { items, total } = useAppSelector((state) => state.cart);
 
   // Fetch cart on mount
@@ -48,19 +66,21 @@ const Cart = () => {
     dispatch(GetToCart());
   }, [dispatch]);
 
-  // Update item quantity in cart
+  // ==================== Update Item Quantity ====================
   const updateQuantity = (
     product_id: number,
     type: "inc" | "dec",
     currentQty: number
   ) => {
+    // Calculate new quantity based on type
     const newQty =
       type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
 
+    // Dispatch Redux action to edit cart
     dispatch(EditCart({ product_id, quantity: newQty }))
       .unwrap()
       .then(() => {
-        dispatch(GetToCart());
+        dispatch(GetToCart()); // Refresh cart after update
         toast({
           title: "Cart updated",
           description: `Quantity ${
@@ -70,12 +90,13 @@ const Cart = () => {
       });
   };
 
-  // Remove item from cart
+  // ==================== Remove Item ====================
   const removeItem = (product_id: number) => {
+    // Dispatch Redux action to remove item from cart
     dispatch(RemoveCart({ product_id }))
       .unwrap()
       .then(() => {
-        dispatch(GetToCart());
+        dispatch(GetToCart()); // Refresh cart after removal
         toast({
           title: "Removed from cart",
           description: "The item was successfully removed.",
@@ -83,16 +104,19 @@ const Cart = () => {
       });
   };
 
-  // Free shipping progress logic
-  const limit = 1000;
+  // ==================== Calculate Totals ====================
+  const limit = 1000; // Free shipping limit
   const subtotal = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
     : 0;
+
+  // Progress bar value for free shipping
   const progress = Math.min((subtotal / limit) * 100, 100);
 
+  // ==================== Render ====================
   return (
     <div>
-      {/* ================= Page Header ================= */}
+      {/* ==================== Breadcrumb Section ==================== */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Cart</h1>
@@ -104,16 +128,16 @@ const Cart = () => {
         </div>
       </div>
 
-      {/* ================= If Cart Has Items ================= */}
+      {/* ==================== If items exist in cart ==================== */}
       {Array.isArray(items) && items?.length !== 0 ? (
         <div>
-          {/* Checkout steps indicator */}
+          {/* ==================== Checkout Steps ==================== */}
           <div className="py-24 container mx-auto flex justify-center gap-x-16">
             <Link
               to={"/cart"}
               className="flex items-center justify-between cursor-pointer"
             >
-              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 1
               </h1>
               <h1 className="text-[25px] font-medium">Shopping cart</h1>
@@ -127,7 +151,7 @@ const Cart = () => {
               to={"/checkout"}
               className="flex items-center justify-center opacity-50 cursor-pointer"
             >
-              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 2
               </h1>
               <h1 className="text-[25px] font-medium">Checkout details</h1>
@@ -138,14 +162,14 @@ const Cart = () => {
             </h4>
 
             <div className="flex items-center justify-center opacity-50">
-              <h1 className="w-8 h-8 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
+              <h1 className="w-8 h-8 leading-2 p-[5px] text-center mr-4 text-[18px] rounded-full bg-[#01e281]">
                 3
               </h1>
               <h1 className="text-[25px] font-medium">Order complete</h1>
             </div>
           </div>
 
-          {/* ================= Cart Table ================= */}
+          {/* ==================== Table Section ==================== */}
           <div className="p-6 container mx-auto">
             <Table>
               <TableHeader>
@@ -160,20 +184,31 @@ const Cart = () => {
               </TableHeader>
 
               <TableBody>
+                {/* Loop through cart items */}
                 {items.map((item) => (
                   <TableRow key={item.product_id}>
-                    {/* Remove item button */}
+                    {/* Remove Button */}
                     <TableCell>
                       <Button
                         variant="ghost"
                         onClick={() => removeItem(item.product_id)}
                         className="hover-effect text-red-500"
                       >
-                        <IoClose style={{ width: "2rem", height: "2rem" }} />
+                        <IoClose
+                          style={{
+                            width: "2rem",
+                            height: "2rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "0.5rem",
+                            cursor: "pointer",
+                          }}
+                        />
                       </Button>
                     </TableCell>
 
-                    {/* Product image */}
+                    {/* Product Image */}
                     <TableCell className="cursor-pointer gap-3">
                       <img
                         src={item.img_url}
@@ -186,7 +221,7 @@ const Cart = () => {
                       />
                     </TableCell>
 
-                    {/* Product details */}
+                    {/* Product Name */}
                     <TableCell
                       className="flex flex-col p-7 gap-3 cursor-pointer"
                       onClick={() => {
@@ -203,9 +238,10 @@ const Cart = () => {
                     {/* Price */}
                     <TableCell className="text-[16px]">${item.price}</TableCell>
 
-                    {/* Quantity controls */}
+                    {/* Quantity Controls */}
                     <TableCell>
                       <div className="flex items-center gap-2">
+                        {/* Decrease Quantity */}
                         <Button
                           variant="outline"
                           size="icon"
@@ -216,13 +252,17 @@ const Cart = () => {
                               item.quantity
                             )
                           }
-                          className="bg-[#f9f9f9] text-[#01e281] hover:text-[#122d40] hover:bg-[#01e281] rounded-full w-12 h-12"
+                          className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281]  rounded-full text-[18px] w-12 h-12"
                         >
                           −
                         </Button>
+
+                        {/* Quantity Display */}
                         <span className="px-3 w-20 border border-[#a7a7a74d] h-10 rounded-full flex items-center justify-center text-[16px]">
                           {item.quantity}
                         </span>
+
+                        {/* Increase Quantity */}
                         <Button
                           variant="outline"
                           size="icon"
@@ -233,21 +273,21 @@ const Cart = () => {
                               item.quantity
                             )
                           }
-                          className="bg-[#f9f9f9] text-[#01e281] hover:text-[#122d40] hover:bg-[#01e281] rounded-full w-12 h-12"
+                          className="bg-[#f9f9f9] text-[#01e281] transition duration-200 delay-100 hover:text-[#122d40] hover:bg-[#01e281] rounded-full text-[18px] w-12 h-12"
                         >
                           +
                         </Button>
                       </div>
                     </TableCell>
 
-                    {/* Subtotal per item */}
+                    {/* Subtotal */}
                     <TableCell className="text-[16px]">
                       ${(Number(item.price) * item.quantity).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))}
 
-                {/* Continue shopping button */}
+                {/* Continue Shopping Button */}
                 <TableRow>
                   <TableCell colSpan={6} className="text-left">
                     <div className="flex justify-end">
@@ -256,7 +296,7 @@ const Cart = () => {
                           nav("/shop");
                           window.scrollTo(0, 0);
                         }}
-                        className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
+                        className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
                       >
                         Continue shopping
                       </Button>
@@ -267,18 +307,19 @@ const Cart = () => {
             </Table>
           </div>
 
-          {/* ================= Cart Totals ================= */}
-          <div className="bg-[#f1f2f6] container mx-auto w-[40%] p-8 rounded-[50px] flex flex-col gap-5 pb-14">
-            <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
+          {/* ==================== Cart Totals Section ==================== */}
+          <div className="bg-[#f1f2f6] container mx-auto w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+            <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
               Cart totals
               <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
             </h2>
 
             <div>
-              {/* Cart summary list */}
-              <div className="border border-[#a7a7a733]">
-                <div className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]">
-                  <h1 className="w-3/4 border-r border-[#a7a7a733]">
+              {/* Totals Table */}
+              <div className="border border-[#a7a7a733] ">
+                {/* Header Row */}
+                <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
+                  <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
                     <h2 className="p-6 text-[16px] font-bold">Product</h2>
                   </h1>
                   <h2 className="w-[28%] text-[16px] font-bold p-6">
@@ -286,36 +327,43 @@ const Cart = () => {
                   </h2>
                 </div>
 
-                {items.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex border-b border-[#a7a7a733] bg-[#a7a7a71a]"
-                  >
-                    <h1 className="w-3/4 border-r border-[#a7a7a733]">
-                      <h2 className="p-6 text-[16px] font-normal">
-                        {item.product_name}
-                        <span className="font-bold"> × {item.quantity}</span>
+                {/* Loop through items */}
+                {items.map((item, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]"
+                    >
+                      <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
+                        <h2 className="p-6 text-[16px] font-normal">
+                          {item.product_name}
+                          <span className=" text-[16px] font-bold">
+                            × {item.quantity}
+                          </span>
+                        </h2>
+                      </h1>
+                      <h2 className="w-[28%] text-[16px] font-normal p-6">
+                        ${item.price}
                       </h2>
-                    </h1>
-                    <h2 className="w-[28%] text-[16px] font-normal p-6">
-                      ${item.price}
-                    </h2>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
 
-                {/* Subtotal & total */}
-                <div className="flex border-b border-[#a7a7a733] p-5">
+                {/* Subtotal Row */}
+                <div className="flex  border-b border-[#a7a7a733] p-5">
                   <h1 className="w-1/4 p-5 text-[16px] font-bold">Subtotal</h1>
                   <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
                 </div>
+
+                {/* Total Row */}
                 <div className="flex p-5 text-[16px] font-bold">
                   <h1 className="w-1/4 p-5">Total</h1>
                   <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
                 </div>
               </div>
 
-              {/* Free shipping progress bar */}
-              <div className="pb-5 border-b border-dashed border-[#cdc7c7]">
+              {/* Free Shipping Progress */}
+              <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
                 <div className="flex items-center pb-3 px-1 text-[18px] mt-4">
                   <FaCartArrowDown />
                   <p className="flex items-center pl-2">
@@ -326,25 +374,25 @@ const Cart = () => {
                 <Progress value={progress} className="h-4 text-[#01e281]" />
               </div>
 
-              {/* Checkout button */}
+              {/* Checkout Button */}
               <div className="flex justify-end pt-5">
                 <Button
                   onClick={() => {
                     nav("/checkout");
                     window.scrollTo(0, 0);
                   }}
-                  className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
+                  className="flex text-[18px] items-center gap-2 px-6 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center m-2 hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
                 >
-                  Proceed to Checkout
+                  Process to Checkout
                 </Button>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        /* ================= If Cart is Empty ================= */
-        <div className="h-48 p-5 container mx-auto mb-[70rem]">
-          <div className="flex flex-col items-center justify-center rounded-2xl">
+        // ==================== Empty Cart Section ====================
+        <div className=" h-48 p-5 container mx-auto mb-[70rem]">
+          <div className=" flex flex-col items-center justify-center rounded-2xl">
             <LiaCartPlusSolid className="text-[240px] opacity-30" />
             <h1 className="text-[36px] font-bold">
               Looks like your cart is empty!
@@ -353,26 +401,27 @@ const Cart = () => {
               Time to start your shopping
             </h1>
 
-            {/* Suggested products */}
-            <div className="bg-[#f1f2f6] container mx-auto mt-10 p-8 rounded-[50px] flex flex-col gap-5">
-              <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6 w-full">
+            {/* Product Suggestions */}
+            <div className="bg-[#f1f2f6] container mx-auto mt-10  p-8 rounded-[50px] flex flex-col justify-center  gap-5  ">
+              <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 You may be interested in ...
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
               </h2>
+
               <div className="flex justify-between my-10">
-                {products.slice(0, 4).map((product, i) => (
-                  <Product key={i} item={product} />
-                ))}
+                {products.slice(0, 4).map((product, i) => {
+                  return <Product key={i} item={product} />;
+                })}
               </div>
             </div>
 
-            {/* Return to shop button */}
+            {/* Return to Shop Button */}
             <Button
               onClick={() => {
                 nav("/checkout");
                 window.scrollTo(0, 0);
               }}
-              className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 hover:bg-[#122d40] hover:text-[#01e281]"
+              className="flex text-[18px] items-center gap-2 px-8 py-8 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full  h-12 justify-center  hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100"
             >
               Return to shop
             </Button>
@@ -383,4 +432,5 @@ const Cart = () => {
   );
 };
 
+// ==================== Export Component ====================
 export default Cart;

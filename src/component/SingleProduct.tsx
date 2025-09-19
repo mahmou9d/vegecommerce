@@ -1,16 +1,11 @@
 import { Button } from "../components/ui/button";
 import { Rating, RatingButton } from "../components/ui/shadcn-io/rating";
-import { FaPinterest } from "react-icons/fa";
-import { RiTwitterXFill } from "react-icons/ri";
+import { FaPinterest, FaWhatsapp, FaRegCopy } from "react-icons/fa";
+import { RiTwitterXFill, RiShoppingCartLine } from "react-icons/ri";
 import { IoIosArrowForward, IoMdHeartEmpty } from "react-icons/io";
-import { RiShoppingCartLine } from "react-icons/ri";
 import { TiHome } from "react-icons/ti";
-import InnerImageZoom from "react-inner-image-zoom";
-import { MdOutlineCheckCircle } from "react-icons/md";
+import { MdOutlineCheckCircle, MdEmail } from "react-icons/md";
 import { LiaFacebookF } from "react-icons/lia";
-import { FaWhatsapp } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
-import { FaRegCopy } from "react-icons/fa";
 import {
   Tooltip,
   TooltipContent,
@@ -18,6 +13,7 @@ import {
   TooltipTrigger,
 } from "../components/ui/tooltip";
 import { useEffect, useState } from "react";
+import InnerImageZoom from "react-inner-image-zoom";
 import { Textarea } from "../components/ui/textarea";
 import { Checkbox } from "../components/ui/checkbox";
 import { Label } from "../components/ui/label";
@@ -29,10 +25,10 @@ import { RootState } from "../store";
 import { WishlistItems, WishlistRemove } from "../store/wishlistSlice";
 import { GetWishlist } from "../store/GetwishlistSlice";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-import { AddToCart, EditCart, GetToCart } from "../store/cartSlice";
+import { AddToCart, GetToCart } from "../store/cartSlice";
 import { useToast } from "../hooks/use-toast";
 
-
+// Static product info placeholders
 const listfirst = ["brand", "sku", "status", "tags", "categories"];
 const listsecond = [
   "XTRA",
@@ -44,24 +40,30 @@ const listsecond = [
 const description = [
   {
     title: "Your Personal Assistant",
-    desc: "Welcome to the next generation of assistance with our Future Helper Robot. Engineered with cutting-edge artificial intelligence, this robotic companion serves as your personal assistant, seamlessly integrating into your daily routine to enhance productivity and convenience. Whether you need help with scheduling, organization, or simply a friendly chat, our Future Helper Robot is always at your service, learning from your preferences and adapting to your needs over time.",
+    desc: "Welcome to the next generation of assistance ...",
   },
   {
     title: "Effortless Household Management",
-    desc: "Say goodbye to mundane chores and hello to newfound freedom with our Future Helper Robot. Equipped with nimble mobility and dexterous manipulators, it effortlessly navigates your home, tackling household tasks with efficiency and precision. From cleaning and tidying to managing smart home devices and even assisting with meal preparation, this robot revolutionizes the way you maintain your living space, leaving you with more time to focus on what truly matters.",
+    desc: "Say goodbye to mundane chores ...",
   },
   {
     title: "Entertainment Hub of Tomorrow",
-    desc: "But our Future Helper Robot is more than just a practical assistant—it’s also a gateway to endless entertainment and enrichment. With its intuitive interface and seamless connectivity, it transforms into your personal entertainment hub, streaming music, news, and immersive virtual reality experiences at your command. Whether you’re unwinding after a long day or seeking inspiration for your next adventure, this robot brings entertainment to life in ways you never thought possible.",
+    desc: "But our Future Helper Robot is more than just ...",
   },
 ];
+
 const SingleProduct = () => {
   const { toast } = useToast();
-  const [edit, setEdit] = useState(1);
-
-  const { id } = useParams();
   const dispatch = useAppDispatch();
+  const { id } = useParams();
+
+  // UI states
+  const [edit, setEdit] = useState(1);
   const [activeTab, setActiveTab] = useState("Description");
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState("");
+
+  // Tabs menu
   const tabs = [
     "Description",
     "Information",
@@ -70,32 +72,36 @@ const SingleProduct = () => {
     "FAQ",
     "Shopping & Returns",
   ];
-  const { products, loading, error } = useAppSelector(
-    (state: RootState) => state.product
-  );
-  const [rating, setRating] = useState(5);
-  const [review, setReview] = useState("");
 
+  // Get products from Redux
+  const { products } = useAppSelector((state: RootState) => state.product);
+
+  // Load products if not available
   useEffect(() => {
     if (products.length === 0) {
       dispatch(productUser());
     }
   }, [dispatch, products.length]);
-// console.log(products,"hglkjghfhvkgcfhig")
+
+  // Get reviews
   const { items } = useAppSelector((state) => state.review);
   useEffect(() => {
     dispatch(GetReview());
   }, [dispatch]);
-  // console.log(items,"atrtehqeterter");
-const filterProduct = products.filter((item) => item?.id?.toString() === id);
-const firstItem = filterProduct[0];
-// console.log(firstItem,"firstItemuymmytmyt")
-const filterReview = items.filter(
-  (item) => item?.toString() === firstItem.name
-);
-const firstReview = filterReview[0];
-// console.log(firstReview, "wqgqtetjty/ejtyte");
 
+  // Filter single product by ID
+  const filterProduct = products.filter((item) => item?.id?.toString() === id);
+  const firstItem = filterProduct[0];
+
+  // Filter reviews for current product
+  const filterReview = items.filter(
+    (item) => item?.toString() === firstItem?.name
+  );
+  const firstReview = filterReview[0];
+
+  /**
+   * Submit review for this product
+   */
   const handleAddReviews = () => {
     dispatch(
       AddReviews({
@@ -105,76 +111,92 @@ const firstReview = filterReview[0];
       })
     );
   };
-    const { access } = useAppSelector((state) => state?.auth);
-    const wishlist = useAppSelector((state) => state.wishlist.items);
-    const getwishlist = useAppSelector((state) => state.Getwishlists.items);
-    // console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
-    const inWishlist = id
-      ? getwishlist.some((w) => w.product_id === Number(id))
-      : false;
-  
-    const toggleWishlist = () => {
-      if (!id) return;
-  
-  if (inWishlist) {
-    dispatch(WishlistRemove(Number(id)))
-      .unwrap()
-      .then(() => {
-        toast({
-          title: "Removed ❤️",
-          description: `${firstItem?.name} has been removed from your wishlist.`,
-          className: "bg-white text-black border shadow-lg", // ستايل بسيط
+
+  // Get auth + wishlist state
+  const { access } = useAppSelector((state) => state?.auth);
+  const getwishlist = useAppSelector((state) => state.Getwishlists.items);
+
+  // Check if this product exists in wishlist
+  const inWishlist = id
+    ? getwishlist.some((w) => w.product_id === Number(id))
+    : false;
+
+  /**
+   * Toggle wishlist (add/remove product)
+   */
+  const toggleWishlist = () => {
+    if (!id) return;
+
+    if (inWishlist) {
+      dispatch(WishlistRemove(Number(id)))
+        .unwrap()
+        .then(() => {
+          toast({
+            title: "Removed ❤️",
+            description: `${firstItem?.name} has been removed from your wishlist.`,
+            className: "bg-white text-black border shadow-lg",
+          });
         });
-      });
-  } else {
-    dispatch(WishlistItems(Number(id)))
-      .unwrap()
-      .then(() => {
-        toast({
-          title: "Added 💚",
-          description: `${firstItem?.name} has been added to your wishlist.`,
+    } else {
+      dispatch(WishlistItems(Number(id)))
+        .unwrap()
+        .then(() => {
+          toast({
+            title: "Added 💚",
+            description: `${firstItem?.name} has been added to your wishlist.`,
+          });
         });
-      });
-  }
-      dispatch(GetWishlist());
-    };
-    const handleAddToCart = async () => {
-      if (!id) return;
-      await dispatch(AddToCart({ product_id: Number(id), quantity: 1 }));
-      dispatch(GetToCart());
-    };
-  const { items:items3, total } = useAppSelector((state) => state.cart);
-  // console.log(items3,"vvvvvvvvvvvvvvvvvvv")
+    }
+
+    dispatch(GetWishlist()); // Refresh wishlist
+  };
+
+  /**
+   * Add product to cart (default quantity = 1)
+   */
+  const handleAddToCart = async () => {
+    if (!id) return;
+    await dispatch(AddToCart({ product_id: Number(id), quantity: 1 }));
+    dispatch(GetToCart());
+  };
+
+  // Cart state
+  const { items: cartItems, total } = useAppSelector((state) => state.cart);
+
+  // Fetch cart items on mount
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
-      const updateQuantity = () => {
-        dispatch(
-          AddToCart({ product_id: Number(firstItem.id), quantity: edit })
-        )
-          .unwrap()
-          .then(() => {
-            dispatch(GetToCart());
-            setEdit(1);
-            toast({
-              title: "🛒 Added to Cart",
-              description: `${firstItem?.name} (x${edit}) has been added to your cart.`,
-            });
-          })
-          .catch((error) => {
-            if (access) {
-              toast({
-                title: "Error ❌",
-                description: "Failed to add item to cart.",
-              });
-            } else {
-              toast({
-                title: "Error ❌",
-                description: "Please login first",
-              });
-            }
+
+  /**
+   * Update quantity for product in cart
+   */
+  const updateQuantity = () => {
+    dispatch(AddToCart({ product_id: Number(firstItem.id), quantity: edit }))
+      .unwrap()
+      .then(() => {
+        dispatch(GetToCart());
+        setEdit(1);
+        toast({
+          title: "🛒 Added to Cart",
+          description: `${firstItem?.name} (x${edit}) has been added to your cart.`,
+        });
+      })
+      .catch(() => {
+        if (access) {
+          toast({
+            title: "Error ❌",
+            description: "Failed to add item to cart.",
           });
-      };
+        } else {
+          toast({
+            title: "Error ❌",
+            description: "Please login first",
+          });
+        }
+      });
+  };
+
   return (
     <div>
       <div className="bg-[#f9f9f9] pt-20 pb-10">
@@ -196,10 +218,7 @@ const firstReview = filterReview[0];
       <div className="container mx-auto flex my-10">
         <div className="w-[50%]">
           <div className="w-[400px] h-[400px]">
-            <img
-              src={firstItem?.img_url}
-              alt={""}
-            />
+            <img src={firstItem?.img_url} alt={""} />
           </div>
         </div>
         <div className="w-[50%]">
@@ -442,22 +461,35 @@ const firstReview = filterReview[0];
           )}
           {activeTab === "Reviews" && (
             <div>
-              <h1 className={`text-[22px] font-bold pb-5 ${filterReview?.length===0?"":" border-b border-[#a7a7a733]"}`}>
-                {filterReview?.length===0?"No reviews":`${filterReview?.length} reviews for ${firstReview?.product}`}
+              <h1
+                className={`text-[22px] font-bold pb-5 ${
+                  filterReview?.length === 0
+                    ? ""
+                    : " border-b border-[#a7a7a733]"
+                }`}
+              >
+                {filterReview?.length === 0
+                  ? "No reviews"
+                  : `${filterReview?.length} reviews for ${firstReview?.product}`}
               </h1>
-             {filterReview?.length!==0 && <div className="bg-white text-black py-7 px-7 rounded-2xl">
-                <div className="flex justify-between pb-4">
-                  <p className="font-medium">{firstReview?.customer}</p>
-                  <p>
-                    <Rating defaultValue={firstReview?.rating}>
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <RatingButton className="text-[#ffc000]" key={index} />
-                      ))}
-                    </Rating>
-                  </p>
+              {filterReview?.length !== 0 && (
+                <div className="bg-white text-black py-7 px-7 rounded-2xl">
+                  <div className="flex justify-between pb-4">
+                    <p className="font-medium">{firstReview?.customer}</p>
+                    <p>
+                      <Rating defaultValue={firstReview?.rating}>
+                        {Array.from({ length: 5 }).map((_, index) => (
+                          <RatingButton
+                            className="text-[#ffc000]"
+                            key={index}
+                          />
+                        ))}
+                      </Rating>
+                    </p>
+                  </div>
+                  <h1>{firstReview?.comment}</h1>
                 </div>
-                <h1>{firstReview?.comment}</h1>
-              </div>}
+              )}
               <p className="py-4">Add a review</p>
               <p className="pb-4">
                 Your email address will not be published. Required fields are

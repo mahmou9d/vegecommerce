@@ -1,15 +1,34 @@
+// =============================
+// Import React, Hooks & Helpers
+// =============================
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+// =============================
+// Import Icons
+// =============================
 import { HiSearch } from "react-icons/hi";
 import { BiSolidPhoneCall } from "react-icons/bi";
-import { FaBasketShopping } from "react-icons/fa6";
+import {
+  FaBasketShopping,
+  FaGift,
+  FaFolder,
+  FaLink,
+  FaCartArrowDown,
+} from "react-icons/fa6";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { GoPerson } from "react-icons/go";
 import { TbPercentage } from "react-icons/tb";
-import { FaGift } from "react-icons/fa6";
+import { MdDiscount, MdOutlineMenu } from "react-icons/md";
+import { TiArrowSortedUp } from "react-icons/ti";
+import { IoClose } from "react-icons/io5";
+import { RiFileListLine } from "react-icons/ri";
+import { LiaCartPlusSolid } from "react-icons/lia";
+
+// =============================
+// Import UI Components (Sheet, Accordion, Progress)
+// =============================
 import "./Header.css";
-import { FaFolder } from "react-icons/fa";
-import { MdDiscount } from "react-icons/md";
-import { FaLink } from "react-icons/fa6";
-import { MdOutlineMenu } from "react-icons/md";
 import { SheetTrigger, SheetContent, Sheet } from "../components/ui/sheet";
 import {
   Accordion,
@@ -17,19 +36,24 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
-import { Link, useNavigate } from "react-router-dom";
-import { TiArrowSortedUp } from "react-icons/ti";
-import { IoClose } from "react-icons/io5";
-import { RiFileListLine } from "react-icons/ri";
-import { FaCartArrowDown } from "react-icons/fa6";
-import { useEffect, useState } from "react";
 import { Progress } from "../components/ui/progress";
+
+// =============================
+// Import Redux Hooks & Actions
+// =============================
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { GetToCart, RemoveCart } from "../store/cartSlice";
-import { LiaCartPlusSolid } from "react-icons/lia";
-import { useToast } from "../hooks/use-toast";
 import { Logout } from "../store/authSlice";
 import { WishlistRemove } from "../store/wishlistSlice";
+
+// =============================
+// Import Custom Hooks
+// =============================
+import { useToast } from "../hooks/use-toast";
+
+// =============================
+// Static Data: Category & Footer
+// =============================
 const category = [
   {
     Icon: "/images/s1.png",
@@ -82,93 +106,115 @@ const footerData = {
     "Lost password",
   ],
 };
+
+// =============================
+// Interface for Product
+// =============================
 interface Product {
   id: number;
   title: string;
   price: number;
 }
+
+// =============================
+// Header Component
+// =============================
 const Header = () => {
+  // Hooks
   const { toast } = useToast();
   const dispatch = useAppDispatch();
-    const { access } = useAppSelector((state) => state?.auth);
-    // console.log(access,"ebtetrr")
+  const { access } = useAppSelector((state) => state?.auth);
+
+  // Cart Items & Total from Redux
   const { items, total } = useAppSelector((state) => state?.cart);
+
+  // Load cart items when component mounts
   useEffect(() => {
     dispatch(GetToCart());
   }, [dispatch]);
 
-  // console.log(items.length);
+  // Local cart state
   const [cart, setCart] = useState<Product[]>([]);
-    const { items:items2, loading, error } = useAppSelector(
-      (state) => state.Getwishlists
-    );
-  const limit = 1000;
+
+  // Wishlist Items
+  const { items: items2 } = useAppSelector((state) => state.Getwishlists);
+
+  // Variables
+  const limit = 1000; // free shipping limit
   const nav = useNavigate();
+
+  // Calculate cart quantity
   const subquantity = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.quantity), 0)
     : 0;
-    // console.log(subquantity, "subquantity");
+
+  // Calculate cart subtotal
   const subtotal = Array.isArray(items)
     ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
     : 0;
+
+  // Progress bar for free shipping
   const progress = Math.min((subtotal / limit) * 100, 100);
+
+  // =============================
+  // Remove item from cart
+  // =============================
   const removeItem = (product_id: number) => {
     dispatch(RemoveCart({ product_id }))
       .unwrap()
       .then(() => {
         dispatch(GetToCart());
-
         toast({
           title: "Removed from cart 🛒",
           description: "The item has been removed successfully.",
         });
       })
       .catch(() => {
-        if(access){
-        toast({
-          title: "Error ❌",
-          description: "Failed to remove item from cart.",
-        });
-        }else{
-        toast({
-          title: "Error ❌",
-          description: "Please login first",
-        });
-        }
-
-      });
-  };
-    const handleLogout = () => {
-      dispatch(Logout())
-        .unwrap()
-        .then(() => {
-          toast({
-            title: "Logged out ✅",
-            description: "You have been logged out successfully.",
-          });
-                        Promise.all(
-                          items.map((item) =>
-                            dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
-                          )
-                        )
-                                                    Promise.all(
-                                                      items2.map((item) =>
-                                                        dispatch(
-                                                          WishlistRemove(
-                                                            item.product_id
-                                                          )
-                                                        ).unwrap()
-                                                      )
-                                                    );
-          nav("/login")
-        })
-        .catch((err) => {
+        if (access) {
           toast({
             title: "Error ❌",
-            description: err || "Logout failed",
+            description: "Failed to remove item from cart.",
           });
+        } else {
+          toast({ title: "Error ❌", description: "Please login first" });
+        }
+      });
+  };
+
+  // =============================
+  // Logout handler
+  // =============================
+  const handleLogout = () => {
+    dispatch(Logout())
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Logged out ✅",
+          description: "You have been logged out successfully.",
         });
-    };
+
+        // Remove all cart items & wishlist items on logout
+        Promise.all(
+          items.map((item) =>
+            dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
+          )
+        );
+        Promise.all(
+          items2.map((item) =>
+            dispatch(WishlistRemove(item.product_id)).unwrap()
+          )
+        );
+
+        nav("/login");
+      })
+      .catch((err) => {
+        toast({ title: "Error ❌", description: err || "Logout failed" });
+      });
+  };
+
+  // =============================
+  // Return JSX
+  // =============================
   return (
     <div>
       <div className=" bg-[#122d40]">
@@ -486,7 +532,7 @@ const Header = () => {
                           <p className="flex items-center pl-2">
                             Add{" "}
                             <p className="font-bold px-2">
-                              ${subtotal.toFixed(2)}
+                              ${(limit - total).toFixed(2)}
                             </p>{" "}
                             more to get free shipping!
                           </p>
