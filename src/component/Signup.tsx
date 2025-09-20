@@ -78,7 +78,7 @@ const Signup = () => {
         password: data.password1,
       };
       await dispatch(loginUser(loginPayload)).unwrap();
-
+localStorage.setItem("username", data.username);
       // Success notification
       toast({
         title: "Signup Successful 🎉",

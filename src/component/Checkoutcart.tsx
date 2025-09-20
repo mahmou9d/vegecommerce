@@ -156,6 +156,7 @@ const Checkoutcart = () => {
 
         // Redirect to order complete page
         nav("/ordercomplete", { replace: true });
+        window.scrollTo(0,0)
       })
       .catch((err) => {
         toast({
