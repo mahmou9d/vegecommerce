@@ -67,6 +67,7 @@ export const fetchWithRefresh = async (
   }
 
   if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  // console.log(res.json(),"cartrttttttttt");
   return res.json();
 };
 
@@ -249,7 +250,8 @@ const cartSlice = createSlice({
           state.loading = "pending";
           state.error = null;
         })
-        .addCase(Checkout.fulfilled, (state) => {
+        .addCase(Checkout.fulfilled, (state,action) => {
+          console.log("Checkout fulfilled payload:", action.payload);
           state.loading = "succeeded";
           state.items = [];
           state.total = 0;

@@ -70,7 +70,7 @@ const bannerStyle: React.CSSProperties = {
 // ==================== BlogItem Component (memoized) ====================
 const BlogItem = React.memo(({ item }: { item: (typeof blogs)[0] }) => (
   <CarouselItem
-    key={item.title}
+    key={item.img}
     className="basis-1/4 relative group cursor-pointer"
   >
     {/* Small title badge */}
@@ -170,7 +170,7 @@ const Blog = () => {
         <Carousel className="relative w-full mt-16">
           <CarouselContent className="-ml-4 flex justify-between w-full pt-10">
             {blogs.map((item) => (
-              <BlogItem key={item.title} item={item} />
+              <BlogItem key={item.img} item={item} />
             ))}
           </CarouselContent>
 

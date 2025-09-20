@@ -218,6 +218,7 @@ const reviewSlice = createSlice({
       state.items = action.payload || [];
     });
     builder.addCase(AddReviews.rejected, (state, action) => {
+      console.log("Checkout fulfilled payload:", action.payload);
       state.loading = "failed";
       state.error = (action.payload as string) || "Unexpected error";
     });

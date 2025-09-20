@@ -75,6 +75,7 @@ const SingleProduct = () => {
   );
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
+    const { access } = useAppSelector((state) => state?.auth);
 
   useEffect(() => {
     if (products.length === 0) {
@@ -83,6 +84,7 @@ const SingleProduct = () => {
   }, [dispatch, products.length]);
 // console.log(products,"hglkjghfhvkgcfhig")
   const { items } = useAppSelector((state) => state.reviewget);
+    const { error:error2 } = useAppSelector((state) => state.review);
   useEffect(() => {
     dispatch(GetReview());
   }, [dispatch]);
@@ -107,6 +109,13 @@ console.log(filterReview, "wqgqtetjty/ejtyte");
   // };
 const handleAddReviews = () => {
    const username = localStorage.getItem("username") || "Guest";
+       if (!username) {
+         toast({
+           title: "Login required",
+           description: "Please login first to add a review.",
+         });
+         return;
+       }
   const hasReviewed = items.some(
     (item) =>
       item.product.toString() === firstItem?.name && item.customer === username
@@ -120,16 +129,34 @@ const handleAddReviews = () => {
     return;
   }
 
-  dispatch(
-    AddReviews({
-      product_id: firstItem.id as number,
-      comment: review,
-      rating: rating,
-    })
-  );
-  dispatch(GetReview());
+dispatch(
+  AddReviews({
+    product_id: firstItem.id as number,
+    comment: review,
+    rating: rating,
+  })
+)
+  .unwrap()
+  .then(() => {
+    toast({
+      title: "✅ Review submitted",
+      description: "Your review has been added successfully.",
+    });
+    dispatch(GetReview());
+  })
+  .catch((err) => {
+     let message = "Unexpected error";
+     if (typeof err === "string") message = err;
+     else if (err?.error) message = err.error; // <== هنا نأخذ الرسالة من السيرفر
+
+     toast({
+       title: "Error ❌",
+       description: message,
+     });
+  });
+
 };
-    const { access } = useAppSelector((state) => state?.auth);
+
     const wishlist = useAppSelector((state) => state.wishlist.items);
     const getwishlist = useAppSelector((state) => state.Getwishlists.items);
     // console.log(wishlist, "khflhjdjfhs;kjjdhsfg;lkjhfdgdfogkjh");
@@ -476,11 +503,13 @@ const handleAddReviews = () => {
                   ? "No reviews"
                   : `${filterReview?.length} reviews for ${firstReview[0]?.product}`}
               </h1>
-              
-              {filterReview?.length !== 0 &&
-                firstReview.map((item)=>(
 
-                  <div key={item.id} className="bg-white mb-4 text-black py-7 px-7 rounded-2xl">
+              {filterReview?.length !== 0 &&
+                firstReview.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white mb-4 text-black py-7 px-7 rounded-2xl"
+                  >
                     <div className="flex justify-between pb-4">
                       <p className="font-medium">{item?.customer}</p>
                       <p>
@@ -496,9 +525,7 @@ const handleAddReviews = () => {
                     </div>
                     <h1>{item?.comment}</h1>
                   </div>
-                
-                ))
-                }
+                ))}
               <p className="py-4">Add a review</p>
               <p className="pb-4">
                 Your email address will not be published. Required fields are
@@ -537,6 +564,11 @@ const handleAddReviews = () => {
               >
                 Submit
               </button>
+              {/* {error2 && (
+                <p className="text-red-500">
+                  {typeof error2 === "string" ? error2 : JSON.stringify(error2).error}
+                </p>
+              )} */}
             </div>
           )}
           {activeTab === "Size Guide" && (

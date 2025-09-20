@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
 interface AuthState {
+  username:string;
   refresh: string;
   access: string;
   loading: "idle" | "pending" | "succeeded" | "failed";
@@ -9,6 +10,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
+  username:"",
   refresh: "",
   access: "",
   loading: "idle",
@@ -108,6 +110,7 @@ export const Logout = createAsyncThunk(
       }
 
       const data = await res.json();
+      // console.log(data)
       return data;
     } catch (err: any) {
       return rejectWithValue(err.message);
@@ -139,6 +142,7 @@ const authSlice = createSlice({
       state.loading = "succeeded";
       state.refresh = action.payload.refresh;
       state.access = action.payload.access;
+      state.username = action.payload.username;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = "failed";
