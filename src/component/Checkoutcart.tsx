@@ -169,7 +169,7 @@ const Checkoutcart = () => {
   return (
     <div>
       {/* Top breadcrumb */}
-      <div className="bg-[#f9f9f9] pt-20 pb-10">
+      <div className="bg-[#f9f9f9] px-5 pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Cart</h1>
           <div className="text-[18px] flex items-center gap-3 font-medium">
@@ -181,7 +181,7 @@ const Checkoutcart = () => {
       </div>
 
       {/* Checkout steps header */}
-      <div className="py-24 container mx-auto flex justify-center gap-x-16">
+      <div className="py-24 hidden container mx-auto xl:flex justify-center gap-x-16">
         {/* Step 1 */}
         <Link
           to={"/cart"}
@@ -215,9 +215,9 @@ const Checkoutcart = () => {
       </div>
 
       {/* Main checkout content */}
-      <div className="flex gap-5 container mx-auto">
+      <div className="flex gap-5 mt-10 xl:mt-0 container mx-auto flex-col xl:flex-row">
         {/* Left column - billing details form */}
-        <div className="bg-[#f1f2f6] container mx-auto w-[60%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+        <div className="bg-[#f1f2f6] container mx-auto xl:w-[60%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
           <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
             Billing details
             <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -363,7 +363,7 @@ const Checkoutcart = () => {
         </div>
 
         {/* Right column - cart totals */}
-        <div className="bg-[#f1f2f6] container mx-auto h-fit w-[35%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+        <div className="bg-[#f1f2f6] container mx-auto h-fit xl:w-[35%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
           <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
             Cart totals
             <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -374,9 +374,11 @@ const Checkoutcart = () => {
             <div className="border border-[#a7a7a733] ">
               <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
                 <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                  <h2 className="p-6 text-[16px] font-bold">Product</h2>
+                  <h2 className="p-4 xl:p-6 text-[16px] font-bold">Product</h2>
                 </h1>
-                <h2 className="w-[28%] text-[16px] font-bold p-6">Subtotal</h2>
+                <h2 className="w-[28%] text-[16px] font-bold p-4 xl:p-6">
+                  Subtotal
+                </h2>
               </div>
               {items.map((item, i) => {
                 return (
@@ -417,7 +419,7 @@ const Checkoutcart = () => {
 
             {/* Progress to free shipping */}
             <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
-              <div className="flex items-center pb-3 px-1 text-[18px] mt-4">
+              <div className="flex items-center pb-3 px-1 text-[15px] xl:text-[18px] mt-4">
                 <FaCartArrowDown />
                 <p className="flex items-center pl-2">
                   Add{" "}

@@ -121,9 +121,9 @@ const Categories = ({
     <div>
       {/* Header breadcrumb section */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
-        <div className="container mx-auto flex justify-between">
-          <h1 className="text-[24px] text-[#122d40] font-bold">{title}</h1>
-          <div className="text-[18px] flex items-center gap-3 font-medium">
+        <div className="container px-5 mx-auto flex justify-between">
+          <h1 className="xl:text-[24px] text-[#122d40] font-bold">{title}</h1>
+          <div className="xl:text-[18px] flex items-center gap-3 font-medium">
             <TiHome />
             <IoIosArrowForward />
             Products
@@ -135,16 +135,16 @@ const Categories = ({
 
       {/* Main content wrapper */}
       <div>
-        <div className="flex container mx-auto pt-10">
+        <div className="flex flex-col container mx-auto pt-10">
           {/* Left content - products list */}
           <div className="container mx-auto">
             <div className="px-5">
               <h1 className="text-[36px] font-bold mb-5">{title}</h1>
 
               {/* Top bar */}
-              <div className="flex justify-between pb-5">
+              <div className="flex flex-col items-center  xl:flex-row justify-between pb-5">
                 {showingText}
-                <div className="flex gap-3">
+                <div className="flex mt-5 xl:mt-0 gap-3">
                   {/* Per page select */}
                   <Select
                     defaultValue="8"
@@ -184,14 +184,13 @@ const Categories = ({
             </div>
 
             {/* Products grid */}
-            <div className="flex flex-col p-[10px] ">
+            {/* <div className="flex flex-col p-[10px] ">
               <div className="flex flex-wrap p-[10px] justify-between gap-y-12">
                 {visibleProducts.map((product) => (
                   <Product key={product.id} item={product} />
                 ))}
               </div>
 
-              {/* Pagination */}
               {products.length > perPage && (
                 <Pagination>
                   <PaginationContent>
@@ -232,13 +231,62 @@ const Categories = ({
                   </PaginationContent>
                 </Pagination>
               )}
-            </div>
+            </div> */}
           </div>
+          <div className="flex flex-col-reverse xl:flex-row">
+          <div className="flex flex-col p-[10px] ">
+            <div className="flex flex-wrap p-[10px] justify-between gap-y-12">
+              {visibleProducts.map((product) => (
+                <Product key={product.id} item={product} />
+              ))}
+            </div>
 
+            {/* Pagination */}
+            {products.length > perPage && (
+              <Pagination>
+                <PaginationContent>
+                  {page > 1 && (
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={() => handleChangePage(page - 1)}
+                        className="rounded-full flex items-center text-[20px] w-12 h-12 border text-black hover:bg-[#122d40] hover:text-[#01e281]"
+                      />
+                    </PaginationItem>
+                  )}
+
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href="#"
+                        isActive={page === i + 1}
+                        onClick={() => handleChangePage(i + 1)}
+                        className={`rounded-full border text-black text-[20px] w-12 h-12 hover:bg-[#122d40] hover:text-[#01e281] ${
+                          page === i + 1 ? "bg-[#122d40] text-[#01e281]" : ""
+                        }`}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  {page < totalPages && (
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={() => handleChangePage(page + 1)}
+                        className="rounded-full w-12 h-12 border text-[20px] text-black hover:bg-[#122d40] hover:text-[#01e281]"
+                      />
+                    </PaginationItem>
+                  )}
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
           {/* Right content - sidebar */}
           <div className="flex flex-col gap-10">
             {/* Filter by price */}
-            <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center items-center gap-5 pb-14 ">
+            <div className="bg-[#f1f2f6] my-6 xl:my-0 container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center items-center gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Filter by price
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -264,7 +312,7 @@ const Categories = ({
             </div>
 
             {/* Product categories */}
-            <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center gap-5 pb-14 ">
+            <div className="bg-[#f1f2f6] hidden container mx-auto w-[450px] p-8 rounded-[50px] xl:flex flex-col justify-center gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Product categories
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -279,7 +327,7 @@ const Categories = ({
             </div>
 
             {/* Featured products */}
-            <div className="bg-[#f1f2f6] container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center gap-5 pb-14 ">
+            <div className="bg-[#f1f2f6] hidden container mx-auto w-[450px] p-8 rounded-[50px] xl:flex flex-col justify-center gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Featured products
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -312,6 +360,7 @@ const Categories = ({
                   </div>
                 ))}
               </div>
+            </div>
             </div>
           </div>
         </div>

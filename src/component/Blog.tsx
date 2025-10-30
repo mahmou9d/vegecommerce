@@ -63,7 +63,7 @@ const bannerStyle: React.CSSProperties = {
   width: "100%",
   height: "600px",
   display: "flex",
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
   color: "white",
 };
 
@@ -71,7 +71,7 @@ const bannerStyle: React.CSSProperties = {
 const BlogItem = React.memo(({ item }: { item: (typeof blogs)[0] }) => (
   <CarouselItem
     key={item.img}
-    className="basis-1/4 relative group cursor-pointer"
+    className="xl:basis-1/4 basis-full relative group cursor-pointer"
   >
     {/* Small title badge */}
     <p className="absolute text-[12px] z-10 -top-6 border-[7px] rounded-full px-5 py-2 text-white border-white left-1/2 -translate-x-1/2 bg-[#122d40]">
@@ -110,14 +110,14 @@ const BlogItem = React.memo(({ item }: { item: (typeof blogs)[0] }) => (
 // ==================== Blog Component ====================
 const Blog = () => {
   return (
-    <div className="container mx-auto mt-40">
+    <div className="container mx-auto mt-40 ">
       {/* ==================== Banner Section ==================== */}
-      <div style={bannerStyle}>
+      <div className="justify-center items-center" style={bannerStyle}>
         {/* Left Side (Text + App Store Buttons) */}
-        <div className="w-[50%] pt-10">
+        <div className="xl:w-[50%] pt-10">
           <h1 className="text-[42px] font-light">XtraSupermarket</h1>
-          <h1 className="text-[60px] font-bold py-10">Faster on Mobile</h1>
-          <p className="text-[20px] leading-[50px] mb-8">
+          <h1 className="text-[40px] xl:text-[60px] font-bold py-10">Faster on Mobile</h1>
+          <p className="text-[20px] xl:leading-[50px] mb-8">
             A supermarket is a self-service shop offering a wide variety of
             food, beverages and household products, organized into sections.
           </p>
@@ -147,7 +147,7 @@ const Blog = () => {
 
         {/* Right Side (Image) */}
         <img
-          className="w-[40%] rounded-t-3xl"
+          className="w-[40%] rounded-t-3xl hidden xl:block"
           src="/images/man-supermarket-as-shop-assistant-20446866.webp"
           alt="Supermarket Assistant"
         />
@@ -155,12 +155,12 @@ const Blog = () => {
 
       {/* ==================== Blog Carousel Section ==================== */}
       <div className="pt-20">
-        <h1 className="text-[36px] font-bold flex ">
+        <h1 className="text-[36px] pb-5 justify-center xl:justify-start font-bold flex ">
           Latest{" "}
           <span
-            className="text-[#01e281] pl-2 relative inline-block  
+            className="text-[#01e281] ml-2 relative inline-block  
               after:content-[''] after:absolute after:bottom-1 after:left-[5px]
-              after:w-[33vh] after:h-[30%]
+              after:w-60 after:h-[30%]
               after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
             News & Blog
@@ -168,15 +168,15 @@ const Blog = () => {
         </h1>
 
         <Carousel className="relative w-full mt-16">
-          <CarouselContent className="-ml-4 flex justify-between w-full pt-10">
+          <CarouselContent className="-ml-[8px] flex justify-between w-full pt-10">
             {blogs.map((item) => (
               <BlogItem key={item.img} item={item} />
             ))}
           </CarouselContent>
 
           {/* Carousel navigation buttons */}
-          <CarouselPrevious className="absolute left-[90%] top-[-5%] -translate-y-1/2" />
-          <CarouselNext className="absolute left-[95%] top-[-5%] -translate-y-1/2" />
+          <CarouselPrevious className="absolute left-[5%] xl:left-[90%] top-[-5%] -translate-y-1/2" />
+          <CarouselNext className="absolute right-[5%] xl:left-[95%] top-[-5%] -translate-y-1/2" />
         </Carousel>
       </div>
     </div>

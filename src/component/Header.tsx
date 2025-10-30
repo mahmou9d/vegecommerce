@@ -237,11 +237,54 @@ const Header = () => {
               <HiSearch className="absolute bg-[#122d40] text-white rounded-[100px] left-[88%] top-[4px] text-[47px] p-[6px]" />
             </div>
           </div>
-          <div className="relative flex gap-[12px] lg:hidden">
-            <FaBasketShopping className=" w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
-            <span className="absolute right-[45%] top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center">
-              {subquantity}
-            </span>
+          <div className="relative flex gap-[6px] lg:hidden">
+            {access ? (
+              <button
+                onClick={handleLogout}
+                className="font-semibold duration-300 h-[45px] p-[10px] text-white text-[16px] border border-[#ffffff26] rounded-full hover:bg-[#01e281] hover:text-[#122d40] transition"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link to={"/login"}>
+                <GoPerson className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
+              </Link>
+            )}
+            <Link
+              to={access ? "/wishlist" : "/"}
+              onClick={(e) => {
+                if (!access) {
+                  e.preventDefault();
+                  toast({
+                    title: "Error ❌",
+                    description: "Please login first",
+                  });
+                }
+              }}
+            >
+              <IoMdHeartEmpty className="w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
+            </Link>
+            <Link
+              to={access ? "/cart" : "/"}
+              onClick={(e) => {
+                if (!access) {
+                  e.preventDefault();
+                  toast({
+                    title: "Error ❌",
+                    description: "Please login first",
+                  });
+                }
+              }}
+            >
+              <FaBasketShopping className=" w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />
+              <span
+                className={`absolute ${
+                  access ? "right-[18%]" : "right-[21%]"
+                } top-[25%] bg-[#01e281] text-[13px] text-[#122d40] rounded-full w-5 h-5 flex justify-center text-center`}
+              >
+                {subquantity}
+              </span>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <MdOutlineMenu className=" w-[45px] h-[45px] p-[10px] text-white text-[20px] border border-[#ffffff26] rounded-full" />

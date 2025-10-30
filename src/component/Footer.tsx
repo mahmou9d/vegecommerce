@@ -43,11 +43,11 @@ const Footer = () => {
   return (
     <div className="relative mt-40">
       {/* ==================== Newsletter Subscription Box ==================== */}
-      <div className="absolute justify-between top-[-28%] : left-1/2 -translate-x-1/2 h-[200px] rounded-[50px] flex items-center px-12 mt-28 bg-[#1C3E56] container mx-auto bg-[url('https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-subscribe.jpg')] bg-center bg-no-repeat bg-cover">
+      <div className="absolute justify-between top-[-13rem] : left-1/2 -translate-x-1/2 h-[200px] rounded-[50px] flex items-center px-12 mt-28 bg-[#1C3E56] container mx-auto bg-[url('https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-subscribe.jpg')] bg-center bg-no-repeat bg-cover">
         {/* Subscription heading */}
-        <h1 className="text-[36px] text-white font-extrabold">
+        <h1 className="text-[24px] xl:text-[36px] text-white font-extrabold">
           Subscribe to
-          <span className="text-[#01e281]">Newsletter</span>
+          <span className="text-[#01e281] ml-2">Newsletter</span>
         </h1>
 
         {/* Input field + subscribe button */}
@@ -66,7 +66,7 @@ const Footer = () => {
       {/* ==================== Main Footer Container ==================== */}
       <div className=" bg-[#122d40] rounded-t-[50px] pt-40">
         <div className="container mx-auto">
-          <div className="flex justify-between rounded-[50px]">
+          <div className="flex gap-5 xl:gap-0 flex-wrap justify-between rounded-[50px]">
             {/* ==================== Column 1: Logo + Quote + Social Media Icons ==================== */}
             <div className="w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
               <img className="w-[180px]" src="/images/logo-sm.png" alt="" />
@@ -168,8 +168,8 @@ const Footer = () => {
           </div>
 
           {/* ==================== Bottom Footer Section: Credits + Image ==================== */}
-          <div className="flex justify-between mt-10 py-7 px-10 rounded-t-[50px] border border-[#9fb6cb33]">
-            <p className="text-lg font-bold text-[#dddddde6] ">
+          <div className="flex gap-3 xl:gap-3 flex-col xl:flex-row justify-between mt-10 py-7 px-10 rounded-t-[50px] border border-[#9fb6cb33]">
+            <p className="text-sm xl:text-lg font-bold text-[#dddddde6] ">
               Create by
               <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 bg-clip-text text-transparent mx-1">
                 Frontend: Mahmoud Mohamed
@@ -179,7 +179,7 @@ const Footer = () => {
                 Backend: Mohamed Fouad .
               </span>
             </p>
-            <img className="w-[260px]" src="/images/22.png" alt="" />
+            <img className="w-[150px] xl:w-[260px]" src="/images/22.png" alt="" />
           </div>
         </div>
       </div>

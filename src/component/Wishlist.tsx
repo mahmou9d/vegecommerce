@@ -19,7 +19,7 @@ const Wishlist = () => {
 
   // Select wishlist state from Redux store
   const { items, loading, error } = useAppSelector(
-    (state: RootState) => state.Getwishlists
+    (state: RootState) => state?.Getwishlists
   );
 
   // Fetch wishlist items when component loads (if empty)
@@ -69,9 +69,9 @@ const Wishlist = () => {
     <div>
       {/* Wishlist Header Section */}
       <div className="bg-[#f9f9f9] pt-20 pb-10">
-        <div className="container mx-auto flex justify-between">
+        <div className="container px-5 mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Wishlist</h1>
-          <div className="text-[18px] flex items-center gap-3 font-medium">
+          <div className=" text-[18px] flex items-center gap-3 font-medium">
             <TiHome />
             <IoIosArrowForward />
             Wishlist
@@ -136,7 +136,7 @@ const Wishlist = () => {
       ) : (
         // If wishlist is empty
         <div className="container mx-auto flex flex-col items-center py-5">
-          <h1 className="text-[36px] font-bold">Your wishlist is empty.</h1>
+          <h1 className="text-[24px] xl:text-[36px] font-bold">Your wishlist is empty.</h1>
           <Button className="flex text-[18px] items-center gap-2 px-6 py-6 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 justify-center hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
             <Link to={"/shop"}>Back to shop</Link>
           </Button>

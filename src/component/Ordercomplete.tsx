@@ -10,12 +10,12 @@ const Ordercomplete = () => {
       </div>
 
       {/* Success Message */}
-      <h1 className="text-3xl font-bold mt-4 mb-2 animate-fadeIn">
+      <h1 className="text-3xl font-bold text-center mt-4 mb-2 animate-pulse animate-fadeIn">
         Order Placed Successfully!
       </h1>
 
       {/* Subtext / Order Status */}
-      <p className="text-gray-600 mb-6 animate-fadeIn delay-200">
+      <p className="text-gray-600 mb-6 text-center  animate-fadeIn delay-200">
         Thank you for your purchase. Your order is being processed.
       </p>
     </div>

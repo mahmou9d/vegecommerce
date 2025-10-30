@@ -63,16 +63,16 @@ const Hero = () => {
   return (
     <div>
       {/* ✅ Hero Banner */}
-      <div className="h-[80vh] bg-[url('/images/bg-hero.jpg')] bg-cover pt-20 flex">
-        <div className="container mx-auto flex justify-between px-5">
+      <div className=" xl:h-[80vh]  bg-[url('/images/bg-hero.jpg')] bg-cover pt-20 flex">
+        <div className="container gap-14 xl:gap-0 flex-col xl:flex-row  mx-auto flex items-center justify-between xl:px-5">
           {/* Left content (title + description + buttons) */}
-          <div className="w-[42%] flex flex-col justify-center h-full">
+          <div className="w-[80%] mb-5 xl:w-[42%] flex flex-col justify-center h-full">
             {/* Highlighted Title with background effect */}
             <h1
               className="
                 relative inline-block text-[42px] text-[#01e281] font-light
                 after:content-[''] after:absolute after:bottom-1 after:left-0
-                after:w-[50vh] after:h-[30%]
+                after:w-80 after:h-[30%]
                 after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]
               "
             >
@@ -90,10 +90,10 @@ const Hero = () => {
 
             {/* Buttons */}
             <div className="flex gap-9 pt-6">
-              <Button className="w-48 h-14 text-white bg-[#122d40] hover:bg-[#01e281] hover:text-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
+              <Button className="w-36 xl:w-48 h-14 text-white bg-[#122d40] hover:bg-[#01e281] hover:text-[#122d40] rounded-full font-bold text-[13px] xl:text-[16px] px-7 py-6">
                 25% Off Feastival
               </Button>
-              <Button className="w-48 h-14 text-[#122d40] bg-transparent border hover:bg-[#01e281] hover:border-0 border-[#122d40] rounded-full font-bold text-[16px] px-7 py-6">
+              <Button className="w-36 xl:w-48 h-14 text-[#122d40] bg-transparent border hover:bg-[#01e281] hover:border-0 border-[#122d40] rounded-full font-bold text-[13px] xl:text-[16px] px-7 py-6">
                 Discover Shop
               </Button>
             </div>
@@ -103,7 +103,7 @@ const Hero = () => {
           <img
             src="/images/man-supermarket-as-shop-assistant-20446866.webp"
             alt="man-supermarket"
-            className="w-[50%] h-[85%] mt-auto rounded-t-3xl"
+            className="hidden xl:block w-[80%] xl:w-[50%] mb-20  xl:mt-auto rounded-3xl xl:rounded-t-3xl"
           />
         </div>
       </div>
@@ -121,7 +121,7 @@ const Hero = () => {
               />
               {/* Text */}
               <div className="flex justify-center flex-col">
-                <h1 className="text-[22px] font-medium">{item.title}</h1>
+                <h1 className="text-[23px] font-medium">{item.title}</h1>
                 <p className="text-[14px] text-[#666666]">{item.desc}</p>
               </div>
             </div>
@@ -130,11 +130,11 @@ const Hero = () => {
       </div>
 
       {/* ✅ Promotions Section (middle offers) */}
-      <div className="flex container mx-auto flex-wrap mt-32 p-[30px] lg:p-0">
-        <div className="flex w-full">
+      <div className="flex container mx-auto flex-wrap xl:mt-32 p-[7px] xl:p-[30px] lg:p-0">
+        <div className="flex flex-col xl:flex-row xl:w-full">
           {/* Left: 2 small offers + 1 big offer */}
-          <div className="flex flex-col w-[66.66%]">
-            <div className="flex">
+          <div className="flex flex-col xl:w-[66.66%]">
+            <div className="flex flex-row">
               {/* Offer 1 - Sauces */}
               <div
                 style={{
@@ -151,8 +151,10 @@ const Hero = () => {
                   height: "300px",
                 }}
               >
-                <h1 className="text-[30px] font-light text-white">50% OFF</h1>
-                <h1 className="text-[42px] font-extrabold text-white mt-[10px]">
+                <h1 className="text-[30px] font-extrabold xl:font-light text-white">
+                  50% OFF
+                </h1>
+                <h1 className="text-[23px] xl:text-[42px] font-extrabold text-white mt-[10px]">
                   Sauces
                 </h1>
               </div>
@@ -176,10 +178,10 @@ const Hero = () => {
                   alignItems: "end",
                 }}
               >
-                <h1 className="text-[30px] font-light text-[#01e281]">
+                <h1 className="text-[30px] font-extrabold xl:font-light text-[#01e281]">
                   50% OFF
                 </h1>
-                <h1 className="text-[42px] font-extrabold text-[#122d40] mt-[10px]">
+                <h1 className="text-[22px] xl:text-[42px] font-extrabold text-[#122d40] mt-[10px]">
                   All Chips
                 </h1>
               </div>
@@ -202,10 +204,10 @@ const Hero = () => {
               }}
             >
               <h1 className="text-[30px] font-light text-white">50% OFF</h1>
-              <h1 className="text-[42px] font-extrabold text-white mt-[10px]">
+              <h1 className="text-[30px]  xl:text-[42px] font-extrabold text-white mt-[10px]">
                 Sale 58% Off
               </h1>
-              <h1 className="text-[42px] font-extrabold text-white mt-[10px]">
+              <h1 className="text-[30px]  xl:text-[42px] font-extrabold text-white mt-[10px]">
                 All Fruit Products
               </h1>
               <Button className="bg-[#ffffff26] my-8 text-white font-extrabold rounded-full px-10 py-7 text-[16px] tracking-[0.5px] hover:bg-[#01e281] hover:text-[#122d40]">
@@ -215,7 +217,7 @@ const Hero = () => {
           </div>
 
           {/* Right: Vegetable Offer */}
-          <div className="w-[33.33%] ml-10 h-full">
+          <div className="xl:w-[33.33%] xl:ml-10 mt-5 xl:mt-0 h-full">
             <div
               style={{
                 backgroundRepeat: "no-repeat",
@@ -246,12 +248,12 @@ const Hero = () => {
       {/* ✅ Categories Section */}
       <div className="container mx-auto mt-40 flex flex-col justify-center">
         {/* Title */}
-        <h1 className="text-[36px] font-bold flex justify-center">
-          Discover our{" "}
+        <h1 className="text-[28px] xl:text-[36px] font-bold flex justify-center">
+          Discover our
           <span
-            className="text-[#01e281] relative inline-block  
+            className="text-[#01e281] ml-3 relative inline-block  
               after:content-[''] after:absolute after:bottom-1 after:left-0
-              after:w-[29vh] after:h-[30%]
+              after:w-[170px] after:h-[30%]
               after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
             Categories
@@ -259,22 +261,22 @@ const Hero = () => {
         </h1>
 
         {/* Categories Grid */}
-        <div className="flex container justify-between flex-row mt-10 gap-5">
+        <div className="flex container flex-wrap gap-5 xl:gap-0 justify-center xl:justify-between flex-row mt-10">
           {category.map((item, i) => {
             return (
               <div
                 key={i}
-                className="p-6 cursor-pointer group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281] hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
+                className="p-6 w-[95%] xl:w-[15%] cursor-pointer group flex hover:-mt-5 hover:text-[#01e281] transition-all duration-300 flex-col items-center border border-[#01e2812b] hover:border-[#01e281] hover:shadow-[0_10px_30px_0_#122d4024] rounded-[20px] group"
               >
                 <img
                   className="w-40 p-8 flip-hover"
                   src={item.Icon}
                   alt={item.title}
                 />
-                <h1 className="text-black font-bold text-[25px] group-hover:text-[#01e281] transition-all duration-300">
+                <h1 className="text-black font-bold text-[22px] group-hover:text-[#01e281] transition-all duration-300">
                   {item.title}
                 </h1>
-                <h1 className="text-black font-bold text-[25px] group-hover:text-[#01e281] transition-all duration-300">
+                <h1 className="text-black font-bold text-[22px] group-hover:text-[#01e281] transition-all duration-300">
                   {item.title2}
                 </h1>
               </div>

@@ -1,4 +1,3 @@
-
 // ==================== Imports ====================
 // React hooks
 import { useEffect, useState } from "react";
@@ -117,7 +116,7 @@ const Cart = () => {
   return (
     <div>
       {/* ==================== Breadcrumb Section ==================== */}
-      <div className="bg-[#f9f9f9] pt-20 pb-10">
+      <div className="bg-[#f9f9f9] px-5 pt-20 pb-10">
         <div className="container mx-auto flex justify-between">
           <h1 className="text-[24px] text-[#122d40] font-bold">Cart</h1>
           <div className="text-[18px] flex items-center gap-3 font-medium">
@@ -132,7 +131,7 @@ const Cart = () => {
       {Array.isArray(items) && items?.length !== 0 ? (
         <div>
           {/* ==================== Checkout Steps ==================== */}
-          <div className="py-24 container mx-auto flex justify-center gap-x-16">
+          <div className="py-24 container hidden xl:flex mx-auto  justify-center gap-x-16">
             <Link
               to={"/cart"}
               className="flex items-center justify-between cursor-pointer"
@@ -209,7 +208,7 @@ const Cart = () => {
                     </TableCell>
 
                     {/* Product Image */}
-                    <TableCell className="cursor-pointer gap-3">
+                    <TableCell className="cursor-pointer gap-3 min-w-[150px]">
                       <img
                         src={item.img_url}
                         alt={item.product_name}
@@ -308,7 +307,7 @@ const Cart = () => {
           </div>
 
           {/* ==================== Cart Totals Section ==================== */}
-          <div className="bg-[#f1f2f6] container mx-auto w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+          <div className="bg-[#f1f2f6] container mx-auto xl:w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
             <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
               Cart totals
               <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
@@ -320,9 +319,11 @@ const Cart = () => {
                 {/* Header Row */}
                 <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
                   <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                    <h2 className="p-6 text-[16px] font-bold">Product</h2>
+                    <h2 className="p-4 xl:p-6 text-[16px] font-bold">
+                      Product
+                    </h2>
                   </h1>
-                  <h2 className="w-[28%] text-[16px] font-bold p-6">
+                  <h2 className="w-[28%] text-[16px] font-bold p-4 xl:p-6">
                     Subtotal
                   </h2>
                 </div>
@@ -364,7 +365,7 @@ const Cart = () => {
 
               {/* Free Shipping Progress */}
               <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
-                <div className="flex items-center pb-3 px-1 text-[18px] mt-4">
+                <div className="flex items-center pb-3 px-1 text-[16px] xl:text-[18px] mt-4">
                   <FaCartArrowDown />
                   <p className="flex items-center pl-2">
                     Add <p className="font-bold px-2">${subtotal.toFixed(2)}</p>{" "}
@@ -375,7 +376,7 @@ const Cart = () => {
               </div>
 
               {/* Checkout Button */}
-              <div className="flex justify-end pt-5">
+              <div className="flex justify-center pt-5">
                 <Button
                   onClick={() => {
                     nav("/checkout");
@@ -391,30 +392,30 @@ const Cart = () => {
         </div>
       ) : (
         // ==================== Empty Cart Section ====================
-        <div className=" h-48 p-5 container mx-auto mb-[70rem]">
+        <div className=" h-48 p-5 container mx-auto mb-[50rem] xl:mb-[70rem]">
           <div className=" flex flex-col items-center justify-center rounded-2xl">
             <LiaCartPlusSolid className="text-[240px] opacity-30" />
-            <h1 className="text-[36px] font-bold">
+            <h1 className="text-[36px] font-bold text-center">
               Looks like your cart is empty!
             </h1>
             <h1 className="text-[20px] opacity-50">
               Time to start your shopping
             </h1>
+            <div className="hidden xl:flex flex-col items-center justify-center rounded-2xl">
+              {/* Product Suggestions */}
+              <div className="bg-[#f1f2f6] container mx-auto mt-10  p-8 rounded-[50px] flex flex-col justify-center  gap-5  ">
+                <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
+                  You may be interested in ...
+                  <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
+                </h2>
 
-            {/* Product Suggestions */}
-            <div className="bg-[#f1f2f6] container mx-auto mt-10  p-8 rounded-[50px] flex flex-col justify-center  gap-5  ">
-              <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
-                You may be interested in ...
-                <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>
-              </h2>
-
-              <div className="flex justify-between my-10">
-                {products.slice(0, 4).map((product, i) => {
-                  return <Product key={i} item={product} />;
-                })}
+                <div className="flex justify-between my-10">
+                  {products.slice(0, 4).map((product, i) => {
+                    return <Product key={i} item={product} />;
+                  })}
+                </div>
               </div>
             </div>
-
             {/* Return to Shop Button */}
             <Button
               onClick={() => {
