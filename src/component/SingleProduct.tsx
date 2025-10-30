@@ -229,11 +229,11 @@ dispatch(
   return (
     <div>
       <div className="bg-[#f9f9f9] pt-20 pb-10">
-        <div className="container mx-auto flex justify-between">
-          <h1 className="text-[24px] text-[#122d40] font-bold">
+        <div className="container mx-auto px-5 flex justify-between">
+          <h1 className="text-[14px] xl:text-[24px] text-[#122d40] font-bold">
             {firstItem?.name}
           </h1>
-          <div className="text-[18px] flex items-center gap-3 font-medium">
+          <div className="text-[14px] xl:text-[18px] flex items-center gap-3 font-medium">
             <TiHome />
             <IoIosArrowForward />
             Products
@@ -244,13 +244,13 @@ dispatch(
           </div>
         </div>
       </div>
-      <div className="container mx-auto flex my-10">
-        <div className="w-[50%]">
-          <div className="w-[400px] h-[400px]">
+      <div className="container mx-auto px-5 flex flex-col xl:flex-row my-10">
+        <div className="xl:w-[50%]">
+          <div className="xl:w-[400px] h-[400px]">
             <img src={firstItem?.img_url} alt={""} />
           </div>
         </div>
-        <div className="w-[50%]">
+        <div className="xl:w-[50%]">
           <h1 className="text-[36px] font-bold">{firstItem?.name}</h1>
           <Rating value={firstItem?.average_rating} readOnly>
             {Array.from({ length: 5 }).map((_, index) => (
@@ -353,11 +353,12 @@ dispatch(
             <h1>Secure payments:</h1>
             <img
               src="https://xtratheme.com/wp-content/uploads/2025/07/cards.png"
-              alt=""
+              alt="payment"
+              className="w-[150px] xl:w-full"
             />
           </div>
           <div className="bg-[#f1f2f6] rounded-[50px] text-[#676767] px-20 py-4 flex justify-center items-center">
-            <h1 className="pr-7 text-black font-medium">Share</h1>
+            <h1 className="xl:pr-7 text-black font-medium">Share</h1>
             <TooltipProvider>
               <Tooltip delayDuration={0.5}>
                 <TooltipTrigger>
@@ -423,7 +424,7 @@ dispatch(
       </div>
       <div className="flex container mx-auto flex-col">
         {" "}
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-3 flex-wrap">
           {tabs.map((tab) => (
             <Button
               key={tab}

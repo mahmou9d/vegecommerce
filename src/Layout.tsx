@@ -87,6 +87,8 @@ function Layout() {
         />
         <Route path="/checkout" element={<Checkoutcart />} />
         <Route path="/singleproduct/:id" element={<SingleProduct />} />
+        {/* <Route path="/success" element={<Success />} />
+        <Route path="/cancel" element={<Cancel />} /> */}
       </Routes>
       {!hideLayout && <Footer />}
       <ScrollToTop />
