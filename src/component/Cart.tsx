@@ -319,11 +319,11 @@ const Cart = () => {
                 {/* Header Row */}
                 <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
                   <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                    <h2 className="p-4 xl:p-6 text-[16px] font-bold">
+                    <h2 className="p-[10px] xl:p-6 text-[16px] font-bold">
                       Product
                     </h2>
                   </h1>
-                  <h2 className="w-[28%] text-[16px] font-bold p-4 xl:p-6">
+                  <h2 className="w-[28%] text-[16px] font-bold p-[10px] xl:p-6">
                     Subtotal
                   </h2>
                 </div>
@@ -349,23 +349,38 @@ const Cart = () => {
                     </div>
                   );
                 })}
-
-                {/* Subtotal Row */}
-                <div className="flex  border-b border-[#a7a7a733] p-5">
-                  <h1 className="w-1/4 p-5 text-[16px] font-bold">Subtotal</h1>
-                  <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
+                <div className="flex  border-b border-[#a7a7a733] ">
+                  <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
+                    <h2 className="p-6 text-[16px] font-bold">Subtotal</h2>
+                  </h1>
+                  <h2 className="w-[28%] text-[16px] font-bold p-6">
+                    ${total.toFixed(2)}
+                  </h2>
                 </div>
+
+                {/* Total */}
+                <div className="flex text-[16px] font-bold">
+                  <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
+                    <h2 className="p-6 text-[16px] font-bold">Total</h2>
+                  </h1>
+                  <h2 className="w-[28%] p-6">${total.toFixed(2)}</h2>
+                </div>
+                {/* Subtotal Row */}
+                {/* <div className="flex justify-between border-b border-[#a7a7a733] p-5">
+                  <h1 className=" p-5 text-[16px] font-bold">Subtotal</h1>
+                  <h2 className=" p-5">${subtotal.toFixed(2)}</h2>
+                </div> */}
 
                 {/* Total Row */}
-                <div className="flex p-5 text-[16px] font-bold">
-                  <h1 className="w-1/4 p-5">Total</h1>
-                  <h2 className="w-3/4 p-5">${subtotal.toFixed(2)}</h2>
-                </div>
+                {/* <div className="flex justify-between p-5 text-[16px] font-bold">
+                  <h1 className=" p-5">Total</h1>
+                  <h2 className=" p-5">${subtotal.toFixed(2)}</h2>
+                </div> */}
               </div>
 
               {/* Free Shipping Progress */}
               <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
-                <div className="flex items-center pb-3 px-1 text-[16px] xl:text-[18px] mt-4">
+                <div className="flex items-center pb-3 px-1 text-[13px] xl:text-[18px] mt-4">
                   <FaCartArrowDown />
                   <p className="flex items-center pl-2">
                     Add <p className="font-bold px-2">${subtotal.toFixed(2)}</p>{" "}

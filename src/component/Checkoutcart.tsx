@@ -374,9 +374,9 @@ const Checkoutcart = () => {
             <div className="border border-[#a7a7a733] ">
               <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
                 <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                  <h2 className="p-4 xl:p-6 text-[16px] font-bold">Product</h2>
+                  <h2 className="p-[10px] xl:p-6 text-[16px] font-bold">Product</h2>
                 </h1>
-                <h2 className="w-[28%] text-[16px] font-bold p-4 xl:p-6">
+                <h2 className="w-[28%] text-[16px] font-bold p-[10px] xl:p-6">
                   Subtotal
                 </h2>
               </div>
@@ -419,7 +419,7 @@ const Checkoutcart = () => {
 
             {/* Progress to free shipping */}
             <div className=" pb-5 border-b border-dashed border-[#cdc7c7]">
-              <div className="flex items-center pb-3 px-1 text-[15px] xl:text-[18px] mt-4">
+              <div className="flex items-center pb-3 px-1 text-[13px] xl:text-[18px] mt-4">
                 <FaCartArrowDown />
                 <p className="flex items-center pl-2">
                   Add{" "}

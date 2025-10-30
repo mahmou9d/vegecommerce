@@ -43,7 +43,7 @@ const Footer = () => {
   return (
     <div className="relative mt-40">
       {/* ==================== Newsletter Subscription Box ==================== */}
-      <div className="absolute justify-between top-[-13rem] : left-1/2 -translate-x-1/2 h-[200px] rounded-[50px] flex items-center px-12 mt-28 bg-[#1C3E56] container mx-auto bg-[url('https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-subscribe.jpg')] bg-center bg-no-repeat bg-cover">
+      <div className="absolute justify-center gap-5 xl:justify-between top-[-13rem] : left-1/2 -translate-x-1/2 h-[200px] rounded-[50px] flex flex-col xl:flex-row items-center px-12 mt-28 bg-[#1C3E56] container mx-auto bg-[url('https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-subscribe.jpg')] bg-center bg-no-repeat bg-cover">
         {/* Subscription heading */}
         <h1 className="text-[24px] xl:text-[36px] text-white font-extrabold">
           Subscribe to
@@ -51,7 +51,7 @@ const Footer = () => {
         </h1>
 
         {/* Input field + subscribe button */}
-        <div className="bg-white w-1/2 h-[65px] text-[#ffffff26] rounded-[100px] relative hidden lg:block">
+        <div className="bg-white w-full xl:w-1/2 h-[65px] text-[#ffffff26] rounded-[100px] relative">
           <input
             type="text"
             className="w-full h-full bg-transparent px-[25px] outline-none"
@@ -68,7 +68,7 @@ const Footer = () => {
         <div className="container mx-auto">
           <div className="flex gap-5 xl:gap-0 flex-wrap justify-between rounded-[50px]">
             {/* ==================== Column 1: Logo + Quote + Social Media Icons ==================== */}
-            <div className="w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
+            <div className="w-full xl:w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
               <img className="w-[180px]" src="/images/logo-sm.png" alt="" />
               <h1 className="text-[19px]">
                 “Be who you are and say what you feel, because those who mind
@@ -83,7 +83,7 @@ const Footer = () => {
             </div>
 
             {/* ==================== Column 2: Useful Links + Contact Info ==================== */}
-            <div className="w-[430px] rounded-[50px] h-[450px] border border-[#9fb6cb33] text-white">
+            <div className="w-full xl:w-[430px] rounded-[50px] h-[450px] border border-[#9fb6cb33] text-white">
               <div className="px-12 pt-8">
                 {/* Section heading */}
                 <h1 className="text-[20px] font-bold">Useful Links</h1>
@@ -152,7 +152,7 @@ const Footer = () => {
             </div>
 
             {/* ==================== Column 3: Call-to-Action Become a Seller ==================== */}
-            <div className="w-[430px] items-center text-center flex flex-col justify-center rounded-[50px] h-[450px] border border-[#9fb6cb33] px-12 py-12">
+            <div className="w-full xl:w-[430px] items-center text-center flex flex-col justify-center rounded-[50px] h-[450px] border border-[#9fb6cb33] px-12 py-12">
               <h1 className="text-[22px] text-white font-extrabold">
                 Interested in a Great Way{" "}
                 <span className="text-[#01e281]">Make Money?</span>
@@ -176,10 +176,14 @@ const Footer = () => {
               </span>
               ,
               <span className="bg-gradient-to-r from-blue-400 via-sky-500 to-indigo-500 bg-clip-text text-transparent italic mx-1">
-                Backend: Mohamed Fouad .
+                Backend: Mohamed Fouad
               </span>
             </p>
-            <img className="w-[150px] xl:w-[260px]" src="/images/22.png" alt="" />
+            <img
+              className="w-[150px] xl:w-[260px]"
+              src="/images/22.png"
+              alt=""
+            />
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ const Wishlist = () => {
               <div className="relative group flex">
                 <IoClose
                   onClick={() => removeItem(product.product_id)}
-                  className="absolute right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
+                  className="absolute right-[-360px] xl:right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
                 />
               </div>
 
@@ -136,7 +136,9 @@ const Wishlist = () => {
       ) : (
         // If wishlist is empty
         <div className="container mx-auto flex flex-col items-center py-5">
-          <h1 className="text-[24px] xl:text-[36px] font-bold">Your wishlist is empty.</h1>
+          <h1 className="text-[24px] xl:text-[36px] font-bold">
+            Your wishlist is empty.
+          </h1>
           <Button className="flex text-[18px] items-center gap-2 px-6 py-6 mt-8 bg-[#01e281] text-[#122d40] font-bold rounded-full h-12 justify-center hover:bg-[#122d40] hover:text-[#01e281] transition duration-200 delay-100">
             <Link to={"/shop"}>Back to shop</Link>
           </Button>

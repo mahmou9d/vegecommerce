@@ -70,7 +70,7 @@ const Hero = () => {
             {/* Highlighted Title with background effect */}
             <h1
               className="
-                relative inline-block text-[42px] text-[#01e281] font-light
+                relative inline-block text-[35px] xl:text-[42px] text-[#01e281] font-light
                 after:content-[''] after:absolute after:bottom-1 after:left-0
                 after:w-80 after:h-[30%]
                 after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]
