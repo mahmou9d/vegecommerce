@@ -233,7 +233,7 @@ dispatch(
           <h1 className="text-[14px] xl:text-[24px] text-[#122d40] font-bold">
             {firstItem?.name}
           </h1>
-          <div className="text-[14px] xl:text-[18px] flex items-center gap-3 font-medium">
+          <div className="text-[14px] xl:text-[18px] flex flex-wrap items-center gap-3 font-medium">
             <TiHome />
             <IoIosArrowForward />
             Products
