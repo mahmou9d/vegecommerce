@@ -84,7 +84,7 @@ const Login = () => {
         h-[100vh] flex justify-center items-center
       "
     >
-      <div className="container mx-auto bg-[#f1f2f6] w-[500px] h-[500px] rounded-[50px] px-12 flex flex-col items-center justify-center">
+      <div className="container mx-auto bg-[#f1f2f6] w-[95%] xl:w-[500px] h-[500px] rounded-[50px] px-12 flex flex-col items-center justify-center">
         {/* Title */}
         <h1 className="text-[25px] font-extrabold pb-4">Log in</h1>
         <div className="h-[1px] w-full bg-[#a7a7a733]" />

@@ -144,12 +144,13 @@ const Hero = () => {
                   backgroundImage:
                     "url(https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-2.png), linear-gradient(90deg, #ff3f55, #ff3f55)",
                   padding: "50px 50px 55px",
-                  marginRight: "15px",
-                  marginBottom: "30px",
+                  // marginRight: "15px",
+                  // marginBottom: "30px",
                   borderRadius: "30px",
                   width: "50%",
                   height: "300px",
                 }}
+                className="mr-2 xl:mr-[15px] mb-[10px] xl:mb-[30px]"
               >
                 <h1 className="text-[30px] font-extrabold xl:font-light text-white">
                   50% OFF
@@ -170,13 +171,14 @@ const Hero = () => {
                   padding: "50px 50px 55px",
                   marginBottom: "30px",
                   borderRadius: "30px",
-                  marginLeft: "15px",
+                  // marginLeft: "15px",
                   width: "50%",
                   height: "300px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "end",
                 }}
+                className="ml-2 xl:ml-[15px]  mb-[10px] xl:mb-[30px]"
               >
                 <h1 className="text-[30px] font-extrabold xl:font-light text-[#01e281]">
                   50% OFF

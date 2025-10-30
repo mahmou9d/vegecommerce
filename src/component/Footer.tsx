@@ -45,7 +45,7 @@ const Footer = () => {
       {/* ==================== Newsletter Subscription Box ==================== */}
       <div className="absolute justify-center gap-5 xl:justify-between top-[-13rem] : left-1/2 -translate-x-1/2 h-[200px] rounded-[50px] flex flex-col xl:flex-row items-center px-12 mt-28 bg-[#1C3E56] container mx-auto bg-[url('https://xtratheme.com/elementor/supermarket/wp-content/uploads/sites/106/2023/04/bg-subscribe.jpg')] bg-center bg-no-repeat bg-cover">
         {/* Subscription heading */}
-        <h1 className="text-[24px] xl:text-[36px] text-white font-extrabold">
+        <h1 className="text-[20px] xl:text-[36px] text-white font-extrabold">
           Subscribe to
           <span className="text-[#01e281] ml-2">Newsletter</span>
         </h1>

@@ -28,12 +28,12 @@ const HomeProduct = () => {
     <div className="container mx-auto mt-40">
       {/* Section Header */}
       <div className="flex items-center flex-col xl:flex-row justify-between px-3">
-        <h1 className="text-[36px] font-bold xl:font-bold flex justify-center">
+        <h1 className="text-[28px] xl:text-[36px] font-bold xl:font-bold flex justify-center">
           Best Seller
           <span
             className="text-[#01e281] ml-2 relative inline-block  
               after:content-[''] after:absolute after:bottom-1 after:left-0
-              after:w-48 after:h-[30%]
+              after:w-40 after:h-[30%]
               after:bg-[#01e281] after:opacity-20 after:rounded-md after:z-[1]"
           >
             Products
@@ -47,7 +47,7 @@ const HomeProduct = () => {
             window.scrollTo(0, 0);
           }}
           className="bg-[#01e281] my-8 text-[#122d40] font-extrabold 
-            rounded-full px-[8px] py-7 text-[13px] xl:text-[16px] tracking-[0.5px] 
+            rounded-full px-[14px] py-7 text-[16px] tracking-[0.5px] 
             hover:bg-[#122d40] hover:text-[#01e281]"
         >
           View all Products
