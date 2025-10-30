@@ -153,7 +153,7 @@ const Categories = ({
                       setPage(1);
                     }}
                   >
-                    <SelectTrigger className="w-[195px] h-[50px] rounded-3xl px-4 py-2 border-0">
+                    <SelectTrigger className="w-[185px] h-[50px] rounded-3xl px-4 py-2 border-0">
                       <SelectValue placeholder="8 Products" />
                     </SelectTrigger>
                     <SelectContent>
@@ -169,7 +169,7 @@ const Categories = ({
                     onValueChange={(value) => setSortBy(value)}
                     defaultValue="Default"
                   >
-                    <SelectTrigger className="w-[195px] h-[50px] rounded-3xl px-4 py-2 ">
+                    <SelectTrigger className="w-[185px] h-[50px] rounded-3xl px-4 py-2 ">
                       <SelectValue placeholder="Sort By" />
                     </SelectTrigger>
                     <SelectContent>
@@ -286,7 +286,7 @@ const Categories = ({
           {/* Right content - sidebar */}
           <div className="flex flex-col gap-10">
             {/* Filter by price */}
-            <div className="bg-[#f1f2f6] my-6 xl:my-0 container mx-auto w-[450px] p-8 rounded-[50px] flex flex-col justify-center items-center gap-5 pb-14 ">
+            <div className="bg-[#f1f2f6] my-6 xl:my-0 container mx-auto w-[95%] xl:w-[450px] p-8 rounded-[50px] flex flex-col justify-center items-center gap-5 pb-14 ">
               <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
                 Filter by price
                 <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>

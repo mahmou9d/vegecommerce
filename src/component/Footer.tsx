@@ -66,9 +66,9 @@ const Footer = () => {
       {/* ==================== Main Footer Container ==================== */}
       <div className=" bg-[#122d40] rounded-t-[50px] pt-40">
         <div className="container mx-auto">
-          <div className="flex gap-5 xl:gap-0 flex-wrap justify-between rounded-[50px]">
+          <div className="flex gap-5 xl:gap-0 flex-wrap justify-center xl:justify-between rounded-[50px]">
             {/* ==================== Column 1: Logo + Quote + Social Media Icons ==================== */}
-            <div className="w-full xl:w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
+            <div className="w-[97%] xl:w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
               <img className="w-[180px]" src="/images/logo-sm.png" alt="" />
               <h1 className="text-[19px]">
                 “Be who you are and say what you feel, because those who mind
@@ -83,11 +83,11 @@ const Footer = () => {
             </div>
 
             {/* ==================== Column 2: Useful Links + Contact Info ==================== */}
-            <div className="w-full xl:w-[430px] rounded-[50px] h-[450px] border border-[#9fb6cb33] text-white">
+            <div className="w-[97%] xl:w-[430px] rounded-[50px] h-[450px] border border-[#9fb6cb33] text-white">
               <div className="px-12 pt-8">
                 {/* Section heading */}
                 <h1 className="text-[20px] font-bold">Useful Links</h1>
-                <div className="h-[1px] w-full bg-[#9fb6cb33] my-2" />
+                <div className="h-[1px] w-[97%] bg-[#9fb6cb33] my-2" />
                 {/* Links list */}
                 <div>
                   {links.map((item, i) => {
@@ -109,7 +109,7 @@ const Footer = () => {
               </div>
 
               {/* Divider */}
-              <div className="h-[1px] w-full bg-[#9fb6cb33] my-3" />
+              <div className="h-[1px] w-[97%] bg-[#9fb6cb33] my-3" />
 
               {/* Backend contact info */}
               <div className="mt-2 px-5">
@@ -124,20 +124,20 @@ const Footer = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <MdEmail />
-                      <p>mfb4010@gmail.com</p>
+                      <p className="text-[14px]">mfb4010@gmail.com</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div className="h-[1px] w-full bg-[#9fb6cb33] my-3" />
+                <div className="h-[1px] w-[97%] bg-[#9fb6cb33] my-3" />
 
                 {/* Frontend contact info */}
                 <div className="mt-2">
                   <h1 className="text-[20px] font-bold mb-3 bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 bg-clip-text text-transparent italic">
                     Front-End
                   </h1>
-                  <div className="flex justify-between text-[16px] items-center">
+                  <div className="flex justify-between text-[14px] items-center">
                     <div className="flex items-center gap-2">
                       <FaPhone />
                       <p>01009014597</p>
@@ -152,7 +152,7 @@ const Footer = () => {
             </div>
 
             {/* ==================== Column 3: Call-to-Action Become a Seller ==================== */}
-            <div className="w-full xl:w-[430px] items-center text-center flex flex-col justify-center rounded-[50px] h-[450px] border border-[#9fb6cb33] px-12 py-12">
+            <div className="w-[97%] xl:w-[430px] items-center text-center flex flex-col justify-center rounded-[50px] h-[450px] border border-[#9fb6cb33] px-12 py-12">
               <h1 className="text-[22px] text-white font-extrabold">
                 Interested in a Great Way{" "}
                 <span className="text-[#01e281]">Make Money?</span>

@@ -307,7 +307,7 @@ const Cart = () => {
           </div>
 
           {/* ==================== Cart Totals Section ==================== */}
-          <div className="bg-[#f1f2f6] container mx-auto xl:w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
+          <div className="bg-[#f1f2f6] container mx-auto w-[90%] xl:w-[40%] p-8 rounded-[50px] flex flex-col justify-center  gap-5 pb-14 ">
             <h2 className="bg-[#01e281] text-[18px] relative flex-col items-center justify-center flex text-[#122d40] h-14 font-bold rounded-full px-6  w-full">
               Cart totals
               <span className="block h-[3px] absolute bottom-0 w-6 bg-black mt-1 rounded"></span>

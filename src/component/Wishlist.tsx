@@ -85,13 +85,13 @@ const Wishlist = () => {
           {items.map((product, i) => (
             <div
               key={i}
-              className="relative cursor-pointer container mx-auto mt-10 overflow-visible group/item w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
+              className="relative cursor-pointer container mx-auto mt-10 overflow-visible group/item xl:w-[420px] mb-28 h-[500px] py-12 bg-white p-[30px] flex flex-col justify-between items-start rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
             >
               {/* Remove Button */}
               <div className="relative group flex">
                 <IoClose
                   onClick={() => removeItem(product.product_id)}
-                  className="absolute right-[-360px] xl:right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
+                  className="absolute right-[-345px] xl:right-[-405px] top-[-65px] text-white bg-[#ff2d2d] shadow-[1px_1px_10px_#1111110d] group-hover:rotate-90 w-10 h-10 p-[6px] rounded-full duration-300"
                 />
               </div>
 
