@@ -131,7 +131,7 @@ const Hero = () => {
 
       {/* ✅ Promotions Section (middle offers) */}
       <div className="flex container mx-auto flex-wrap xl:mt-32 p-[7px] xl:p-[30px] lg:p-0">
-        <div className="flex flex-col xl:flex-row xl:w-full">
+        <div className="flex justify-center flex-col xl:flex-row xl:w-full">
           {/* Left: 2 small offers + 1 big offer */}
           <div className="flex flex-col xl:w-[66.66%]">
             <div className="flex flex-row">
