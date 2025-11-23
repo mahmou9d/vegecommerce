@@ -144,27 +144,27 @@ const Checkoutcart = () => {
             console.log(res.session_id);
 
             window.location.href = res.url;
-            if (window.location.pathname === "/payment-success") {
-              Promise.all(
-                items.map((item) =>
-                  dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
+            useEffect(() => {
+              if (window.location.pathname === "/payment-success") {
+                Promise.all(
+                  items.map((item) =>
+                    dispatch(
+                      RemoveCart({ product_id: item.product_id })
+                    ).unwrap()
+                  )
                 )
-              )
-                .then(() => {
-                  dispatch(GetToCart());
-                  // toast({
-                  //   title: "Cart cleared 🛒",
-                  //   description: "Your cart has been emptied successfully.",
-                  // });
-                })
-                .catch((err) => {
-                  toast({
-                    title: "Error ❌",
-                    description: "Failed to clear your cart, please try again.",
+                  .then(() => {
+                    dispatch(GetToCart());
+                  })
+                  .catch(() => {
+                    toast({
+                      title: "Error ❌",
+                      description:
+                        "Failed to clear your cart, please try again.",
+                    });
                   });
-                });
-            }
-
+              }
+            }, []);
           })
           .catch((err) => {
             console.log("Error:", err);
