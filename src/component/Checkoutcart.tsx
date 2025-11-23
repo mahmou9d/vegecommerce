@@ -169,7 +169,7 @@ const Checkoutcart = () => {
           });
 
         // Redirect to order complete page
-        nav("/payment-success", { replace: true });
+        // nav("/payment-success", { replace: true });
         window.scrollTo(0, 0);
       })
       .catch((err) => {
