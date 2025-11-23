@@ -20,6 +20,8 @@ const Categories = lazy(() => import("./component/Categories"));
 const Checkoutcart = lazy(() => import("./component/Checkoutcart"));
 const SingleProduct = lazy(() => import("./component/SingleProduct"));
 const Ordercomplete = lazy(() => import("./component/Ordercomplete"));
+const PaymentSuccess = lazy(() => import("./component/PaymentSuccess"));
+const PaymentCancel = lazy(() => import("./component/PaymentCancel"));
 
 // ✅ Loader component
 const Loader = () => (
@@ -76,6 +78,8 @@ function Layout() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/ordercomplete" element={<Ordercomplete />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
         <Route
           path="/category/:name"
           element={

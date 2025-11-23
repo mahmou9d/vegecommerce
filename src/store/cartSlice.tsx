@@ -13,6 +13,7 @@ type CartItem = {
 
 interface CartState {
   items: CartItem[];
+  order_id:number;
   total: number;
   loading: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
@@ -20,6 +21,7 @@ interface CartState {
 
 const initialState: CartState = {
   items: [],
+  order_id:0,
   total: 0,
   loading: "idle",
   error: null,
@@ -152,19 +154,47 @@ export const GetToCart = createAsyncThunk<
 // =============================
 export const Checkout = createAsyncThunk<
   any,
-  any, // هنا payload شكله مش متحدد (لو عندك type معين حطه)
+  any,
   { state: RootState; dispatch: AppDispatch }
 >("cart/Checkout", async (payload, thunkAPI) => {
   try {
-    return await fetchWithRefresh(
+    // هنا هترجع JSON مباشرة (object)
+    const data = await fetchWithRefresh(
       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
       { method: "POST", body: JSON.stringify(payload) },
       thunkAPI
     );
+
+    console.log("Checkout response:", data);
+
+    return data; // ← رجّع كله
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.message);
   }
 });
+
+// export const Checkout = createAsyncThunk<
+//   any,
+//   any, // هنا payload شكله مش متحدد (لو عندك type معين حطه)
+//   { state: RootState; dispatch: AppDispatch }
+// >("cart/Checkout", async (payload, thunkAPI) => {
+//   try {
+//     const res = await fetchWithRefresh(
+//       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
+//       { method: "POST", body: JSON.stringify(payload) },
+//       thunkAPI
+//     );
+//           if (!res.ok) {
+//             throw new Error(`HTTP error! status: ${res.status}`);
+//           }
+
+//           const data = await res.json();
+//           console.log(data)
+//           return data.order_id;
+//   } catch (err: any) {
+//     return thunkAPI.rejectWithValue(err.message);
+//   }
+// });
 
 /* ============================
    Slice
@@ -255,6 +285,7 @@ const cartSlice = createSlice({
           state.loading = "succeeded";
           state.items = [];
           state.total = 0;
+          state.order_id = action.payload.order_id;
         })
         .addCase(Checkout.rejected, (state, action) => {
           state.loading = "failed";

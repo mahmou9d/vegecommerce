@@ -39,6 +39,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // Navigation and toast hook
 import { Link, useNavigate } from "react-router";
 import { useToast } from "../hooks/use-toast";
+import { checkoutSession } from "../store/checkoutSlice";
 
 // Dropdown options for countries
 const frameworks = [
@@ -81,8 +82,8 @@ const Checkoutcart = () => {
   const [countryValue, setCountryValue] = React.useState("");
 
   // Get items from redux store
-  const { items } = useAppSelector((state) => state?.cart);
-
+  const { items, order_id } = useAppSelector((state) => state?.cart);
+  console.log(order_id, "order_id");
   // On mount, fetch cart items
   useEffect(() => {
     dispatch(GetToCart());
@@ -133,8 +134,21 @@ const Checkoutcart = () => {
           title: "Order placed successfully 🎉",
           description: "Your order has been submitted, redirecting...",
         });
+        console.log("Checkout response:", res);
+        dispatch(checkoutSession(res.order_id))
+          .unwrap()
+          .then((res) => {
+            console.log("Returned data: ", res);
 
-        // Clear cart after order placed
+            console.log(res.url);
+            console.log(res.session_id);
+
+            window.location.href = res.url;
+          })
+          .catch((err) => {
+            console.log("Error:", err);
+          });
+        const orderId = res.order_id;
         Promise.all(
           items.map((item) =>
             dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
@@ -155,10 +169,11 @@ const Checkoutcart = () => {
           });
 
         // Redirect to order complete page
-        nav("/ordercomplete", { replace: true });
-        window.scrollTo(0,0)
+        nav("/payment-success", { replace: true });
+        window.scrollTo(0, 0);
       })
       .catch((err) => {
+        console.log(err);
         toast({
           title: "Failed to place order ❌",
           description: "Please try again later.",
@@ -374,7 +389,9 @@ const Checkoutcart = () => {
             <div className="border border-[#a7a7a733] ">
               <div className="flex   border-b border-[#a7a7a733]  bg-[#a7a7a71a]">
                 <h1 className="w-3/4 border-r border-[#a7a7a733]  h-full">
-                  <h2 className="p-[10px] xl:p-6 text-[16px] font-bold">Product</h2>
+                  <h2 className="p-[10px] xl:p-6 text-[16px] font-bold">
+                    Product
+                  </h2>
                 </h1>
                 <h2 className="w-[28%] text-[16px] font-bold p-[10px] xl:p-6">
                   Subtotal
