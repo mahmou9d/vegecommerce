@@ -145,38 +145,26 @@ const Checkoutcart = () => {
 
             window.location.href = res.url;
             useEffect(() => {
-              const checkUrl = () => {
-                if (window.location.pathname === "/payment-success") {
-                  Promise.all(
-                    items.map((item) =>
-                      dispatch(
-                        RemoveCart({ product_id: item.product_id })
-                      ).unwrap()
-                    )
+              if (window.location.pathname === "/payment-success") {
+                Promise.all(
+                  items.map((item) =>
+                    dispatch(
+                      RemoveCart({ product_id: item.product_id })
+                    ).unwrap()
                   )
-                    .then(() => {
-                      dispatch(GetToCart());
-                    })
-                    .catch(() => {
-                      toast({
-                        title: "Error ❌",
-                        description:
-                          "Failed to clear your cart, please try again.",
-                      });
+                )
+                  .then(() => {
+                    dispatch(GetToCart());
+                  })
+                  .catch(() => {
+                    toast({
+                      title: "Error ❌",
+                      description:
+                        "Failed to clear your cart, please try again.",
                     });
-                }
-              };
-
-              // Run immediately
-              checkUrl();
-
-              // Run on URL changes
-              window.addEventListener("popstate", checkUrl);
-
-              return () => {
-                window.removeEventListener("popstate", checkUrl);
-              };
-            }, [items]);
+                  });
+              }
+            }, []);
           })
           .catch((err) => {
             console.log("Error:", err);
