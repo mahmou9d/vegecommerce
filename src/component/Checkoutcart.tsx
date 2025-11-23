@@ -144,25 +144,39 @@ const Checkoutcart = () => {
             console.log(res.session_id);
 
             window.location.href = res.url;
-useEffect(() => {
-  if (items.length === 0) return; // عشان ميكررهاش
+            useEffect(() => {
+              const checkUrl = () => {
+                if (window.location.pathname === "/payment-success") {
+                  Promise.all(
+                    items.map((item) =>
+                      dispatch(
+                        RemoveCart({ product_id: item.product_id })
+                      ).unwrap()
+                    )
+                  )
+                    .then(() => {
+                      dispatch(GetToCart());
+                    })
+                    .catch(() => {
+                      toast({
+                        title: "Error ❌",
+                        description:
+                          "Failed to clear your cart, please try again.",
+                      });
+                    });
+                }
+              };
 
-  const clearCart = async () => {
-    try {
-      await Promise.all(
-        items.map((item: any) =>
-          dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
-        )
-      );
+              // Run immediately
+              checkUrl();
 
-      dispatch(GetToCart()); // رجّع الكارت فاضي
-    } catch (err) {
-      console.error("Failed to clear cart:", err);
-    }
-  };
+              // Run on URL changes
+              window.addEventListener("popstate", checkUrl);
 
-  clearCart();
-}, [items]);
+              return () => {
+                window.removeEventListener("popstate", checkUrl);
+              };
+            }, [items]);
           })
           .catch((err) => {
             console.log("Error:", err);
