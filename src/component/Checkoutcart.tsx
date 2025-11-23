@@ -144,29 +144,29 @@ const Checkoutcart = () => {
             console.log(res.session_id);
 
             window.location.href = res.url;
+            Promise.all(
+              items.map((item) =>
+                dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
+              )
+            )
+              .then(() => {
+                dispatch(GetToCart());
+                // toast({
+                //   title: "Cart cleared 🛒",
+                //   description: "Your cart has been emptied successfully.",
+                // });
+              })
+              .catch((err) => {
+                toast({
+                  title: "Error ❌",
+                  description: "Failed to clear your cart, please try again.",
+                });
+              });
           })
           .catch((err) => {
             console.log("Error:", err);
           });
         const orderId = res.order_id;
-        Promise.all(
-          items.map((item) =>
-            dispatch(RemoveCart({ product_id: item.product_id })).unwrap()
-          )
-        )
-          .then(() => {
-            dispatch(GetToCart());
-            toast({
-              title: "Cart cleared 🛒",
-              description: "Your cart has been emptied successfully.",
-            });
-          })
-          .catch((err) => {
-            toast({
-              title: "Error ❌",
-              description: "Failed to clear your cart, please try again.",
-            });
-          });
 
         // Redirect to order complete page
         // nav("/payment-success", { replace: true });
