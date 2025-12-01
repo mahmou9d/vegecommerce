@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./store/hook";
 import { RootState } from "./store";
@@ -6,6 +6,8 @@ import { productUser } from "./store/productSlice";
 import ScrollToTop from "./ScrollToTop";
 import { Toaster } from "./components/ui/toaster";
 import Header from "./component/Header";
+import { GetWishlist } from "./store/GetwishlistSlice";
+import { GetToCart } from "./store/cartSlice";
 
 // ✅ Lazy load components
 // const Header = lazy(() => import("./component/Header"));
@@ -50,13 +52,18 @@ function Layout() {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const hideLayout = ["/login", "/signup"].includes(location.pathname);
-  const { products } = useAppSelector((state: RootState) => state.product);
+const { products, loaded } = useAppSelector((state) => state.product);
 
-  useEffect(() => {
-    if (products.length === 0) {
-      dispatch(productUser());
-    }
-  }, [dispatch, products.length]);
+const fetchedRef = useRef(false);
+
+useEffect(() => {
+  if (!fetchedRef.current) {
+    fetchedRef.current = true;
+    dispatch(productUser());
+    dispatch(GetWishlist());
+     dispatch(GetToCart());
+  }
+}, []);
 
   const categoryName = decodeURIComponent(
     location.pathname.split("/").pop() || ""

@@ -129,9 +129,12 @@ const Header = () => {
   const { items, total } = useAppSelector((state) => state?.cart);
 
   // Load cart items when component mounts
-  useEffect(() => {
-    dispatch(GetToCart());
-  }, []);
+// useEffect(() => {
+//   if (access) {
+//     dispatch(GetToCart());
+//   }
+// }, [access]);
+
 
   // Local cart state
   const [cart, setCart] = useState<Product[]>([]);

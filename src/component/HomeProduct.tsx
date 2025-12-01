@@ -20,9 +20,9 @@ const HomeProduct = () => {
   );
 
   // Fetch products on component mount
-  useEffect(() => {
-    dispatch(productUser());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(productUser());
+  // }, [dispatch]);
 
   return (
     <div className="container mx-auto mt-40">

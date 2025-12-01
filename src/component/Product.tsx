@@ -224,6 +224,4 @@ const loadingwish = useAppSelector((state)=>state.wishlist.loading)
     </div>
   );
 };
-
-// ✅ React.memo يمنع إعادة الرندر لو الـ props.item ماغيرش
-export default React.memo(ProductComponent);
+export default ProductComponent;
