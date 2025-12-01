@@ -6,21 +6,20 @@ import { productUser } from "../store/productSlice";
 import { RootState } from "../store";
 import { useNavigate } from "react-router";
 
-// Loader Component
-const Loader = () => (
-  <div className="w-full h-[60vh] flex justify-center items-center">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#01e281] border-solid"></div>
-  </div>
-);
-
+// Component for displaying Home Products
 const HomeProduct = () => {
+  // Redux dispatch hook
   const dispatch = useAppDispatch();
+
+  // React Router navigation hook
   const nav = useNavigate();
 
+  // Select product state from Redux store
   const { products, loading, error } = useAppSelector(
     (state: RootState) => state.product
   );
 
+  // Fetch products on component mount
   useEffect(() => {
     dispatch(productUser());
   }, [dispatch]);
@@ -41,6 +40,7 @@ const HomeProduct = () => {
           </span>
         </h1>
 
+        {/* Button to navigate to shop page */}
         <Button
           onClick={() => {
             nav("/shop");
@@ -54,17 +54,12 @@ const HomeProduct = () => {
         </Button>
       </div>
 
-      {/* Show Loader While Loading */}
-      {loading && <Loader />}
-
       {/* Product List */}
-      {!loading && (
-        <div className="flex flex-wrap p-[10px] justify-between gap-y-12">
-          {products.map((product, i) => (
-            <Product key={i} item={product} />
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap p-[10px] justify-between gap-y-12">
+        {products.map((product, i) => (
+          <Product key={i} item={product} />
+        ))}
+      </div>
     </div>
   );
 };
