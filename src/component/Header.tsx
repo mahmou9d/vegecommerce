@@ -225,6 +225,7 @@ const Header = () => {
                 src="/images/logo-sm.png"
                 alt="logo"
                 className="w-[150px] lg:w-[276px]"
+                loading="eager"
               />
             </Link>
             <div className="w-[1px] h-10 bg-[#a7a7a733] mx-10 mt-3 hidden lg:block"></div>
@@ -334,6 +335,7 @@ const Header = () => {
                                     className="w-40 p-8 flip-hover"
                                     src={item.Icon}
                                     alt={item.title}
+                                    loading="lazy"
                                   />
                                   <h1 className="text-white font-bold text-[25px]">
                                     {item.title}
@@ -544,6 +546,7 @@ const Header = () => {
                                 className="w-28 pr-2"
                                 src={item.img_url}
                                 alt={item.product_name}
+                                loading="lazy"
                               />
                               <div>
                                 <p className="font-extrabold">
@@ -685,6 +688,7 @@ const Header = () => {
                             className="w-40 p-8 flip-hover"
                             src={item.Icon}
                             alt={item.title}
+                            loading="lazy"
                           />
                           <h1 className="text-white font-bold text-[25px]">
                             {item.title}

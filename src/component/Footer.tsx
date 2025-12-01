@@ -69,7 +69,7 @@ const Footer = () => {
           <div className="flex gap-5 xl:gap-0 flex-wrap justify-center xl:justify-between rounded-[50px]">
             {/* ==================== Column 1: Logo + Quote + Social Media Icons ==================== */}
             <div className="w-[97%] xl:w-[430px] rounded-[50px] h-[450px] leading-[32px] flex flex-col justify-between text-white border border-[#9fb6cb33] px-12 py-12">
-              <img className="w-[180px]" src="/images/logo-sm.png" alt="" />
+              <img className="w-[180px]" src="/images/logo-sm.png" alt="" loading="lazy"/>
               <h1 className="text-[19px]">
                 “Be who you are and say what you feel, because those who mind
                 don't matter, and those who matter don't mind.”
@@ -183,6 +183,7 @@ const Footer = () => {
               className="w-[150px] xl:w-[260px]"
               src="/images/22.png"
               alt=""
+              loading="lazy"
             />
           </div>
         </div>

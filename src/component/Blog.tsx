@@ -84,6 +84,7 @@ const BlogItem = React.memo(({ item }: { item: (typeof blogs)[0] }) => (
         className="w-full h-full object-cover"
         src={item.img}
         alt={item.title}
+        loading="lazy"
       />
 
       {/* Hover overlay */}
@@ -150,6 +151,7 @@ const Blog = () => {
           className="w-[40%] rounded-t-3xl hidden xl:block"
           src="/images/man-supermarket-as-shop-assistant-20446866.webp"
           alt="Supermarket Assistant"
+          loading="lazy"
         />
       </div>
 

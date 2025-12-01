@@ -342,6 +342,7 @@ const Categories = ({
                       className="w-28 pr-2 rounded-3xl"
                       src={item.img_url}
                       alt={item.name}
+                      loading="lazy"
                     />
                     <div>
                       <p className="font-extrabold">{item.name}</p>

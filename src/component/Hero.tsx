@@ -104,6 +104,7 @@ const Hero = () => {
             src="/images/man-supermarket-as-shop-assistant-20446866.webp"
             alt="man-supermarket"
             className="hidden xl:block w-[80%] xl:w-[50%] mb-20  xl:mt-auto rounded-3xl xl:rounded-t-3xl"
+            loading="lazy"
           />
         </div>
       </div>
@@ -118,6 +119,7 @@ const Hero = () => {
                 src={item.icon}
                 alt={item.title}
                 className="w-20 h-20 p-2 rounded-full bg-[#01e28126]"
+                loading="lazy"
               />
               {/* Text */}
               <div className="flex justify-center flex-col">
@@ -274,6 +276,7 @@ const Hero = () => {
                   className="w-40 p-8 flip-hover"
                   src={item.Icon}
                   alt={item.title}
+                  loading="lazy"
                 />
                 <h1 className="text-black font-bold text-[22px] group-hover:text-[#01e281] transition-all duration-300">
                   {item.title}

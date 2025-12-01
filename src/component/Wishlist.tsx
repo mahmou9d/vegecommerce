@@ -101,6 +101,7 @@ const Wishlist = () => {
                   className="max-w-[350px]"
                   src={product.img_url}
                   alt={product.name}
+                  loading="lazy"
                 />
                 <div>
                   <h1 className="text-[22px] font-extrabold group-hover/item:text-[#01e281] duration-200">

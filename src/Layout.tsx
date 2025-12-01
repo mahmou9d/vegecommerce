@@ -5,9 +5,10 @@ import { RootState } from "./store";
 import { productUser } from "./store/productSlice";
 import ScrollToTop from "./ScrollToTop";
 import { Toaster } from "./components/ui/toaster";
+import Header from "./component/Header";
 
 // ✅ Lazy load components
-const Header = lazy(() => import("./component/Header"));
+// const Header = lazy(() => import("./component/Header"));
 const Footer = lazy(() => import("./component/Footer"));
 const Home = lazy(() => import("./component/Home"));
 const Login = lazy(() => import("./component/Login"));

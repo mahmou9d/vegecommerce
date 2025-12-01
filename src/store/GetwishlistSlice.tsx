@@ -28,60 +28,55 @@ const initialState: WishlistState = {
   loading: "idle",
   error: null,
 };
-
 export const GetWishlist = createAsyncThunk<
-  TProduct[], // ✅ نوع الـ response (array of products)
-  void, // ✅ مفيش payload
+  TProduct[],
+  void,
   { state: RootState; dispatch: AppDispatch }
 >("wishlist/GetWishlist", async (_, thunkAPI) => {
   try {
-    const state = thunkAPI.getState();
-    let token = state.auth.access;
+    const { auth } = thunkAPI.getState();
+    let token = auth.access;
 
-    let res = await fetch(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      }
-    );
+    const fetchWishlist = async (token: string) => {
+      const res = await fetch(
+        "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
 
-    if (res.status === 401) {
+      if (res.status === 401) return "expired";
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      return res.json();
+    };
+    let response: any = await fetchWishlist(token);
+    if (response === "expired") {
       try {
         const refreshRes = await thunkAPI
           .dispatch(refreshAccessToken())
           .unwrap();
         token = refreshRes.access;
-
-        res = await fetch(
-          "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              ...(token && { Authorization: `Bearer ${token}` }),
-            },
-          }
-        );
+        response = await fetchWishlist(token);
+        if (response === "expired") {
+          return thunkAPI.rejectWithValue(
+            "Session expired, please login again."
+          );
+        }
       } catch {
         return thunkAPI.rejectWithValue("Session expired, please login again.");
       }
     }
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const data = await res.json();
-    return data.wishlist.products as TProduct[];
+    return response.wishlist.products;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message);
   }
 });
-
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
@@ -105,7 +100,7 @@ const wishlistSlice = createSlice({
 export default wishlistSlice.reducer;
 
 // import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { RootState } from ".";
+// import { RootState, AppDispatch } from ".";
 // import { refreshAccessToken } from "./authSlice";
 
 // type TProduct = {
@@ -134,88 +129,62 @@ export default wishlistSlice.reducer;
 //   loading: "idle",
 //   error: null,
 // };
-// export const GetWishlist = createAsyncThunk(
-//   "wishlist/GetWishlist",
-//   async (_, { rejectWithValue, getState, dispatch }) => {
-//     try {
-//       const state = getState() as RootState;
-//       let token = state.auth.access;
 
-//       let res = await fetch(
-//         "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
-//         {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//             ...(token && { Authorization: `Bearer ${token}` }),
-//           },
-//           // body: JSON.stringify(payload),
-//         }
-//       );
+// export const GetWishlist = createAsyncThunk<
+//   TProduct[], // ✅ نوع الـ response (array of products)
+//   void, // ✅ مفيش payload
+//   { state: RootState; dispatch: AppDispatch }
+// >("wishlist/GetWishlist", async (_, thunkAPI) => {
+//   try {
+//     const state = thunkAPI.getState();
+//     let token = state.auth.access;
 
-//       if (res.status === 401) {
-//         try {
-//           const refreshRes = await dispatch(refreshAccessToken()).unwrap();
-//           token = refreshRes.access;
-
-//           res = await fetch(
-//             "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
-//             {
-//               method: "GET",
-//               headers: {
-//                 "Content-Type": "application/json",
-//                 ...(token && { Authorization: `Bearer ${token}` }),
-//               },
-//               // body: JSON.stringify(payload),
-//             }
-//           );
-//         } catch (refreshErr) {
-//           return rejectWithValue("Session expired, please login again.");
-//         }
+//     let res = await fetch(
+//       "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
+//       {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//           ...(token && { Authorization: `Bearer ${token}` }),
+//         },
 //       }
+//     );
 
-//       if (!res.ok) {
-//         throw new Error(`HTTP error! status: ${res.status}`);
+//     if (res.status === 401) {
+//       try {
+//         const refreshRes = await thunkAPI
+//           .dispatch(refreshAccessToken())
+//           .unwrap();
+//         token = refreshRes.access;
+
+//         res = await fetch(
+//           "https://e-commerce-web-production-ead4.up.railway.app/api/wishlist/items/",
+//           {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//               ...(token && { Authorization: `Bearer ${token}` }),
+//             },
+//           }
+//         );
+//       } catch {
+//         return thunkAPI.rejectWithValue("Session expired, please login again.");
 //       }
-
-//       const data = await res.json();
-//       // console.log(data.wishlist.products, "datafckcllclllcclcllclccc");
-//       return data.wishlist.products;
-//     } catch (error: any) {
-//       // console.log(error, "errorcart/add/");
-//       return rejectWithValue(error.message);
 //     }
+
+//     if (!res.ok) {
+//       throw new Error(`HTTP error! status: ${res.status}`);
+//     }
+
+//     const data = await res.json();
+//     return data.wishlist.products as TProduct[];
+//   } catch (error: any) {
+//     return thunkAPI.rejectWithValue(error.message);
 //   }
-// );
-// // export const GetWishlist = createAsyncThunk(
-// //   "wishlist/GetWishlist",
-// //   async (_, { rejectWithValue }) => {
-// //     try {
-// //       const res = await fetch(
-// //         "https://e-commerce-web-production-ead4.up.railway.app/api/products/",
-// //         {
-// //           method: "GET",
-// //           headers: {
-// //             "Content-Type": "application/json",
-// //           },
-// //         }
-// //       );
+// });
 
-// //       if (!res.ok) {
-// //         throw new Error(`HTTP error! status: ${res.status}`);
-// //       }
-
-// //       const data = await res.json();
-// //       console.log(data, "data");
-// //       return data;
-// //     } catch (error: any) {
-// //       console.log(error, "errorcart/add/");
-// //       return rejectWithValue(error.message);
-// //     }
-// //   }
-// // );
-// const GetwishlistSlice = createSlice({
-//   name: "getwishlist",
+// const wishlistSlice = createSlice({
+//   name: "wishlist",
 //   initialState,
 //   reducers: {},
 //   extraReducers: (builder) => {
@@ -225,7 +194,7 @@ export default wishlistSlice.reducer;
 //     });
 //     builder.addCase(GetWishlist.fulfilled, (state, action) => {
 //       state.loading = "succeeded";
-//       state.items = action.payload || []; // حسب الـ response
+//       state.items = action.payload || [];
 //     });
 //     builder.addCase(GetWishlist.rejected, (state, action) => {
 //       state.loading = "failed";
@@ -234,4 +203,4 @@ export default wishlistSlice.reducer;
 //   },
 // });
 
-// export default GetwishlistSlice.reducer;
+// export default wishlistSlice.reducer;

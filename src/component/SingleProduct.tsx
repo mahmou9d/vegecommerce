@@ -247,7 +247,7 @@ dispatch(
       <div className="container mx-auto px-5 flex flex-col xl:flex-row my-10">
         <div className="xl:w-[50%]">
           <div className="xl:w-[400px] h-[400px]">
-            <img src={firstItem?.img_url} alt={""} />
+            <img src={firstItem?.img_url} alt={""} loading="lazy"/>
           </div>
         </div>
         <div className="xl:w-[50%]">
@@ -354,7 +354,8 @@ dispatch(
             <img
               src="https://xtratheme.com/wp-content/uploads/2025/07/cards.png"
               alt="payment"
-              className="w-[150px] xl:w-full"
+              className="w-[150px] xl:w-full" 
+              loading="lazy"
             />
           </div>
           <div className="bg-[#f1f2f6] rounded-[50px] text-[#676767] px-20 py-4 flex justify-center items-center">
@@ -633,6 +634,7 @@ dispatch(
                     src="https://xtratheme.com/wp-content/uploads/2024/04/faq.jpg"
                     alt="FAQ"
                     className="rounded-2xl shadow-lg w-[400px] p-5 "
+                    loading="lazy"
                   />
                 </div>
 
@@ -740,6 +742,7 @@ dispatch(
                       src="https://xtratheme.com/wp-content/uploads/2024/04/shipping.png"
                       alt="Shipping"
                       className="rounded-xl shadow-lg w-[35%] object-cover"
+                      loading="lazy"
                     />
                   </div>
 

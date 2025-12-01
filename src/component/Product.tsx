@@ -42,29 +42,9 @@ const loadingwish = useAppSelector((state)=>state.wishlist.loading)
     [item.id, getwishlist]
   );
 
-  useEffect(() => {
-    dispatch(GetWishlist());
-  }, [dispatch]);
-
-  // ✅ useCallback
-//   const toggleWishlist = useCallback(() => {
-//     if (!item.id) return;
-//  setWishlistBtnLoading(true);
-//     if (inWishlist) {
-//       dispatch(WishlistRemove(item.id));
-//       toast({
-//         title: "Removed ❤️",
-//         description: `${item.name} has been removed from your wishlist.`,
-//       });
-//     } else {
-//       dispatch(WishlistItems(item.id));
-//       toast({
-//         title: "Added ❤️",
-//         description: `${item.name} has been added to your wishlist.`,
-//       });
-//     }
-//     dispatch(GetWishlist());
-//   }, [item.id, item.name, inWishlist, dispatch, toast]);
+  // useEffect(() => {
+  //   dispatch(GetWishlist());
+  // }, [dispatch]);
 
   const handleAddToCart = useCallback(async () => {
     if (!item.id) return;
@@ -186,6 +166,7 @@ const loadingwish = useAppSelector((state)=>state.wishlist.loading)
           className="w-[400px] h-[200px] object-contain"
           src={item.img_url}
           alt={item.name}
+          loading="lazy"
         />
         <div>
           <h1 className="text-[22px] font-extrabold group-hover/item:text-[#01e281] duration-200">

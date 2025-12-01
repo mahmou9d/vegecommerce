@@ -217,6 +217,7 @@ const Cart = () => {
                           nav(`/singleProduct/${item.product_id}`);
                           window.scrollTo(0, 0);
                         }}
+                        loading="lazy"
                       />
                     </TableCell>
 
