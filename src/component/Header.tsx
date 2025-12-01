@@ -131,7 +131,7 @@ const Header = () => {
   // Load cart items when component mounts
   useEffect(() => {
     dispatch(GetToCart());
-  }, [dispatch]);
+  }, []);
 
   // Local cart state
   const [cart, setCart] = useState<Product[]>([]);

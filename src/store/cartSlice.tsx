@@ -17,14 +17,16 @@ interface CartState {
   total: number;
   loading: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
+  loaded:boolean
 }
 
 const initialState: CartState = {
   items: [],
-  order_id:0,
+  order_id: 0,
   total: 0,
   loading: "idle",
   error: null,
+  loaded: false,
 };
 
 /* ============================
@@ -39,10 +41,11 @@ export const fetchWithRefresh = async (
   thunkAPI: {
     dispatch: AppDispatch;
     getState: () => RootState;
+    rejectWithValue: (value: any) => any;
   }
 ) => {
   let token = thunkAPI.getState().auth.access;
-
+if (!token) return thunkAPI.rejectWithValue("No token found");
   let res = await fetch(url, {
     ...options,
     headers: {
@@ -271,6 +274,7 @@ const cartSlice = createSlice({
       .addCase(GetToCart.fulfilled, (state, action) => {
         state.items = action.payload.items;
         state.total = recalcTotal(state.items);
+        state.loaded = true;
       })
       .addCase(GetToCart.rejected, (state, action) => {
         state.error = (action.payload as string) || "Unexpected error";
