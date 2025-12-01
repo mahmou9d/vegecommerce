@@ -42,9 +42,9 @@ const loadingwish = useAppSelector((state)=>state.wishlist.loading)
     [item.id, getwishlist]
   );
 
-  useEffect(() => {
-    dispatch(GetWishlist());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(GetWishlist());
+  // }, []);
 
   const handleAddToCart = useCallback(async () => {
     if (!item.id) return;
