@@ -22,7 +22,15 @@ import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 
 // Redux actions
-import { EditCart, GetToCart, RemoveCart } from "../store/cartSlice";
+import {
+  EditCart,
+  GetToCart,
+  RemoveCart,
+  removeItemLocally,
+  rollbackEdit,
+  rollbackRemove,
+  updateQuantityLocally,
+} from "../store/cartSlice";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { RootState } from "../store";
 import { productUser } from "../store/productSlice";
@@ -61,47 +69,121 @@ const Cart = () => {
   const { items, total } = useAppSelector((state) => state.cart);
 
   // Fetch cart on mount
-  useEffect(() => {
-    dispatch(GetToCart());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(GetToCart());
+  // }, [dispatch]);
 
   // ==================== Update Item Quantity ====================
+  // const updateQuantity = (
+  //   product_id: number,
+  //   type: "inc" | "dec",
+  //   currentQty: number
+  // ) => {
+  //   // Calculate new quantity based on type
+  //   const newQty =
+  //     type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
+
+  //   // Dispatch Redux action to edit cart
+  //   dispatch(EditCart({ product_id, quantity: newQty }))
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(GetToCart()); // Refresh cart after update
+  //       toast({
+  //         title: "Cart updated",
+  //         description: `Quantity ${
+  //           type === "inc" ? "increased" : "decreased"
+  //         } successfully.`,
+  //       });
+  //     });
+  // };
   const updateQuantity = (
     product_id: number,
     type: "inc" | "dec",
     currentQty: number
   ) => {
-    // Calculate new quantity based on type
     const newQty =
-      type === "inc" ? currentQty + 1 : Math.max(0, currentQty - 1);
+      type === "inc" ? currentQty + 1 : Math.max(1, currentQty - 1);
 
-    // Dispatch Redux action to edit cart
+    // Save previous value for rollback
+    const previousQty = currentQty;
+
+    // 🔥 Optimistic Update — update UI immediately
+    dispatch(
+      updateQuantityLocally({
+        product_id,
+        quantity: newQty,
+      })
+    );
+
+    // Send request
     dispatch(EditCart({ product_id, quantity: newQty }))
       .unwrap()
       .then(() => {
-        dispatch(GetToCart()); // Refresh cart after update
         toast({
           title: "Cart updated",
           description: `Quantity ${
             type === "inc" ? "increased" : "decreased"
           } successfully.`,
         });
+      })
+      .catch(() => {
+        // ❌ Rollback if failed
+        dispatch(
+          rollbackEdit({
+            product_id, quantity: previousQty
+          })
+        );
+
+        toast({
+          title: "Update failed",
+          description: "Restored previous quantity.",
+        });
       });
   };
 
   // ==================== Remove Item ====================
-  const removeItem = (product_id: number) => {
-    // Dispatch Redux action to remove item from cart
-    dispatch(RemoveCart({ product_id }))
-      .unwrap()
-      .then(() => {
-        dispatch(GetToCart()); // Refresh cart after removal
-        toast({
-          title: "Removed from cart",
-          description: "The item was successfully removed.",
-        });
+  // const removeItem = (product_id: number) => {
+  //   // Dispatch Redux action to remove item from cart
+  //   dispatch(RemoveCart({ product_id }))
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(GetToCart()); // Refresh cart after removal
+  //       toast({
+  //         title: "Removed from cart",
+  //         description: "The item was successfully removed.",
+  //       });
+  //     });
+  // };
+const removeItem = (product_id: number) => {
+  // احفظ النسخة القديمة للـ rollback
+  const previousCart = [...items]; // cart جاي من useSelector
+
+  // 🔥 Optimistic Update — شيّل العنصر من UI فورًا
+  dispatch(
+    removeItemLocally({
+      product_id,
+    })
+  );
+
+  // إرسال الريكوست
+  dispatch(RemoveCart({ product_id }))
+    .unwrap()
+    .then(() => {
+      toast({
+        title: "Removed from cart",
+        description: "The item was successfully removed.",
       });
-  };
+    })
+    .catch(() => {
+      // ❌ Rollback — رجّع الحالة القديمة
+      dispatch(rollbackRemove(previousCart));
+
+      toast({
+        title: "Remove failed",
+        description: "Restored the item.",
+      });
+    });
+};
 
   // ==================== Calculate Totals ====================
   const limit = 1000; // Free shipping limit

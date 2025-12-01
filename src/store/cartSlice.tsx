@@ -18,13 +18,13 @@ interface CartState {
   items: CartItem[];
   order_id: number;
   total: number;
-  loading: {
-    add: boolean;
-    remove: boolean;
-    edit: boolean;
-    get: boolean;
-    checkout: boolean;
-  };
+    loading: {
+      add: boolean;
+      remove: boolean;
+      edit: boolean;
+      get: boolean;
+      checkout: boolean;
+    };
   error: string | null;
   loaded: boolean;
 }
@@ -33,13 +33,13 @@ const initialState: CartState = {
   items: [],
   order_id: 0,
   total: 0,
-  loading: {
-    add: false,
-    remove: false,
-    edit: false,
-    get: false,
-    checkout: false,
-  },
+    loading: {
+      add: false,
+      remove: false,
+      edit: false,
+      get: false,
+      checkout: false,
+    },
   error: null,
   loaded: false,
 };
@@ -50,18 +50,19 @@ const initialState: CartState = {
 const recalcTotal = (items: CartItem[]) =>
   items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
 
+/* ============================
+   Fetch Wrapper
+============================ */
 export const fetchWithRefresh = async (
   url: string,
   options: RequestInit,
   thunkAPI: {
     dispatch: AppDispatch;
     getState: () => RootState;
-    rejectWithValue: (value: any) => any;
+    rejectWithValue: (v: any) => any;
   }
 ) => {
   let token = thunkAPI.getState().auth.access;
-
-  if (!token) return thunkAPI.rejectWithValue("No token found");
 
   let res = await fetch(url, {
     ...options,
@@ -81,7 +82,7 @@ export const fetchWithRefresh = async (
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
+        Authorization: `Bearer ${token}`,
         ...(options.headers || {}),
       },
       credentials: "include",
@@ -89,13 +90,13 @@ export const fetchWithRefresh = async (
   }
 
   if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
   return res.json();
 };
 
 /* ============================
    Thunks
 ============================ */
-
 export const AddToCart = createAsyncThunk<
   any,
   { product_id: number; quantity: number },
@@ -144,6 +145,21 @@ export const EditCart = createAsyncThunk<
   }
 });
 
+export const Checkout = createAsyncThunk<
+  any,
+  any,
+  { state: RootState; dispatch: AppDispatch }
+>("cart/Checkout", async (payload, thunkAPI) => {
+  try {
+    return await fetchWithRefresh(
+      "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
+      { method: "POST", body: JSON.stringify(payload) },
+      thunkAPI
+    );
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.message);
+  }
+});
 export const GetToCart = createAsyncThunk<
   any,
   void,
@@ -160,39 +176,94 @@ export const GetToCart = createAsyncThunk<
   }
 });
 
-export const Checkout = createAsyncThunk<
-  any,
-  any,
-  { state: RootState; dispatch: AppDispatch }
->("cart/Checkout", async (payload, thunkAPI) => {
-  try {
-    return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
-      { method: "POST", body: JSON.stringify(payload) },
-      thunkAPI
-    );
-  } catch (err: any) {
-    return thunkAPI.rejectWithValue(err.message);
-  }
-});
-
 /* ============================
    Slice
 ============================ */
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {},
+  reducers: {
+    /* ADD — OPTIMISTIC */
+    addItemLocally: (state, action) => {
+      const { product_id, product_name, price, img_url } = action.payload;
+
+      const existing = state.items.find((i) => i.product_id === product_id);
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.items.push({
+          product_id,
+          product_name: product_name || "Loading...",
+          quantity: 1,
+          price: price || 0,
+          subtotal: price || 0,
+          img_url: img_url || "",
+        });
+      }
+
+      state.total = recalcTotal(state.items);
+    },
+
+    rollbackAdd: (state, action) => {
+      const product_id = action.payload;
+
+      const item = state.items.find((i) => i.product_id === product_id);
+      if (!item) return;
+
+      if (item.quantity > 1) item.quantity--;
+      else state.items = state.items.filter((i) => i.product_id !== product_id);
+
+      state.total = recalcTotal(state.items);
+    },
+
+    /* REMOVE — OPTIMISTIC */
+    removeItemLocally: (state, action) => {
+      const { product_id } = action.payload;
+
+      state.items = state.items.filter((i) => i.product_id !== product_id);
+      state.total = recalcTotal(state.items);
+    },
+
+    rollbackRemove: (state, action) => {
+      state.items.push(action.payload.item);
+      state.total = recalcTotal(state.items);
+    },
+
+    /* EDIT — OPTIMISTIC */
+    updateQuantityLocally: (state, action) => {
+      const { product_id, quantity } = action.payload;
+
+      const item = state.items.find((i) => i.product_id === product_id);
+      if (!item) return;
+
+      item.quantity = quantity;
+      if (quantity === 0) {
+        state.items = state.items.filter((i) => i.product_id !== product_id);
+      }
+
+      state.total = recalcTotal(state.items);
+    },
+
+    rollbackEdit: (state, action) => {
+      const old = action.payload;
+      const item = state.items.find((i) => i.product_id === old.product_id);
+      if (!item) return;
+
+      item.quantity = old.quantity;
+      state.total = recalcTotal(state.items);
+    },
+  },
+
   extraReducers: (builder) => {
-    /* ------------------------
-       Add to Cart
-    ------------------------- */
+    /* ADD */
     builder
       .addCase(AddToCart.pending, (state) => {
         state.loading.add = true;
       })
       .addCase(AddToCart.fulfilled, (state, action) => {
         state.loading.add = false;
+
         if (Array.isArray(action.payload?.items)) {
           state.items = action.payload.items;
           state.total = recalcTotal(state.items);
@@ -200,79 +271,65 @@ const cartSlice = createSlice({
       })
       .addCase(AddToCart.rejected, (state, action) => {
         state.loading.add = false;
-        state.error = action.payload as string;
+
+        const failedProduct = action.meta.arg.product_id;
+
+        const item = state.items.find((i) => i.product_id === failedProduct);
+        if (item) {
+          if (item.quantity > 1) item.quantity--;
+          else
+            state.items = state.items.filter(
+              (i) => i.product_id !== failedProduct
+            );
+        }
+
+        state.total = recalcTotal(state.items);
       });
 
-    /* ------------------------
-       Remove from Cart
-    ------------------------- */
+    /* REMOVE */
     builder
       .addCase(RemoveCart.pending, (state) => {
         state.loading.remove = true;
       })
-      .addCase(RemoveCart.fulfilled, (state, action) => {
+      .addCase(RemoveCart.fulfilled, (state) => {
         state.loading.remove = false;
-        const removedId = action.payload.product_id;
-        state.items = state.items.filter((i) => i.product_id !== removedId);
-        state.total = recalcTotal(state.items);
       })
       .addCase(RemoveCart.rejected, (state, action) => {
         state.loading.remove = false;
-        state.error = action.payload as string;
       });
 
-    /* ------------------------
-       Edit Cart
-    ------------------------- */
+    /* EDIT */
     builder
       .addCase(EditCart.pending, (state) => {
         state.loading.edit = true;
       })
       .addCase(EditCart.fulfilled, (state, action) => {
         state.loading.edit = false;
-        const updated = action.payload;
-        const item = state.items.find(
-          (i) => i.product_id === updated.product_id
-        );
 
-        if (item) {
-          if (updated.quantity === 0) {
-            state.items = state.items.filter(
-              (i) => i.product_id !== updated.product_id
-            );
-          } else {
-            item.quantity = updated.quantity;
-          }
+        if (Array.isArray(action.payload?.items)) {
+          state.items = action.payload.items;
+          state.total = recalcTotal(state.items);
         }
-
-        state.total = recalcTotal(state.items);
       })
       .addCase(EditCart.rejected, (state, action) => {
         state.loading.edit = false;
-        state.error = action.payload as string;
       });
 
-    /* ------------------------
-       Get Cart Items
-    ------------------------- */
-    builder
-      .addCase(GetToCart.pending, (state) => {
-        state.loading.get = true;
-      })
-      .addCase(GetToCart.fulfilled, (state, action) => {
-        state.loading.get = false;
-        state.items = action.payload.items;
-        state.total = recalcTotal(state.items);
-        state.loaded = true;
-      })
-      .addCase(GetToCart.rejected, (state, action) => {
-        state.loading.get = false;
-        state.error = action.payload as string;
-      });
-
-    /* ------------------------
-       Checkout
-    ------------------------- */
+        builder
+          .addCase(GetToCart.pending, (state) => {
+            state.loading.get = true;
+          })
+          .addCase(GetToCart.fulfilled, (state, action) => {
+            state.loading.get = false;
+            state.items = action.payload.items;
+            state.total = recalcTotal(state.items);
+            state.loaded = true;
+          })
+          .addCase(GetToCart.rejected, (state, action) => {
+            state.loading.get = false;
+            state.error = action.payload as string;
+          });
+    /* CHECKOUT */
     builder
       .addCase(Checkout.pending, (state) => {
         state.loading.checkout = true;
@@ -285,10 +342,18 @@ const cartSlice = createSlice({
       })
       .addCase(Checkout.rejected, (state, action) => {
         state.loading.checkout = false;
-        state.error = action.payload as string;
       });
   },
 });
+
+export const {
+  addItemLocally,
+  rollbackAdd,
+  removeItemLocally,
+  rollbackRemove,
+  updateQuantityLocally,
+  rollbackEdit,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
 
@@ -296,6 +361,9 @@ export default cartSlice.reducer;
 // import { AppDispatch, RootState } from ".";
 // import { refreshAccessToken } from "./authSlice";
 
+// /* ============================
+//    Types
+// ============================ */
 // type CartItem = {
 //   product_id: number;
 //   product_name: string;
@@ -307,18 +375,30 @@ export default cartSlice.reducer;
 
 // interface CartState {
 //   items: CartItem[];
-//   order_id:number;
+//   order_id: number;
 //   total: number;
-//   loading: "idle" | "pending" | "succeeded" | "failed";
+//   loading: {
+//     add: boolean;
+//     remove: boolean;
+//     edit: boolean;
+//     get: boolean;
+//     checkout: boolean;
+//   };
 //   error: string | null;
-//   loaded:boolean
+//   loaded: boolean;
 // }
 
 // const initialState: CartState = {
 //   items: [],
 //   order_id: 0,
 //   total: 0,
-//   loading: "idle",
+//   loading: {
+//     add: false,
+//     remove: false,
+//     edit: false,
+//     get: false,
+//     checkout: false,
+//   },
 //   error: null,
 //   loaded: false,
 // };
@@ -339,7 +419,9 @@ export default cartSlice.reducer;
 //   }
 // ) => {
 //   let token = thunkAPI.getState().auth.access;
-// if (!token) return thunkAPI.rejectWithValue("No token found");
+
+//   if (!token) return thunkAPI.rejectWithValue("No token found");
+
 //   let res = await fetch(url, {
 //     ...options,
 //     headers: {
@@ -366,15 +448,15 @@ export default cartSlice.reducer;
 //   }
 
 //   if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-//   // console.log(res.json(),"cartrttttttttt");
 //   return res.json();
 // };
 
 // /* ============================
 //    Thunks
 // ============================ */
+
 // export const AddToCart = createAsyncThunk<
-//   any, // نوع الريسبونس
+//   any,
 //   { product_id: number; quantity: number },
 //   { state: RootState; dispatch: AppDispatch }
 // >("cart/AddToCart", async (payload, thunkAPI) => {
@@ -389,11 +471,8 @@ export default cartSlice.reducer;
 //   }
 // });
 
-// // =============================
-// // RemoveCart
-// // =============================
 // export const RemoveCart = createAsyncThunk<
-//   any, // نوع الريسبونس (ممكن تعمله interface لو عارف شكله)
+//   any,
 //   { product_id: number },
 //   { state: RootState; dispatch: AppDispatch }
 // >("cart/RemoveCart", async (payload, thunkAPI) => {
@@ -408,9 +487,6 @@ export default cartSlice.reducer;
 //   }
 // });
 
-// // =============================
-// // EditCart
-// // =============================
 // export const EditCart = createAsyncThunk<
 //   any,
 //   { product_id: number; quantity: number },
@@ -427,9 +503,6 @@ export default cartSlice.reducer;
 //   }
 // });
 
-// // =============================
-// // GetToCart
-// // =============================
 // export const GetToCart = createAsyncThunk<
 //   any,
 //   void,
@@ -446,52 +519,21 @@ export default cartSlice.reducer;
 //   }
 // });
 
-// // =============================
-// // Checkout
-// // =============================
 // export const Checkout = createAsyncThunk<
 //   any,
 //   any,
 //   { state: RootState; dispatch: AppDispatch }
 // >("cart/Checkout", async (payload, thunkAPI) => {
 //   try {
-//     // هنا هترجع JSON مباشرة (object)
-//     const data = await fetchWithRefresh(
+//     return await fetchWithRefresh(
 //       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
 //       { method: "POST", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
-
-//     console.log("Checkout response:", data);
-
-//     return data; // ← رجّع كله
 //   } catch (err: any) {
 //     return thunkAPI.rejectWithValue(err.message);
 //   }
 // });
-
-// // export const Checkout = createAsyncThunk<
-// //   any,
-// //   any, // هنا payload شكله مش متحدد (لو عندك type معين حطه)
-// //   { state: RootState; dispatch: AppDispatch }
-// // >("cart/Checkout", async (payload, thunkAPI) => {
-// //   try {
-// //     const res = await fetchWithRefresh(
-// //       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
-// //       { method: "POST", body: JSON.stringify(payload) },
-// //       thunkAPI
-// //     );
-// //           if (!res.ok) {
-// //             throw new Error(`HTTP error! status: ${res.status}`);
-// //           }
-
-// //           const data = await res.json();
-// //           console.log(data)
-// //           return data.order_id;
-// //   } catch (err: any) {
-// //     return thunkAPI.rejectWithValue(err.message);
-// //   }
-// // });
 
 // /* ============================
 //    Slice
@@ -499,50 +541,70 @@ export default cartSlice.reducer;
 // const cartSlice = createSlice({
 //   name: "cart",
 //   initialState,
-//   reducers: {},
+//   reducers: {
+//     addItemLocally: (state, action) => {
+//       const { product_id } = action.payload;
+
+//       const existing = state.items.find((i) => i.product_id === product_id);
+
+//       if (existing) {
+//         existing.quantity += 1;
+//       } else {
+//         state.items.push({
+//           ...
+//           product_id,
+//           quantity: 1,
+//         });
+//       }
+//     },
+//   },
 //   extraReducers: (builder) => {
-//     // Add
+//     /* ------------------------
+//        Add to Cart
+//     ------------------------- */
 //     builder
 //       .addCase(AddToCart.pending, (state) => {
-//         state.loading = "pending";
-//         state.error = null;
+//         state.loading.add = true;
 //       })
 //       .addCase(AddToCart.fulfilled, (state, action) => {
-//         state.loading = "succeeded";
+//         state.loading.add = false;
 //         if (Array.isArray(action.payload?.items)) {
 //           state.items = action.payload.items;
 //           state.total = recalcTotal(state.items);
 //         }
-
 //       })
 //       .addCase(AddToCart.rejected, (state, action) => {
-//         state.loading = "failed";
-//         state.error = (action.payload as string) || "Unexpected error";
+//         state.loading.add = false;
+//         state.error = action.payload as string;
 //       });
 
-//     // Remove
+//     /* ------------------------
+//        Remove from Cart
+//     ------------------------- */
 //     builder
 //       .addCase(RemoveCart.pending, (state) => {
-//         state.loading = "pending";
-//         state.error = null;
+//         state.loading.remove = true;
 //       })
-
 //       .addCase(RemoveCart.fulfilled, (state, action) => {
+//         state.loading.remove = false;
 //         const removedId = action.payload.product_id;
 //         state.items = state.items.filter((i) => i.product_id !== removedId);
 //         state.total = recalcTotal(state.items);
 //       })
 //       .addCase(RemoveCart.rejected, (state, action) => {
-//         state.error = (action.payload as string) || "Unexpected error";
+//         state.loading.remove = false;
+//         state.error = action.payload as string;
 //       });
 
-//     // Edit
+//     /* ------------------------
+//        Edit Cart
+//     ------------------------- */
 //     builder
 //       .addCase(EditCart.pending, (state) => {
-//         state.loading = "pending";
-//         state.error = null;
+//         state.loading.edit = true;
 //       })
 //       .addCase(EditCart.fulfilled, (state, action) => {
+//         state.loading.edit = false;
 //         const updated = action.payload;
 //         const item = state.items.find(
 //           (i) => i.product_id === updated.product_id
@@ -557,39 +619,49 @@ export default cartSlice.reducer;
 //             item.quantity = updated.quantity;
 //           }
 //         }
+
 //         state.total = recalcTotal(state.items);
 //       })
 //       .addCase(EditCart.rejected, (state, action) => {
-//         state.error = (action.payload as string) || "Unexpected error";
+//         state.loading.edit = false;
+//         state.error = action.payload as string;
 //       });
 
-//     // Get cart
+//     /* ------------------------
+//        Get Cart Items
+//     ------------------------- */
 //     builder
+//       .addCase(GetToCart.pending, (state) => {
+//         state.loading.get = true;
+//       })
 //       .addCase(GetToCart.fulfilled, (state, action) => {
+//         state.loading.get = false;
 //         state.items = action.payload.items;
 //         state.total = recalcTotal(state.items);
 //         state.loaded = true;
 //       })
 //       .addCase(GetToCart.rejected, (state, action) => {
-//         state.error = (action.payload as string) || "Unexpected error";
+//         state.loading.get = false;
+//         state.error = action.payload as string;
 //       });
-//       builder
-//         .addCase(Checkout.pending, (state) => {
-//           state.loading = "pending";
-//           state.error = null;
-//         })
-//         .addCase(Checkout.fulfilled, (state,action) => {
-//           console.log("Checkout fulfilled payload:", action.payload);
-//           state.loading = "succeeded";
-//           state.items = [];
-//           state.total = 0;
-//           state.order_id = action.payload.order_id;
-//         })
-//         .addCase(Checkout.rejected, (state, action) => {
-//           state.loading = "failed";
-//           state.error = (action.payload as string) || "Unexpected error";
-//         });
 
+//     /* ------------------------
+//        Checkout
+//     ------------------------- */
+//     builder
+//       .addCase(Checkout.pending, (state) => {
+//         state.loading.checkout = true;
+//       })
+//       .addCase(Checkout.fulfilled, (state, action) => {
+//         state.loading.checkout = false;
+//         state.items = [];
+//         state.total = 0;
+//         state.order_id = action.payload.order_id;
+//       })
+//       .addCase(Checkout.rejected, (state, action) => {
+//         state.loading.checkout = false;
+//         state.error = action.payload as string;
+//       });
 //   },
 // });
 
