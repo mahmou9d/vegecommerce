@@ -42,7 +42,7 @@ import { Progress } from "../components/ui/progress";
 // Import Redux Hooks & Actions
 // =============================
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { GetToCart, RemoveCart } from "../store/cartSlice";
+import { GetToCart, RemoveCart, removeItemLocally, rollbackRemove } from "../store/cartSlice";
 import { Logout } from "../store/authSlice";
 import { WishlistRemove } from "../store/wishlistSlice";
 
@@ -129,12 +129,11 @@ const Header = () => {
   const { items, total } = useAppSelector((state) => state?.cart);
 
   // Load cart items when component mounts
-// useEffect(() => {
-//   if (access) {
-//     dispatch(GetToCart());
-//   }
-// }, [access]);
-
+  // useEffect(() => {
+  //   if (access) {
+  //     dispatch(GetToCart());
+  //   }
+  // }, [access]);
 
   // Local cart state
   const [cart, setCart] = useState<Product[]>([]);
@@ -148,12 +147,12 @@ const Header = () => {
 
   // Calculate cart quantity
   const subquantity = Array.isArray(items)
-    ? items.reduce((sum, item) => sum + Number(item.quantity), 0)
+    ? items.reduce((sum, item) => sum + Number(item.quantity || 0), 0)
     : 0;
 
   // Calculate cart subtotal
   const subtotal = Array.isArray(items)
-    ? items.reduce((sum, item) => sum + Number(item.subtotal), 0)
+    ? items.reduce((sum, item) => sum + Number(item.subtotal ||0), 0)
     : 0;
 
   // Progress bar for free shipping
@@ -162,28 +161,57 @@ const Header = () => {
   // =============================
   // Remove item from cart
   // =============================
-  const removeItem = (product_id: number) => {
-    dispatch(RemoveCart({ product_id }))
-      .unwrap()
-      .then(() => {
-        dispatch(GetToCart());
-        toast({
-          title: "Removed from cart 🛒",
-          description: "The item has been removed successfully.",
-        });
-      })
-      .catch(() => {
-        if (access) {
-          toast({
-            title: "Error ❌",
-            description: "Failed to remove item from cart.",
-          });
-        } else {
-          toast({ title: "Error ❌", description: "Please login first" });
-        }
-      });
-  };
+  // const removeItem = (product_id: number) => {
+  //   dispatch(RemoveCart({ product_id }))
+  //     .unwrap()
+  //     .then(() => {
+  //       dispatch(GetToCart());
+  //       toast({
+  //         title: "Removed from cart 🛒",
+  //         description: "The item has been removed successfully.",
+  //       });
+  //     })
+  //     .catch(() => {
+  //       if (access) {
+  //         toast({
+  //           title: "Error ❌",
+  //           description: "Failed to remove item from cart.",
+  //         });
+  //       } else {
+  //         toast({ title: "Error ❌", description: "Please login first" });
+  //       }
+  //     });
+  // };
+const removeItem = (product_id: number) => {
+  // احفظ النسخة القديمة للـ rollback
+  const previousCart = [...items]; // cart جاي من useSelector
 
+  // 🔥 Optimistic Update — شيّل العنصر من UI فورًا
+  dispatch(
+    removeItemLocally({
+      product_id,
+    })
+  );
+
+  // إرسال الريكوست
+  dispatch(RemoveCart({ product_id }))
+    .unwrap()
+    .then(() => {
+      toast({
+        title: "Removed from cart",
+        description: "The item was successfully removed.",
+      });
+    })
+    .catch(() => {
+      // ❌ Rollback — رجّع الحالة القديمة
+      dispatch(rollbackRemove(previousCart));
+
+      toast({
+        title: "Remove failed",
+        description: "Restored the item.",
+      });
+    });
+};
   // =============================
   // Logout handler
   // =============================

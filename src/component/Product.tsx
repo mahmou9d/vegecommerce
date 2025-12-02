@@ -48,11 +48,19 @@ const ProductComponent = ({ item }: { item: IItem }) => {
   const loadingwish = useAppSelector((state) => state.wishlist.loading);
   const [wishlistBtnLoading, setWishlistBtnLoading] = useState(false);
   const [cartBtnLoading, setCartBtnLoading] = useState(false);
-  let inWishlist = useMemo(
-    () => (item.id ? getwishlist.some((w) => w.product_id === item.id) : false),
-    [item.id, getwishlist]
-  );
+  // let inWishlist = useMemo(
+  //   () => (item.id ? getwishlist.some((w) => w.product_id === item.id) : false),
+  //   [item.id, getwishlist]
+  // );
+  // ⚡ حالة التوجل الحقيقية
+  const [inWishlistState, setInWishlistState] = useState(false);
 
+  // ⚡ Sync from Redux → local state
+  useEffect(() => {
+    if (item.id) {
+      setInWishlistState(getwishlist.some((w) => w.product_id === item.id));
+    }
+  }, [item.id, getwishlist]);
   // useEffect(() => {
   //   dispatch(GetWishlist());
   // }, []);
@@ -84,53 +92,47 @@ const ProductComponent = ({ item }: { item: IItem }) => {
   //     setCartBtnLoading(false);
   //   }
   // }, [item.id, item.name, dispatch, toast, access]);
-  const handleAddToCart = useCallback(async () => {
-    if (!item.id) return;
+const handleAddToCart = useCallback(async () => {
+  if (!item.id) return;
 
-    setCartBtnLoading(true);
+  setCartBtnLoading(true);
+  const previousCart = [...items]; // للـ rollback
 
-    // ⭐ احفظ السلة قبل التعديل (لـ rollback)
-    const previousCart = [...items];
+  try {
+    // إضافة محلية سريعة (Optimistic)
 
-    // ⭐ Optimistic update
+    dispatch(addItemLocally({
+      product_id: item.id,
+      product_name: item.name,
+      price: Number(item.final_price),
+      img_url: item.img_url
+    }))
+    
 
-    try {
-      dispatch(
-        addItemLocally({
-          payload: {
-            product_id: item.id,
-            name: item.name,
-            quantity: 1,
-            final_price: item.final_price,
-            img: item.img_url,
-          },
-        })
-      );
-      setCartBtnLoading(false);
-      toast({
-        title: "Added to cart 🛒",
-        description: `${item.name} has been added to your cart.`,
-      });
-      await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
-    } catch {
-      // ❌ Rollback — رجّع السلة زي ما كانت
+    toast({
+      title: "Added to cart 🛒",
+      description: `${item.name} has been added to your cart.`,
+    });
 
-      if (access) {
-        toast({
-          title: "Error ❌",
-          description: "Failed to add item to cart.",
-        });
-      } else {
-        toast({
-          title: "Error ❌",
-          description: "Please login first",
-        });
-      }
-      dispatch(rollbackRemove(previousCart));
-    } finally {
-      setCartBtnLoading(false);
-    }
-  }, [item.id, item.name, item, items, dispatch, toast, access]);
+    // تحديث السلة على السيرفر
+    await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
+  } catch (err) {
+    // ❌ rollback
+    previousCart.forEach((cartItem) => {
+      dispatch(rollbackRemove({ item: cartItem }));
+    });
+
+    toast({
+      title: "Error ❌",
+      description: access
+        ? "Failed to add item to cart."
+        : "Please login first",
+    });
+  } finally {
+    setCartBtnLoading(false);
+  }
+}, [item, items, dispatch, toast, access]);
+
 
   // const toggleWishlist = async () => {
 
@@ -185,37 +187,30 @@ const ProductComponent = ({ item }: { item: IItem }) => {
 
     setWishlistBtnLoading(true);
 
-    // const previousWishlist = getwishlist; // رقم واحد فقط
-
     try {
-      console.log(inWishlist)
-      if (inWishlist) {
-       
+      if (inWishlistState) {
+        // remove locally
+        
         dispatch(removeWishlistLocally());
-        setWishlistBtnLoading(false);
+        setInWishlistState(false);
         toast({
           title: "Removed ❤️",
           description: `${item.name} removed from wishlist`,
         });
-
+setWishlistBtnLoading(false);
         await dispatch(WishlistRemove(item.id)).unwrap();
-        inWishlist = false;
       } else {
-        
+        // add locally
         dispatch(addWishlistLocally(item.id));
-        setWishlistBtnLoading(false);
+        setInWishlistState(true);
         toast({
           title: "Added ❤️",
           description: `${item.name} added to wishlist`,
         });
-
+setWishlistBtnLoading(false);
         await dispatch(WishlistItems(item.id)).unwrap();
-        inWishlist = true;
       }
     } catch {
-      // Rollback
-      // dispatch(rollbackWishlist(item.id));
-
       toast({
         title: "Error ❌",
         description: access
@@ -235,7 +230,7 @@ const ProductComponent = ({ item }: { item: IItem }) => {
           <div className="absolute right-[-5%] top-[-20px] border border-[#01e281] text-[#01e281] w-10 h-10 p-[6px] rounded-full flex items-center justify-center">
             <div className="w-5 h-5 border-2 border-[#01e281] border-t-transparent rounded-full animate-spin"></div>
           </div>
-        ) : inWishlist ? (
+        ) : inWishlistState ? (
           <GoHeartFill
             onClick={toggleWishlist}
             className="absolute right-[-5%] top-[-20px] border border-[#01e281] text-[#01e281] w-10 h-10 p-[6px] rounded-full duration-300 cursor-pointer"
@@ -248,14 +243,14 @@ const ProductComponent = ({ item }: { item: IItem }) => {
         )}
         <div
           className={`absolute ${
-            inWishlist ? "ml-[9.5rem]" : "ml-[13rem]"
+            inWishlistState ? "ml-[9.5rem]" : "ml-[13rem]"
           } z-10 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
         >
           <button
             onClick={toggleWishlist}
             className="bg-[#01e281] text-white px-4 py-2 rounded-full text-sm font-medium shadow-md"
           >
-            {inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+            {inWishlistState ? "Remove from wishlist" : "Add to wishlist"}
           </button>
         </div>
       </div>

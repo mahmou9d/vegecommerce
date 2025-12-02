@@ -23,11 +23,11 @@ const Wishlist = () => {
   );
 
   // Fetch wishlist items when component loads (if empty)
-  useEffect(() => {
-    if (items.length === 0) {
-      dispatch(GetWishlist());
-    }
-  }, [dispatch, items.length]);
+  // useEffect(() => {
+  //   if (items.length === 0) {
+  //     dispatch(GetWishlist());
+  //   }
+  // }, [dispatch, items.length]);
 
   /**
    * Remove an item from wishlist
