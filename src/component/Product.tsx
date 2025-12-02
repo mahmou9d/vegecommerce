@@ -4,13 +4,10 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import {
-  addWishlistLocally,
-  removeWishlistLocally,
-  rollbackWishlist,
   WishlistItems,
   WishlistRemove,
 } from "../store/wishlistSlice";
-import { GetWishlist } from "../store/GetwishlistSlice";
+import { addWishlistLocally, GetWishlist, removeWishlistLocally } from "../store/GetwishlistSlice";
 import {
   addItemLocally,
   AddToCart,
@@ -23,7 +20,7 @@ import React from "react";
 
 interface IItem {
   id?: number;
-  product_id?: number;
+  product_id?: number ;
   name: string;
   description: string;
   original_price: string;
@@ -113,7 +110,7 @@ const handleAddToCart = useCallback(async () => {
       title: "Added to cart 🛒",
       description: `${item.name} has been added to your cart.`,
     });
-
+  setCartBtnLoading(false);
     // تحديث السلة على السيرفر
     await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
   } catch (err) {
@@ -121,7 +118,7 @@ const handleAddToCart = useCallback(async () => {
     previousCart.forEach((cartItem) => {
       dispatch(rollbackRemove({ item: cartItem }));
     });
-
+ setCartBtnLoading(false);
     toast({
       title: "Error ❌",
       description: access
@@ -191,7 +188,7 @@ const handleAddToCart = useCallback(async () => {
       if (inWishlistState) {
         // remove locally
         
-        dispatch(removeWishlistLocally());
+        dispatch(removeWishlistLocally(item.id));
         setInWishlistState(false);
         toast({
           title: "Removed ❤️",
@@ -201,7 +198,22 @@ setWishlistBtnLoading(false);
         await dispatch(WishlistRemove(item.id)).unwrap();
       } else {
         // add locally
-        dispatch(addWishlistLocally(item.id));
+        dispatch(
+          addWishlistLocally({
+            product_id: item.id!,
+            name: item.name,
+            description: item.description,
+            original_price: item.original_price,
+            final_price: item.final_price,
+            discount: item.discount,
+            stock: item.stock,
+            categories: item.categories,
+            tags: item.tags,
+            img: item.img,
+            average_rating: item.average_rating,
+            img_url: item.img_url,
+          })
+        );
         setInWishlistState(true);
         toast({
           title: "Added ❤️",

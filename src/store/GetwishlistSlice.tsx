@@ -80,7 +80,29 @@ export const GetWishlist = createAsyncThunk<
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
-  reducers: {},
+  reducers: {
+    addWishlistLocally: (state, action: { payload: TProduct }) => {
+      const product = action.payload;
+
+      // لو المنتج مش موجود ضيفه
+      const exists = state.items.some(
+        (p) => p.product_id === product.product_id
+      );
+
+      if (!exists) {
+        state.items.push(product);
+      }
+    },
+
+    removeWishlistLocally: (state, action: { payload: number }) => {
+      const product_id = action.payload;
+      state.items = state.items.filter((p) => p.product_id !== product_id);
+    },
+
+    rollbackWishlist: (state, action: { payload: TProduct[] }) => {
+      state.items = action.payload; // رجع النسخة القديمة من الـ wishlist
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(GetWishlist.pending, (state) => {
       state.loading = "pending";
@@ -96,7 +118,8 @@ const wishlistSlice = createSlice({
     });
   },
 });
-
+export const { addWishlistLocally, removeWishlistLocally, rollbackWishlist } =
+  wishlistSlice.actions;
 export default wishlistSlice.reducer;
 
 // import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";

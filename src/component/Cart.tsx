@@ -114,17 +114,17 @@ const Cart = () => {
         quantity: newQty,
       })
     );
-
-    // Send request
-    dispatch(EditCart({ product_id, quantity: newQty }))
-      .unwrap()
-      .then(() => {
         toast({
           title: "Cart updated",
           description: `Quantity ${
             type === "inc" ? "increased" : "decreased"
           } successfully.`,
         });
+    // Send request
+    dispatch(EditCart({ product_id, quantity: newQty }))
+      .unwrap()
+      .then(() => {
+
       })
       .catch(() => {
         // ❌ Rollback if failed
@@ -164,15 +164,15 @@ const removeItem = (product_id: number) => {
       product_id,
     })
   );
-
-  // إرسال الريكوست
-  dispatch(RemoveCart({ product_id }))
-    .unwrap()
-    .then(() => {
       toast({
         title: "Removed from cart",
         description: "The item was successfully removed.",
       });
+  // إرسال الريكوست
+  dispatch(RemoveCart({ product_id }))
+    .unwrap()
+    .then(() => {
+
     })
     .catch(() => {
       // ❌ Rollback — رجّع الحالة القديمة

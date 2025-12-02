@@ -5,12 +5,12 @@ import { TiHome } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import { RootState } from "../store";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { WishlistRemove } from "../store/wishlistSlice";
-import { AddToCart, GetToCart } from "../store/cartSlice";
+import { addItemLocally, AddToCart, GetToCart } from "../store/cartSlice";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
-import { GetWishlist } from "../store/GetwishlistSlice";
+import { GetWishlist, removeWishlistLocally } from "../store/GetwishlistSlice";
 import { useToast } from "../hooks/use-toast";
 
 const Wishlist = () => {
@@ -21,7 +21,7 @@ const Wishlist = () => {
   const { items, loading, error } = useAppSelector(
     (state: RootState) => state?.Getwishlists
   );
-
+  // console.log(items)
   // Fetch wishlist items when component loads (if empty)
   // useEffect(() => {
   //   if (items.length === 0) {
@@ -33,29 +33,39 @@ const Wishlist = () => {
    * Remove an item from wishlist
    */
   const removeItem = (product_id: number) => {
+    dispatch(removeWishlistLocally(product_id));
+    toast({
+      title: "Removed ❤️",
+      description: `The item has been removed from your wishlist.`,
+    });
     dispatch(WishlistRemove(product_id))
       .unwrap()
       .then(() => {
         dispatch(GetWishlist()); // Refresh wishlist after removing
-        toast({
-          title: "Removed ❤️",
-          description: `The item has been removed from your wishlist.`,
-        });
       });
   };
 
   /**
    * Add an item from wishlist to cart
    */
-  const handleAddToCart = (product: any) => {
-    dispatch(AddToCart({ product_id: product, quantity: 1 }))
+  const handleAddToCart = (item: any) => {
+    console.log(item);
+    dispatch(
+      addItemLocally({
+        product_id: item.product_id,
+        product_name: item.name || "no",
+        price: Number(item.final_price),
+        img_url: item.img_url,
+      })
+    );
+    toast({
+      title: "Added 🛒",
+      description: `The item has been added to your cart.`,
+    });
+    dispatch(AddToCart({ product_id: item.product_id, quantity: 1 }))
       .unwrap()
       .then(() => {
-        dispatch(GetToCart()); // Refresh cart after adding
-        toast({
-          title: "Added 🛒",
-          description: `The item has been added to your cart.`,
-        });
+        // dispatch(GetToCart()); // Refresh cart after adding
       })
       .catch(() => {
         toast({
@@ -64,7 +74,45 @@ const Wishlist = () => {
         });
       });
   };
+  // const handleAddToCart = useCallback(async () => {
+  //   if (!item.id) return;
 
+  //   // setCartBtnLoading(true);
+  //   const previousCart = [...items]; // للـ rollback
+
+  //   try {
+  //     // إضافة محلية سريعة (Optimistic)
+
+  //     dispatch(addItemLocally({
+  //       product_id: item.id,
+  //       product_name: item.name,
+  //       price: Number(item.final_price),
+  //       img_url: item.img_url
+  //     }))
+
+  //     toast({
+  //       title: "Added to cart 🛒",
+  //       description: `${item.name} has been added to your cart.`,
+  //     });
+  //   // setCartBtnLoading(false);
+  //     // تحديث السلة على السيرفر
+  //     await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
+  //   } catch (err) {
+  //     // ❌ rollback
+  //     previousCart.forEach((cartItem) => {
+  //       dispatch(rollbackRemove({ item: cartItem }));
+  //     });
+  // //  setCartBtnLoading(false);
+  //     toast({
+  //       title: "Error ❌",
+  //       description: access
+  //         ? "Failed to add item to cart."
+  //         : "Please login first",
+  //     });
+  //   } finally {
+  //     // setCartBtnLoading(false);
+  //   }
+  // }, [item, items, dispatch, toast, access]);
   return (
     <div>
       {/* Wishlist Header Section */}
@@ -124,7 +172,7 @@ const Wishlist = () => {
 
               {/* Add to Cart Button (appears on hover) */}
               <div
-                onClick={() => handleAddToCart(product.product_id)}
+                onClick={() => handleAddToCart(product)}
                 className="absolute -bottom-4 w-[180px] h-[50px] text-[#122d40] font-bold opacity-0 right-0 group-hover/item:opacity-100 transition-opacity duration-300"
               >
                 <button className="bg-[#01e281] text-[#122d40] hover:bg-[#122d40] hover:text-[#01e281] text-[18px] flex items-center justify-center gap-3 font-bold px-4 py-2 w-full h-full rounded-full shadow-md">

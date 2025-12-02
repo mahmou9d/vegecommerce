@@ -68,15 +68,15 @@ const WishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    addWishlistLocally: (state, action: { payload: number }) => {
-      state.items = action.payload; // تخزين المنتج الحالي
-    },
-    removeWishlistLocally: (state) => {
-      state.items = 0; // إزالة المنتج
-    },
-    rollbackWishlist: (state, action: { payload: number }) => {
-      state.items = action.payload; // استرجاع الرقم السابق
-    },
+    // addWishlistLocally: (state, action: { payload: number }) => {
+    //   state.items = action.payload; // تخزين المنتج الحالي
+    // },
+    // removeWishlistLocally: (state) => {
+    //   state.items = 0; // إزالة المنتج
+    // },
+    // rollbackWishlist: (state, action: { payload: number }) => {
+    //   state.items = action.payload; // استرجاع الرقم السابق
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -109,11 +109,11 @@ const WishlistSlice = createSlice({
       });
   },
 });
-export const {
-  addWishlistLocally,
-  removeWishlistLocally,
-  rollbackWishlist
-} = WishlistSlice.actions;
+// export const {
+//   addWishlistLocally,
+//   removeWishlistLocally,
+//   rollbackWishlist
+// } = WishlistSlice.actions;
 export default WishlistSlice.reducer;
 
 // import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
