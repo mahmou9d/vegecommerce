@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CheckCircle } from "lucide-react";
+import { DeleteToCart, GetToCart } from "../store/cartSlice";
+import { useAppDispatch } from "../store/hook";
 
 const PaymentSuccess = () => {
+  const dispatch = useAppDispatch();
+
   const goHome = () => {
     window.location.href = "/";
   };
+useEffect(() => {
+  console.log("PaymentSuccess mounted");
+  const clearCart = async () => {
+    try {
+      await dispatch(DeleteToCart()).unwrap();
+      await dispatch(GetToCart()).unwrap();
+      console.log("Cart cleared");
+    } catch (err) {
+      console.log("Failed to clear cart:", err);
+    }
+  };
+  clearCart();
+}, [dispatch]);
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-green-200 to-white p-6">

@@ -24,6 +24,7 @@ interface CartState {
     edit: boolean;
     get: boolean;
     checkout: boolean;
+    del: boolean;
   };
   error: string | null;
   loaded: boolean;
@@ -39,6 +40,7 @@ const initialState: CartState = {
     edit: false,
     get: false,
     checkout: false,
+    del: false,
   },
   error: null,
   loaded: false,
@@ -175,7 +177,21 @@ export const GetToCart = createAsyncThunk<
     return thunkAPI.rejectWithValue(err.message);
   }
 });
-
+export const DeleteToCart = createAsyncThunk<
+  any,
+  void,
+  { state: RootState; dispatch: AppDispatch }
+>("cart/DeleteToCart", async (_, thunkAPI) => {
+  try {
+    return await fetchWithRefresh(
+      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/clear/",
+      { method: "DELETE" },
+      thunkAPI
+    );
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.message);
+  }
+});
 /* ============================
    Slice
 ============================ */
@@ -344,6 +360,21 @@ const cartSlice = createSlice({
       .addCase(Checkout.rejected, (state, action) => {
         state.loading.checkout = false;
       });
+      // DeleteToCart
+          builder
+            .addCase(DeleteToCart.pending, (state) => {
+              state.loading.del = true;
+            })
+            .addCase(DeleteToCart.fulfilled, (state, action) => {
+              state.loading.del = false;
+              state.items = action.payload.items;
+              state.total = recalcTotal(state.items);
+              state.loaded = true;
+            })
+            .addCase(DeleteToCart.rejected, (state, action) => {
+              state.loading.del = false;
+              state.error = action.payload as string;
+            });
   },
 });
 

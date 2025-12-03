@@ -17,6 +17,7 @@ import {
 import { Rating, RatingButton } from "../components/ui/shadcn-io/rating";
 import { useToast } from "../hooks/use-toast";
 import React from "react";
+import { setEditingProduct } from "../store/editingProductSlice";
 
 interface IItem {
   id?: number;
@@ -51,7 +52,10 @@ const ProductComponent = ({ item }: { item: IItem }) => {
   // );
   // ⚡ حالة التوجل الحقيقية
   const [inWishlistState, setInWishlistState] = useState(false);
-
+const handleEditProduct = (item: IItem) => {
+  dispatch(setEditingProduct(item)); // ضع المنتج في store
+  nav("/admin"); // اذهب للفورم
+};
   // ⚡ Sync from Redux → local state
   useEffect(() => {
     if (item.id) {
@@ -235,7 +239,10 @@ setWishlistBtnLoading(false);
   };
 
   return (
-    <div className="cursor-pointer relative overflow-visible group/item w-[440px] h-[500px] py-12 bg-white p-[30px] -mt-3 flex flex-col justify-between rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]">
+    <div
+      // onClick={() => handleEditProduct(item)}
+      className="cursor-pointer relative overflow-visible group/item w-[440px] h-[500px] py-12 bg-white p-[30px] -mt-3 flex flex-col justify-between rounded-ee-[25px] rounded-ss-[25px] shadow-[0px_8px_64px_0px_#122d401a]"
+    >
       {/* Wishlist button */}
       <div className="relative group flex">
         {wishlistBtnLoading ? (

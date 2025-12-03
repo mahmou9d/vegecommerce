@@ -9,6 +9,7 @@ import wishlist from "./wishlistSlice";
 import review from "./reviewSlice";
 import reviewget from "./reviewgetSlice";
 import Getwishlists from "./GetwishlistSlice";
+import editingProduct from "./editingProductSlice";
 const persistConfig = {
     key: "root",
     storage,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
     review,
     Getwishlists,
     reviewget,
+    editingProduct
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

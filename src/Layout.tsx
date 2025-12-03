@@ -8,6 +8,16 @@ import { Toaster } from "./components/ui/toaster";
 import Header from "./component/Header";
 import { GetWishlist } from "./store/GetwishlistSlice";
 import { GetToCart } from "./store/cartSlice";
+import Stats from "./component/admin/AdminDashboard";
+import AdminLayout from "./component/admin/AdminLayout";
+import AddProduct from "./component/admin/EditProductPage";
+import Dashborad from "./component/admin/AdminDashboard";
+import AdminDashboard from "./component/admin/AdminDashboard";
+import EditProductPage from "./component/admin/EditProductPage";
+import DashboardStats from "./component/admin/DashboardStats";
+import PaymentSuccess from "./component/PaymentSuccess";
+import PaymentCancel from "./component/PaymentCancel";
+// import Admin from "./component/Admin ";
 
 // ✅ Lazy load components
 // const Header = lazy(() => import("./component/Header"));
@@ -23,9 +33,9 @@ const Categories = lazy(() => import("./component/Categories"));
 const Checkoutcart = lazy(() => import("./component/Checkoutcart"));
 const SingleProduct = lazy(() => import("./component/SingleProduct"));
 const Ordercomplete = lazy(() => import("./component/Ordercomplete"));
-const PaymentSuccess = lazy(() => import("./component/PaymentSuccess"));
-const PaymentCancel = lazy(() => import("./component/PaymentCancel"));
-
+// const PaymentSuccess = lazy(() => import("./component/PaymentSuccess"));
+// const PaymentCancel = lazy(() => import("./component/PaymentCancel"));
+const Admin = lazy(() => import("./component/admin/AdminLayout"));
 // ✅ Loader component
 const Loader = () => (
   <div className="w-full h-[60vh] flex justify-center items-center">
@@ -51,19 +61,26 @@ type TProduct = {
 function Layout() {
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const hideLayout = ["/login", "/signup"].includes(location.pathname);
-const { products, loaded } = useAppSelector((state) => state.product);
+    // { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
+  const hideLayout = [
+    "/login",
+    "/signup",
+    "/admin",
+    "/admin/stats",
+    "/admin/add",
+  ].includes(location.pathname);
+  const { products, loaded } = useAppSelector((state) => state.product);
 
-const fetchedRef = useRef(false);
+  const fetchedRef = useRef(false);
 
-useEffect(() => {
-  if (!fetchedRef.current) {
-    fetchedRef.current = true;
-    dispatch(productUser());
-    dispatch(GetWishlist());
-     dispatch(GetToCart());
-  }
-}, []);
+  useEffect(() => {
+    if (!fetchedRef.current) {
+      fetchedRef.current = true;
+      dispatch(productUser());
+      dispatch(GetWishlist());
+      dispatch(GetToCart());
+    }
+  }, []);
 
   const categoryName = decodeURIComponent(
     location.pathname.split("/").pop() || ""
@@ -99,8 +116,12 @@ useEffect(() => {
         />
         <Route path="/checkout" element={<Checkoutcart />} />
         <Route path="/singleproduct/:id" element={<SingleProduct />} />
-        {/* <Route path="/success" element={<Success />} />
-        <Route path="/cancel" element={<Cancel />} /> */}
+        {/* <Route path="/admin" element={<Admin />} /> */}
+<Route path="/admin" element={<AdminLayout />}>
+  <Route index element={<AdminDashboard />} />              {/* /admin */}
+  <Route path="stats" element={<DashboardStats />} />        {/* /admin/stats */}
+  <Route path="add" element={<EditProductPage />} />         {/* /admin/add */}
+</Route>
       </Routes>
       {!hideLayout && <Footer />}
       <ScrollToTop />

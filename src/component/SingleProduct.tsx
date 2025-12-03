@@ -168,14 +168,15 @@ dispatch(
       if (!id) return;
   
   if (inWishlist) {
-    dispatch(WishlistRemove(Number(id)))
-      .unwrap()
-      .then(() => {
-        toast({
+            toast({
           title: "Removed ❤️",
           description: `${firstItem?.name} has been removed from your wishlist.`,
           className: "bg-white text-black border shadow-lg", // ستايل بسيط
         });
+    dispatch(WishlistRemove(Number(id)))
+      .unwrap()
+      .then(() => {
+
       });
   } else {
     dispatch(WishlistItems(Number(id)))
