@@ -143,12 +143,12 @@ const Checkoutcart = () => {
         dispatch(checkoutSession(res.order_id))
           .unwrap()
           .then((res) => {
-            // console.log("Returned data: ", res);
+            console.log("Returned data: ", res);
 
-            // console.log(res.url);
-            // console.log(res.session_id);
+            console.log(res.url);
+            console.log(res.session_id);
 
-            // window.location.href = res.url;
+            window.location.href = res.url;
             // useEffect(() => {
             //   if (window.location.pathname === "/payment-success") {
             //     // Promise.all(
