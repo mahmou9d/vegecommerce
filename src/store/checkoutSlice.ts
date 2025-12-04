@@ -19,10 +19,10 @@ export const checkoutSession = createAsyncThunk<
     any, // بيرجع الـ product_id
     number, // payload = product_id
     { state: RootState; dispatch: AppDispatch }
-    >("checkout/checkoutSession", async (order_id, thunkAPI) => {
+>("checkout/checkoutSession", async (order_id, thunkAPI) => {
     try {
-        const data=await fetchWithRefresh(
-            "https://e-commerce-web-production-ead4.up.railway.app/api/payment/create-checkout-session/",
+        const data = await fetchWithRefresh(
+            "https://e-commerce-web-production-4bb8.up.railway.app//api/payment/create-checkout-session/",
             {
                 method: "POST",
                 body: JSON.stringify({ order_id }),

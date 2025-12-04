@@ -106,7 +106,7 @@ export const AddToCart = createAsyncThunk<
 >("cart/AddToCart", async (payload, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/add/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/add/",
       { method: "POST", body: JSON.stringify(payload) },
       thunkAPI
     );
@@ -122,7 +122,7 @@ export const RemoveCart = createAsyncThunk<
 >("cart/RemoveCart", async (payload, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/remove/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/remove/",
       { method: "DELETE", body: JSON.stringify(payload) },
       thunkAPI
     );
@@ -138,7 +138,7 @@ export const EditCart = createAsyncThunk<
 >("cart/EditCart", async (payload, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/edit/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/edit/",
       { method: "PATCH", body: JSON.stringify(payload) },
       thunkAPI
     );
@@ -154,7 +154,7 @@ export const Checkout = createAsyncThunk<
 >("cart/Checkout", async (payload, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/order/add/",
       { method: "POST", body: JSON.stringify(payload) },
       thunkAPI
     );
@@ -169,7 +169,7 @@ export const GetToCart = createAsyncThunk<
 >("cart/GetToCart", async (_, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/items/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/items/",
       { method: "GET" },
       thunkAPI
     );
@@ -184,7 +184,7 @@ export const DeleteToCart = createAsyncThunk<
 >("cart/DeleteToCart", async (_, thunkAPI) => {
   try {
     return await fetchWithRefresh(
-      "https://e-commerce-web-production-ead4.up.railway.app/api/cart/clear/",
+      "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/clear/",
       { method: "DELETE" },
       thunkAPI
     );
@@ -360,21 +360,21 @@ const cartSlice = createSlice({
       .addCase(Checkout.rejected, (state, action) => {
         state.loading.checkout = false;
       });
-      // DeleteToCart
-          builder
-            .addCase(DeleteToCart.pending, (state) => {
-              state.loading.del = true;
-            })
-            .addCase(DeleteToCart.fulfilled, (state, action) => {
-              state.loading.del = false;
-              state.items = action.payload.items;
-              state.total = recalcTotal(state.items);
-              state.loaded = true;
-            })
-            .addCase(DeleteToCart.rejected, (state, action) => {
-              state.loading.del = false;
-              state.error = action.payload as string;
-            });
+    // DeleteToCart
+    builder
+      .addCase(DeleteToCart.pending, (state) => {
+        state.loading.del = true;
+      })
+      .addCase(DeleteToCart.fulfilled, (state, action) => {
+        state.loading.del = false;
+        state.items = action.payload.items;
+        state.total = recalcTotal(state.items);
+        state.loaded = true;
+      })
+      .addCase(DeleteToCart.rejected, (state, action) => {
+        state.loading.del = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
@@ -494,7 +494,7 @@ export default cartSlice.reducer;
 // >("cart/AddToCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/add/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/add/",
 //       { method: "POST", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -510,7 +510,7 @@ export default cartSlice.reducer;
 // >("cart/RemoveCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/remove/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/remove/",
 //       { method: "DELETE", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -526,7 +526,7 @@ export default cartSlice.reducer;
 // >("cart/EditCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/edit/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/edit/",
 //       { method: "PATCH", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -542,7 +542,7 @@ export default cartSlice.reducer;
 // >("cart/GetToCart", async (_, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/items/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/items/",
 //       { method: "GET" },
 //       thunkAPI
 //     );
@@ -558,7 +558,7 @@ export default cartSlice.reducer;
 // >("cart/Checkout", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/order/add/",
 //       { method: "POST", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -804,7 +804,7 @@ export default cartSlice.reducer;
 // >("cart/AddToCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/add/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/add/",
 //       { method: "POST", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -820,7 +820,7 @@ export default cartSlice.reducer;
 // >("cart/RemoveCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/remove/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/remove/",
 //       { method: "DELETE", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -836,7 +836,7 @@ export default cartSlice.reducer;
 // >("cart/EditCart", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/edit/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/edit/",
 //       { method: "PATCH", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );
@@ -852,7 +852,7 @@ export default cartSlice.reducer;
 // >("cart/GetToCart", async (_, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/cart/items/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/cart/items/",
 //       { method: "GET" },
 //       thunkAPI
 //     );
@@ -868,7 +868,7 @@ export default cartSlice.reducer;
 // >("cart/Checkout", async (payload, thunkAPI) => {
 //   try {
 //     return await fetchWithRefresh(
-//       "https://e-commerce-web-production-ead4.up.railway.app/api/order/add/",
+//       "https://e-commerce-web-production-4bb8.up.railway.app//api/order/add/",
 //       { method: "POST", body: JSON.stringify(payload) },
 //       thunkAPI
 //     );

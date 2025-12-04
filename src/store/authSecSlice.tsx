@@ -25,7 +25,7 @@ export const signupUser = createAsyncThunk(
   ) => {
     try {
       const res = await fetch(
-        "https://e-commerce-web-production-ead4.up.railway.app/api/auth/signup/",
+        "https://e-commerce-web-production-4bb8.up.railway.app//api/auth/signup/",
         {
           method: "POST",
           headers: {
@@ -44,7 +44,6 @@ export const signupUser = createAsyncThunk(
     } catch (error: any) {
       // console.log(error,"errorsignup")
       return rejectWithValue(error.message);
-      
     }
   }
 );
@@ -52,13 +51,13 @@ export const signupUser = createAsyncThunk(
 const authSlicesec = createSlice({
   name: "authsec",
   initialState,
-reducers: {
-  resetAuthSec: (state) => {
-    state.message = "";
-    state.error = null;
-    state.loading = "idle";
-  }
-},
+  reducers: {
+    resetAuthSec: (state) => {
+      state.message = "";
+      state.error = null;
+      state.loading = "idle";
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(signupUser.pending, (state) => {
       state.loading = "pending";
