@@ -6,9 +6,7 @@ import { useAppDispatch } from "../store/hook";
 const PaymentSuccess = () => {
   const dispatch = useAppDispatch();
 
-  const goHome = () => {
-    window.location.href = "/";
-  };
+
 useEffect(() => {
   if (window.location.pathname === "/payment-success") {
     dispatch(DeleteToCart())
@@ -20,7 +18,9 @@ useEffect(() => {
       });
   }
 }, []);
-
+  const goHome = () => {
+    window.location.href = "/";
+  };
 
 
   return (
