@@ -186,11 +186,14 @@ export const DeleteToCart = createAsyncThunk<
   { state: RootState; dispatch: AppDispatch }
 >("cart/DeleteToCart", async (_, thunkAPI) => {
   try {
-    return await fetchWithRefresh(
+    const res= await fetchWithRefresh(
       "https://e-commerce-web-production-4bb8.up.railway.app/api/cart/clear/",
       { method: "DELETE" },
       thunkAPI
     );
+          const text = await res.text(); // اقرأ النص فقط
+          const data = text ? JSON.parse(text) : { items: [] }; // لو فارغ اعمل default
+          return data;
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err.message);
   }
