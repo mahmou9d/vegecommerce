@@ -8,12 +8,17 @@ const PaymentSuccess = () => {
 
 
 useEffect(() => {
-  dispatch(DeleteToCart())
-    .unwrap()
-    .then(() => {
-      dispatch(GetToCart());
-    })
-    .catch(() => {});
+  const clearCart = async () => {
+    try {
+      await dispatch(DeleteToCart()).unwrap();
+      const res = await dispatch(GetToCart()).unwrap();
+      console.log("FETCHED CART:", res);
+    } catch (err) {
+      console.log("GET CART ERROR:", err);
+    }
+  };
+
+  clearCart();
 }, []);
 
 
