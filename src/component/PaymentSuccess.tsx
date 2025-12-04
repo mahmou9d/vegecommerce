@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
 import { CheckCircle } from "lucide-react";
-import { DeleteToCart, GetToCart } from "../store/cartSlice";
-import { useAppDispatch } from "../store/hook";
+// import { DeleteToCart, GetToCart } from "../store/cartSlice";
+// import { useAppDispatch } from "../store/hook";
 
 const PaymentSuccess = () => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
 
-useEffect(() => {
-  if (window.location.pathname === "/payment-success") {
-    dispatch(DeleteToCart())
-      .unwrap()
-      .then(() => {
-        dispatch(GetToCart());
-      })
-      .catch(() => {
-      });
-  }
-}, []);
+// useEffect(() => {
+//   if (window.location.pathname === "/payment-success") {
+//     dispatch(DeleteToCart())
+//       .unwrap()
+//       .then(() => {
+//         dispatch(GetToCart());
+//       })
+//       .catch(() => {
+//       });
+//   }
+// }, []);
   const goHome = () => {
     window.location.href = "/";
   };
