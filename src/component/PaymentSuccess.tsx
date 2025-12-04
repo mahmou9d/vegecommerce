@@ -10,18 +10,17 @@ const PaymentSuccess = () => {
     window.location.href = "/";
   };
 useEffect(() => {
-  console.log("PaymentSuccess mounted");
-  const clearCart = async () => {
-    try {
-      await dispatch(DeleteToCart()).unwrap();
-      await dispatch(GetToCart()).unwrap();
-      console.log("Cart cleared");
-    } catch (err) {
-      console.log("Failed to clear cart:", err);
-    }
-  };
-  clearCart();
-}, [dispatch]);
+  if (window.location.pathname === "/payment-success") {
+    dispatch(DeleteToCart())
+      .unwrap()
+      .then(() => {
+        dispatch(GetToCart());
+      })
+      .catch(() => {
+      });
+  }
+}, []);
+
 
 
   return (
