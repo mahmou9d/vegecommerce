@@ -109,11 +109,12 @@ const handleAddToCart = useCallback(async () => {
       img_url: item.img_url
     }))
     
-
-    toast({
-      title: "Added to cart 🛒",
-      description: `${item.name} has been added to your cart.`,
-    });
+    if (access) {
+      toast({
+        title: "Added to cart 🛒",
+        description: `${item.name} has been added to your cart.`,
+      });
+    }
   setCartBtnLoading(false);
     // تحديث السلة على السيرفر
     await dispatch(AddToCart({ product_id: item.id, quantity: 1 })).unwrap();
@@ -194,10 +195,13 @@ const handleAddToCart = useCallback(async () => {
         
         dispatch(removeWishlistLocally(item.id));
         setInWishlistState(false);
+            if (access) {
         toast({
           title: "Removed ❤️",
           description: `${item.name} removed from wishlist`,
         });
+            }
+
 setWishlistBtnLoading(false);
         await dispatch(WishlistRemove(item.id)).unwrap();
       } else {
