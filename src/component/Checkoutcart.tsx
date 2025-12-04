@@ -145,29 +145,29 @@ const Checkoutcart = () => {
 
             window.location.href = res.url;
             // useEffect(() => {
-              if (window.location.pathname === "/payment-success") {
-                // Promise.all(
-                //   items.map((item) =>
-                //     dispatch(
-                //       RemoveCart({ product_id: item.product_id })
-                //     ).unwrap()
-                //   )
-                // )
-                                    dispatch(
-                                      DeleteToCart()
-                                    )
-                                      .unwrap()
-                                      .then(() => {
-                                        dispatch(GetToCart());
-                                      })
-                                      .catch(() => {
-                                        toast({
-                                          title: "Error ❌",
-                                          description:
-                                            "Failed to clear your cart, please try again.",
-                                        });
-                                      });
-              }
+              // if (window.location.pathname === "/payment-success") {
+              //   // Promise.all(
+              //   //   items.map((item) =>
+              //   //     dispatch(
+              //   //       RemoveCart({ product_id: item.product_id })
+              //   //     ).unwrap()
+              //   //   )
+              //   // )
+              //                       dispatch(
+              //                         DeleteToCart()
+              //                       )
+              //                         .unwrap()
+              //                         .then(() => {
+              //                           dispatch(GetToCart());
+              //                         })
+              //                         .catch(() => {
+              //                           toast({
+              //                             title: "Error ❌",
+              //                             description:
+              //                               "Failed to clear your cart, please try again.",
+              //                           });
+              //                         });
+              // }
             // }, []);
           })
           .catch((err) => {
