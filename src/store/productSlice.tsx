@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { refreshAccessToken } from "./authSlice";
 
 type TProduct = {
   id?: number;
@@ -42,9 +43,9 @@ export const productUser = createAsyncThunk<
   { state: { product: ProductSliceState }; rejectValue: string }
 >(
   "product/productUser",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue,dispatch }) => {
     try {
-      const res = await fetch(
+      let res = await fetch(
         "https://e-commerce-web-production-4bb8.up.railway.app/api/products/",
         {
           method: "GET",
@@ -54,10 +55,31 @@ export const productUser = createAsyncThunk<
         }
       );
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      // if (!res.ok) {
+      //   throw new Error(`HTTP error! status: ${res.status}`);
+      // }
+            if (res.status === 401) {
+              try {
+                const refreshRes = await dispatch(
+                  refreshAccessToken()
+                ).unwrap();
+                const token = refreshRes.access;
 
+                res = await fetch(
+                  "https://e-commerce-web-production-4bb8.up.railway.app/api/auth/logout/",
+                  {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                      ...(token && { Authorization: `Bearer ${token}` }),
+                    },
+                    // body: JSON.stringify(payload),
+                  }
+                );
+              } catch (refreshErr) {
+                return rejectWithValue("Session expired, please login again.");
+              }
+            }
       const data = await res.json();
       return data;
     } catch (error: any) {
