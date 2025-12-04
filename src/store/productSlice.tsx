@@ -45,7 +45,7 @@ export const productUser = createAsyncThunk<
   async (_, { rejectWithValue }) => {
     try {
       const res = await fetch(
-        "https://e-commerce-web-production-4bb8.up.railway.app//api/products/",
+        "https://e-commerce-web-production-4bb8.up.railway.app/api/products/",
         {
           method: "GET",
           headers: {
@@ -146,7 +146,7 @@ export default productSlice.reducer;
 //   async (_, { rejectWithValue }) => {
 //     try {
 //       const res = await fetch(
-//         "https://e-commerce-web-production-4bb8.up.railway.app//api/products/",
+//         "https://e-commerce-web-production-4bb8.up.railway.app/api/products/",
 //         {
 //           method: "GET",
 //           headers: {

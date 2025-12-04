@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk(
   async (payload: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const res = await fetch(
-        "https://e-commerce-web-production-4bb8.up.railway.app//api/auth/login/",
+        "https://e-commerce-web-production-4bb8.up.railway.app/api/auth/login/",
         {
           method: "POST",
           headers: {
@@ -57,7 +57,7 @@ export const refreshAccessToken = createAsyncThunk(
       }
 
       const res = await fetch(
-        "https://e-commerce-web-production-4bb8.up.railway.app//api/auth/token/refresh/",
+        "https://e-commerce-web-production-4bb8.up.railway.app/api/auth/token/refresh/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -92,7 +92,7 @@ export const Logout = createAsyncThunk(
       }
 
       const res = await fetch(
-        "https://e-commerce-web-production-4bb8.up.railway.app//api/auth/logout/",
+        "https://e-commerce-web-production-4bb8.up.railway.app/api/auth/logout/",
         {
           method: "POST",
           headers: {
